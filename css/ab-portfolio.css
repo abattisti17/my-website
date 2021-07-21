@@ -7,8 +7,15 @@ div {
 	font-size: 30px
 }
 
+div.main {
+	/*margin-top: 20%;*/
+	padding: 5%;
+	padding-left: 5%;
+	background-color: #fff;
+}
+
 div.footer {
-	margin-top: 20%;
+	/*margin-top: 20%;*/
 	padding: 5%;
 	padding-left: 5%;
 	background-color: #eee;
