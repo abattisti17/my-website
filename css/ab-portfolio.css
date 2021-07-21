@@ -18,7 +18,7 @@ div.footer {
 	/*margin-top: 20%;*/
 	padding: 5%;
 	padding-left: 5%;
-	background-color: #eee;
+	/*background-color: #eee;*/
 }
 
 /*div.btn {
@@ -109,8 +109,8 @@ body {
   margin-bottom: 5%;
   margin-right: 5%;
   margin-left: 5%;*/
-  /*max-width: 750px;*/
-  /*float: right;*/
+  max-width: 650px;
+  float: right;
   /*padding-right: 60px;*/
 }
 
@@ -202,7 +202,7 @@ h3.status-label {
 	color: #aaa;
 }
 
-h3.btn-text {
+h3.link-text {
 	text-align: center;
 	padding-top: 8px;
 
@@ -221,22 +221,24 @@ img.project-banner {
  IT DOESN'T CHANGE ANYTHING WHEN 
  I COMMENT THE ATTRIBUES OUT*/
  /* unvisited link, same as regular 'a' */
-a.btn-text:link {
+a.link-text:link {
 	/*color: #000;*/
 }   
 
 /* visited link */
-a.btn-text:visited {
+a.link-text:visited {
 	color: #000;
 } 
 
 /* HOVER */
-a.btn-text:hover {	
+a.link-text:hover {	
 	color:#FBF8ED;
 	background-color: #161A45;
 }  
 
-a.btn-text:active { 
+
+
+a.link-text:active { 
 	color:#ff5256;
 }
 
@@ -299,11 +301,11 @@ div.btn {
 
 }
 
-a.btn-text {
+a.link-text {
 	color:#fff;
 }
 
-a.btn-text:active {
+a.link-text:active {
 	color:#161A45;
 }
 
