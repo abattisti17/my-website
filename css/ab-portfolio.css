@@ -3,9 +3,29 @@
 	padding: 0px;
 }*/
 
+
+hr {
+ width: 100%;
+ /*height: 1px;*/
+ /*border: 0 none;*/
+}
+
 div {
 	font-size: 30px
 }
+
+div.floating-back-link {
+		margin-left: 5%;
+		position: -webkit-sticky; /* Safari */
+  position: sticky;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  top: 0%;
+    background-color: #FBF7E2;
+
+}
+
+
 
 div.main {
 	margin-right: 5%;
@@ -367,3 +387,4 @@ background: #FFF5E7;
 height: 780px;
 
 }
+
