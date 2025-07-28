@@ -1,0 +1,25 @@
+{
+  "short_name": "Alessandro Battisti",
+  "name": "Alessandro Battisti - Portfolio",
+  "icons": [
+    {
+      "src": "abp-favicon.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "abp-apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "abp-apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#FBF7E2",
+  "background_color": "#FBF7E2"
+} 
