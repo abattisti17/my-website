@@ -5,36 +5,38 @@ import BackButton from '../components/BackButton';
 const Work: React.FC = () => {
   return (
     <>
-      <BackButton to="/" text="Back to home" />
+      <BackButton />
 
-      <div className="frame">
-        <div className="main">
-          <img src="/mywork.png" alt="grid of logos" />
+      <div className="page-container">
+        <div className="page-content">
+          <img src="/mywork.png" alt="grid of logos" className="page-image" />
+          <div className="page-header">
+            <h1 className="page-title">Examples of work</h1>
+            <p>My work has mainly focused on early stage foundational and generative research to inform new products, services, and platforms.</p>
+          </div>
           
-          <h2>Examples of work</h2>
-          <p>My work has mainly focused on early stage foundational and generative research to inform new products, services, and platforms.</p>
-          
-          <p>
-            <Link to="/project/sensor" className="link-text">
+          <div className="project-links">
+            <Link to="/project/sensor" className="link-text project-link">
               Understanding user perceptions of ambient sensing tech
             </Link>
-            <br /><br />
-            <Link to="/project/nudge" className="link-text">
+            
+            <Link to="/project/nudge" className="link-text project-link">
               Nudging customers toward healthy financial behaviors
             </Link>
-            <br /><br />
-            <Link to="/project/ev" className="link-text">
+            
+            <Link to="/project/ev" className="link-text project-link">
               Finding product-market fit for a new e-vehicle
             </Link>
-            <br /><br />
-            <Link to="/project/pos" className="link-text">
+            
+            <Link to="/project/pos" className="link-text project-link">
               Developing an MVP strategy for a new Point-of-Sale device
             </Link>
-          </p>
+          </div>
 
           {/* CONFIDENTIALITY START */}
           <div className="quote">
             <p><b>A note on confidentiality</b></p>
+            <br />
             <ul>
               <li>Some participant's faces have been blurred to protect their privacy.</li>
               <li>These projects are still under NDA. So specific content has been removed and processes have been made more abstract.</li>

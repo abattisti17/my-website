@@ -9,9 +9,9 @@ const ProjectPage: React.FC = () => {
 
   if (!project) {
     return (
-      <div className="frame">
-        <div className="main">
-          <h1>Project not found</h1>
+      <div className="page-container">
+        <div className="page-content">
+          <h1 className="page-title">Project not found</h1>
           <p>
             <Link to="/work" className="link-text">
               ← Back to work
@@ -24,45 +24,64 @@ const ProjectPage: React.FC = () => {
 
   return (
     <>
-      <BackButton to="/" text="Back to home" />
+      <BackButton />
 
-      <div className="frame">
-        <div className="main">
-          <img src={project.image} alt={project.imageAlt} />
-          
-          <h2>{project.title}</h2>
-          {project.content && <p>{project.content}</p>}
+      <div className="page-container">
+        <div className="page-content">
+          <img src={project.image} alt={project.imageAlt} className="page-image" />
+          <div className="page-header">
+            <h1 className="page-title">{project.title}</h1>
+            {project.content && <p>{project.content}</p>}
+          </div>
 
           {project.role && (
             <p><b>My Role:</b> {project.role}</p>
           )}
 
           {project.problem && (
-            <p><b>The Problem:</b> {project.problem}</p>
+            <>
+              <br />
+              <p><b>The Problem:</b> {project.problem}</p>
+            </>
           )}
 
           {project.approach && (
-            <p><b>Approach:</b> {project.approach}</p>
+            <>
+              <br />
+              <p><b>Approach:</b> {project.approach}</p>
+            </>
           )}
 
           {project.methods && (
-            <p><b>The Methods:</b> {project.methods}</p>
+            <>
+              <br />
+              <p style={{whiteSpace: 'pre-line'}}><b>The Methods:</b> {project.methods}</p>
+            </>
           )}
 
           {project.deliverables && (
-            <p><b>The Deliverables:</b> {project.deliverables}</p>
+            <>
+              <br />
+              <p style={{whiteSpace: 'pre-line'}}><b>The Deliverables:</b> {project.deliverables}</p>
+            </>
           )}
 
           {project.outcomes && (
-            <p><b>The Outcomes:</b> {project.outcomes}</p>
+            <>
+              <br />
+              <p style={{whiteSpace: 'pre-line'}}><b>The Outcomes:</b> {project.outcomes}</p>
+            </>
           )}
 
           {project.externalLink && project.externalLinkText && (
-            <h3>
-              <a className="link-text" href={project.externalLink} target="_blank" rel="noopener noreferrer">
-                {project.externalLinkText}
-              </a>
-            </h3>
+            <>
+              <br />
+              <p>
+                <a className="link-text" href={project.externalLink} target="_blank" rel="noopener noreferrer">
+                  {project.externalLinkText}
+                </a>
+              </p>
+            </>
           )}
         </div>
       </div>

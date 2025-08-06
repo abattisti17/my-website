@@ -1,19 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 
 interface BackButtonProps {
-  to: string;
+  to?: string;
   text?: string;
 }
 
-const BackButton: React.FC<BackButtonProps> = ({ to, text = "Back to home" }) => {
+const BackButton: React.FC<BackButtonProps> = ({ to, text = "Back" }) => {
+  const navigate = useNavigate();
+  
+  const handleBack = () => {
+    if (to) {
+      navigate(to);
+    } else {
+      navigate(-1); // Go back to previous page
+    }
+  };
+
   return (
     <div className="floating-back-link">
-      <Link to={to} className="back-button-link">
+      <button onClick={handleBack} className="back-button-link">
         <img src="/back-button.svg" alt="Back" className="back-button-icon" />
         <span className="back-button-text">{text}</span>
-      </Link>
+      </button>
     </div>
   );
 };

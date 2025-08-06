@@ -3,53 +3,37 @@ import { Link } from 'react-router-dom';
 
 const Home: React.FC = () => {
   return (
-    <div className="frame" id="frontpage">
-      <div className="main">
-        <h2>
-          <b>Alessandro Battisti</b>
-          <br />Design Researcher & Strategist
-        </h2>
-        
-        <p>Together, we understand & design for people.</p>
-
-        <h2>
-          <Link to="/work" className="link-text">
-            My Work
+    <div className="home-container">
+      <div className="home-header">
+        <h1 className="home-title">Alessandro Battisti</h1>
+        <p className="home-subtitle">Design Researcher & Strategist</p>
+      </div>
+      
+      <div className="home-content">
+        <div className="nav-links">
+          <Link to="/work" className="nav-link custom-cursor-work">
+            My work
           </Link>
-          <br />
-          <Link to="/about" className="link-text">
+          <Link to="/about" className="nav-link custom-cursor-about">
             About me
           </Link>
-          <br />
-          <Link to="/consulting" className="link-text">
+          <Link to="/consulting" className="nav-link custom-cursor-consulting">
             Consulting
           </Link>
-        </h2>
-      </div>
-
-      <div className="footer">
-        <p>
-          <i>Let's connect</i>
-          <br /><br />
-          Twitter: <a className="link-text" href="https://twitter.com/tweetessandro" target="_blank" rel="noopener noreferrer">@tweetessandro</a>
-          <br />
-          Email: abattisti {'{at}'} protonmail.com
-          <br />
-          <a className="link-text" href="https://www.linkedin.com/in/alessandrojbattisti/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+        
+        <p className="home-description">
+          Together we understand & design for people.
         </p>
         
-        <p>
-          <br />
-          What I'm reading right now:
-          <a className="link-text" href="https://en.wikipedia.org/wiki/Seeing_Like_a_State" target="_blank" rel="noopener noreferrer">
-            "Seeing Like a State: How Certain Schemes to Improve the Human Condition Have Failed"
-          </a> by James C. Scott
-        </p>
-        
-        <p>
-          <br />
-          <em>"A vision should be judged by the clarity of its values, not the clarity of its implementation path."</em> -Donella Meadows
-        </p>
+        <div className="home-footer">
+          <div className="footer-links">
+            <a href="https://www.linkedin.com/in/alessandrojbattisti/" target="_blank" rel="noopener noreferrer" className="footer-link">
+              Linkedin
+            </a>
+            <span className="email">email: abattisti [at] protonmail [dot] com</span>
+          </div>
+        </div>
       </div>
     </div>
   );
