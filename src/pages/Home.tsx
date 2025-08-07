@@ -26,6 +26,8 @@ const Home: React.FC = () => {
           Together we understand & design for people.
         </p>
         
+        {/* Test deployment comment */}
+        
         <div className="home-footer">
           <div className="footer-links">
             <a href="https://www.linkedin.com/in/alessandrojbattisti/" target="_blank" rel="noopener noreferrer" className="footer-link">
