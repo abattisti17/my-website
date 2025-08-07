@@ -31,13 +31,13 @@ jobs:
       run: npm run build
     
     # Deploy to Electric Embers via SFTP
-    - name: Deploy to Electric Embers
-      uses: garygrossgarten/github-action-scp@release
+    - name: Deploy to Electric Embers  
+      uses: appleboy/scp-action@v0.1.7
       with:
-        local: build
-        remote: ${{ secrets.SFTP_REMOTE_PATH }}
         host: ${{ secrets.SFTP_HOST }}
         username: ${{ secrets.SFTP_USERNAME }}
         password: ${{ secrets.SFTP_PASSWORD }}
         port: 22212
-        rmRemote: true
+        source: "build/*"
+        target: ${{ secrets.SFTP_REMOTE_PATH }}
+        rm: true
