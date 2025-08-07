@@ -40,9 +40,4 @@ jobs:
         password: ${{ secrets.SFTP_PASSWORD }}
         local_path: './build/*'
         remote_path: ${{ secrets.SFTP_STAGING_PATH }}
-        # Clean deployment for staging
         delete_remote_files: true
-        exclude: |
-          .htaccess
-          cgi-bin/
-          logs/

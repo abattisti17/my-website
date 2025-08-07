@@ -40,10 +40,4 @@ jobs:
         password: ${{ secrets.SFTP_PASSWORD }}
         local_path: './build/*'
         remote_path: ${{ secrets.SFTP_REMOTE_PATH }}
-        # Delete remote files that don't exist locally (clean deployment)
         delete_remote_files: true
-        # Exclude certain files from deletion
-        exclude: |
-          .htaccess
-          cgi-bin/
-          logs/
