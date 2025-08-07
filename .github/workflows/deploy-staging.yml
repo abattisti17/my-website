@@ -1,0 +1,48 @@
+name: Deploy to Staging
+
+# Trigger staging deployment on push to staging branch
+on:
+  push:
+    branches: [ staging ]
+  # Allow manual deployment from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Checkout the repository code
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    # Set up Node.js for building React app
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    # Install dependencies and build the React app
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build React app
+      run: npm run build
+    
+    # Deploy to staging environment
+    - name: Deploy to Staging
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      with:
+        server: ${{ secrets.SFTP_HOST }}
+        port: 22
+        username: ${{ secrets.SFTP_USERNAME }}
+        password: ${{ secrets.SFTP_PASSWORD }}
+        local_path: './build/*'
+        remote_path: ${{ secrets.SFTP_STAGING_PATH }}
+        # Clean deployment for staging
+        delete_remote_files: true
+        exclude: |
+          .htaccess
+          cgi-bin/
+          logs/
