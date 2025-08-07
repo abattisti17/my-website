@@ -32,13 +32,12 @@ jobs:
     
     # Deploy to Electric Embers via SFTP
     - name: Deploy to Electric Embers
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      uses: garygrossgarten/github-action-scp@release
       with:
-        server: ${{ secrets.SFTP_HOST }}
-        port: 22212
+        local: build
+        remote: ${{ secrets.SFTP_REMOTE_PATH }}
+        host: ${{ secrets.SFTP_HOST }}
         username: ${{ secrets.SFTP_USERNAME }}
         password: ${{ secrets.SFTP_PASSWORD }}
-        protocol: sftp
-        local-dir: ./build/
-        server-dir: ${{ secrets.SFTP_REMOTE_PATH }}
-        dangerous-clean-slate: true
+        port: 22212
+        rmRemote: true
