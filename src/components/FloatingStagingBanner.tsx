@@ -16,17 +16,23 @@ const FloatingStagingBanner: React.FC = () => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const dragStartRef = useRef<Position>({ x: 0, y: 0 });
 
-  // Initialize position to bottom-left
+  // Initialize position to bottom-left with proper padding
   useEffect(() => {
     const updatePosition = () => {
       const windowHeight = window.innerHeight;
       const bannerHeight = bannerRef.current?.offsetHeight || 60;
+      // Ensure 25px padding from bottom edge
       setPosition({ x: 25, y: windowHeight - bannerHeight - 25 });
     };
 
-    updatePosition();
+    // Small delay to ensure component is fully rendered and has proper dimensions
+    const timer = setTimeout(updatePosition, 100);
+    
     window.addEventListener('resize', updatePosition);
-    return () => window.removeEventListener('resize', updatePosition);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updatePosition);
+    };
   }, []);
 
   // Snap to nearest edge with spring physics
@@ -50,18 +56,20 @@ const FloatingStagingBanner: React.FC = () => {
     
     let newPos: Position;
     
+    const padding = 25;
+    
     if (minDistance === distanceToLeft) {
       // Snap to left edge
-      newPos = { x: 25, y: Math.max(25, Math.min(windowHeight - rect.height - 25, currentPos.y)) };
+      newPos = { x: padding, y: Math.max(padding, Math.min(windowHeight - rect.height - padding, currentPos.y)) };
     } else if (minDistance === distanceToRight) {
       // Snap to right edge
-      newPos = { x: windowWidth - rect.width - 25, y: Math.max(25, Math.min(windowHeight - rect.height - 25, currentPos.y)) };
+      newPos = { x: windowWidth - rect.width - padding, y: Math.max(padding, Math.min(windowHeight - rect.height - padding, currentPos.y)) };
     } else if (minDistance === distanceToTop) {
       // Snap to top edge
-      newPos = { x: Math.max(25, Math.min(windowWidth - rect.width - 25, currentPos.x)), y: 25 };
+      newPos = { x: Math.max(padding, Math.min(windowWidth - rect.width - padding, currentPos.x)), y: padding };
     } else {
       // Snap to bottom edge
-      newPos = { x: Math.max(25, Math.min(windowWidth - rect.width - 25, currentPos.x)), y: windowHeight - rect.height - 25 };
+      newPos = { x: Math.max(padding, Math.min(windowWidth - rect.width - padding, currentPos.x)), y: windowHeight - rect.height - padding };
     }
     
     setIsAnimating(true);
