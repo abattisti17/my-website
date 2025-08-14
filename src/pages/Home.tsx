@@ -25,6 +25,7 @@ const Home: React.FC = () => {
       <div className="home-header">
         <h1 className="home-title">Alessandro Battisti</h1>
         <p className="home-subtitle">Design Researcher & Strategist</p>
+        {/* Testing new staging banner system */}
       </div>
       
       <div className="home-content">
