@@ -16,6 +16,29 @@ const FloatingStagingBanner: React.FC = () => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const dragStartRef = useRef<Position>({ x: 0, y: 0 });
 
+  const adjustPositionForExpansion = useCallback(() => {
+    if (!bannerRef.current) return;
+    
+    const rect = bannerRef.current.getBoundingClientRect();
+    const windowWidth = window.innerWidth;
+    const padding = 25;
+    
+    // Check if banner overflows on the right
+    const rightEdge = rect.left + rect.width;
+    const maxAllowedRight = windowWidth - padding;
+    
+    if (rightEdge > maxAllowedRight) {
+      // Calculate how much we need to shift left
+      const overflow = rightEdge - maxAllowedRight;
+      const newX = Math.max(padding, position.x - overflow);
+      
+      setPosition(prev => ({
+        ...prev,
+        x: newX
+      }));
+    }
+  }, [position.x]);
+
   // Initialize position to bottom-left with proper padding
   useEffect(() => {
     const updatePosition = () => {
@@ -26,14 +49,27 @@ const FloatingStagingBanner: React.FC = () => {
     };
 
     // Small delay to ensure component is fully rendered and has proper dimensions
-    const timer = setTimeout(updatePosition, 100);
+    const timer = setTimeout(() => {
+      updatePosition();
+      // Also check for expansion overflow on initial load
+      if (isExpanded) {
+        setTimeout(adjustPositionForExpansion, 50);
+      }
+    }, 100);
     
-    window.addEventListener('resize', updatePosition);
+    const handleResize = () => {
+      updatePosition();
+      if (isExpanded) {
+        setTimeout(adjustPositionForExpansion, 50);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [isExpanded, adjustPositionForExpansion]);
 
   // Snap to nearest edge with spring physics
   const snapToEdge = useCallback((currentPos: Position) => {
@@ -143,8 +179,18 @@ const FloatingStagingBanner: React.FC = () => {
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
   const handleToggleExpanded = () => {
-    setIsExpanded(!isExpanded);
+    const newExpandedState = !isExpanded;
+    setIsExpanded(newExpandedState);
+    
+    // If expanding, check if we need to adjust position to prevent overflow
+    if (newExpandedState && bannerRef.current) {
+      setTimeout(() => {
+        adjustPositionForExpansion();
+      }, 50); // Small delay to let the expansion animation start
+    }
   };
+
+
 
   const collapsedSize = 50;
   const expandedWidth = Math.min(320, window.innerWidth - 50); // Responsive width
@@ -167,7 +213,7 @@ const FloatingStagingBanner: React.FC = () => {
         zIndex: 9999,
         transition: isAnimating 
           ? 'left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)' 
-          : 'width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          : 'width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s ease-out',
         overflow: 'hidden',
         border: '2px solid #45a049',
         userSelect: 'none'
