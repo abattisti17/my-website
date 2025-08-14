@@ -54,17 +54,22 @@ jobs:
         path: build/
         
     - name: Deploy to staging
+      env:
+        SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+        STAGING_SFTP_USERNAME: ${{ secrets.STAGING_SFTP_USERNAME }}
+        STAGING_SFTP_HOST: ${{ secrets.STAGING_SFTP_HOST }}
+        STAGING_SFTP_PATH: ${{ secrets.STAGING_SFTP_PATH }}
       run: |
         echo "🚀 Deploying to staging environment..."
         # Install sshpass for automated SFTP
         sudo apt-get update && sudo apt-get install -y sshpass
         
         # Debug connection info (without password)
-        echo "Connecting to: ${{ secrets.STAGING_SFTP_USERNAME }}@${{ secrets.STAGING_SFTP_HOST }}"
-        echo "Target path: ${{ secrets.STAGING_SFTP_PATH }}"
+        echo "Connecting to: ${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}"
+        echo "Target path: ${STAGING_SFTP_PATH}"
         
-        # Deploy to staging subdomain
-        sshpass -p '${{ secrets.SFTP_PASSWORD }}' scp -P 22212 -o StrictHostKeyChecking=no -r build/* '${{ secrets.STAGING_SFTP_USERNAME }}'@'${{ secrets.STAGING_SFTP_HOST }}':'${{ secrets.STAGING_SFTP_PATH }}'
+        # Deploy to staging subdomain using environment variables (handles spaces properly)
+        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -r build/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}"
         
         echo "🎉 Staging deployment complete!"
         echo "View at: https://${{ secrets.STAGING_DOMAIN }}"
@@ -82,17 +87,22 @@ jobs:
         path: build/
         
     - name: Deploy to production
+      env:
+        SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+        SFTP_USERNAME: ${{ secrets.SFTP_USERNAME }}
+        SFTP_HOST: ${{ secrets.SFTP_HOST }}
+        SFTP_PATH: ${{ secrets.SFTP_PATH }}
       run: |
         echo "🚀 Deploying to production..."
         # Install sshpass for automated SFTP
         sudo apt-get update && sudo apt-get install -y sshpass
         
         # Debug connection info (without password)
-        echo "Connecting to: ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}"
-        echo "Target path: ${{ secrets.SFTP_PATH }}"
+        echo "Connecting to: ${SFTP_USERNAME}@${SFTP_HOST}"
+        echo "Target path: ${SFTP_PATH}"
         
-        # Deploy to production
-        sshpass -p '${{ secrets.SFTP_PASSWORD }}' scp -P 22212 -o StrictHostKeyChecking=no -r build/* '${{ secrets.SFTP_USERNAME }}'@'${{ secrets.SFTP_HOST }}':'${{ secrets.SFTP_PATH }}'
+        # Deploy to production using environment variables (handles spaces properly)
+        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -r build/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}"
         
         echo "🎉 Production deployment complete!"
         echo "View at: https://${{ secrets.PRODUCTION_DOMAIN }}"
