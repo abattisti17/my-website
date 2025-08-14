@@ -4,6 +4,19 @@ import { Link } from 'react-router-dom';
 const Home: React.FC = () => {
   return (
     <div className="home-container">
+      {/* 🎯 STAGING TEST BANNER - This will show on staging.alessandrobattisti.com */}
+      <div style={{
+        backgroundColor: '#4CAF50',
+        color: 'white',
+        padding: '12px',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: '20px',
+        border: '3px solid #45a049'
+      }}>
+        🚀 STAGING DEPLOYMENT TEST - CI/CD Pipeline Working! 🚀
+      </div>
+      
       <div className="home-header">
         <h1 className="home-title">Alessandro Battisti</h1>
         <p className="home-subtitle">Design Researcher & Strategist</p>
