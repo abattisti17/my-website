@@ -1,0 +1,90 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run TypeScript check
+      run: npx tsc --noEmit
+      
+    - name: Run ESLint
+      run: npx eslint src --ext .ts,.tsx --max-warnings 0
+      
+    - name: Run tests
+      run: npm test -- --coverage --watchAll=false
+      
+    - name: Build application
+      run: npm run build
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-files
+        path: build/
+
+  deploy-staging:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-files
+        path: build/
+        
+    - name: Deploy to staging
+      run: |
+        echo "🚀 Deploying to staging environment..."
+        # Install sshpass for automated SFTP
+        sudo apt-get update && sudo apt-get install -y sshpass
+        
+        # Deploy to staging subdomain
+        sshpass -p "${{ secrets.SFTP_PASSWORD }}" scp -P 22212 -o StrictHostKeyChecking=no -r build/* ${{ secrets.STAGING_SFTP_USERNAME }}@${{ secrets.STAGING_SFTP_HOST }}:${{ secrets.STAGING_SFTP_PATH }}
+        
+        echo "🎉 Staging deployment complete!"
+        echo "View at: https://${{ secrets.STAGING_DOMAIN }}"
+
+  deploy-production:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-files
+        path: build/
+        
+    - name: Deploy to production
+      run: |
+        echo "🚀 Deploying to production..."
+        # Install sshpass for automated SFTP
+        sudo apt-get update && sudo apt-get install -y sshpass
+        
+        # Deploy to production
+        sshpass -p "${{ secrets.SFTP_PASSWORD }}" scp -P 22212 -o StrictHostKeyChecking=no -r build/* ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:${{ secrets.SFTP_PATH }}
+        
+        echo "🎉 Production deployment complete!"
+        echo "View at: https://${{ secrets.PRODUCTION_DOMAIN }}"
