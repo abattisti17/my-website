@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getProjectById } from '../data/projects';
 import BackButton from '../components/BackButton';
+import ResponsiveImage from '../components/ResponsiveImage';
 
 const ProjectPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +29,13 @@ const ProjectPage: React.FC = () => {
 
       <div className="page-container">
         <div className="page-content">
-          <img src={project.image} alt={project.imageAlt} className="page-image" />
+          <ResponsiveImage 
+            src={project.image} 
+            alt={project.imageAlt} 
+            className="page-image"
+            loading="eager"
+            sizes="(max-width: 768px) 100vw, 800px"
+          />
           <div className="page-header">
             <h1 className="page-title">{project.title}</h1>
             {project.content && <p>{project.content}</p>}

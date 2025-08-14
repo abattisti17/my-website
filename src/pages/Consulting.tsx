@@ -1,5 +1,6 @@
 import React from 'react';
 import BackButton from '../components/BackButton';
+import PullQuote from '../components/PullQuote';
 
 const Consulting: React.FC = () => {
   return (
@@ -16,15 +17,20 @@ const Consulting: React.FC = () => {
           </div>
 
           {/* TESTIMONIAL START */}
-          <div className="quote">
-            <p><b>What it's like working together</b></p>
-            <h2 className="quote-title">"Alessandro helped us optimize our limited funds, reduce our risk, & give our members what they need."</h2>
-            <p className="quote-body">
-              "Working with Alessandro has not only been one of the greatest experiences I've had since starting my company, but also one of the most critical. We have been working on our startup for a couple of years. While our mission has always been about empowerment and strengthening the system for the arts, we were really struggling to figure out a sustainable business from that. Through his design process, Alessandro helped us optimize our limited funds. We created a step-by-step plan that reduces our risk and makes sure that our intentions match our execution: that we are actually giving our members what they need. He is a clear communicator who is phenomenal at organizing and distilling information to its essence. I could not be happier with our relationship."
-              <br /><br />
-              Allyson Ditchey, Founder & CEO of <a href="https://www.connectthearts.com" target="_blank" rel="noopener noreferrer">Connect the Arts</a>
-            </p>
-          </div>
+          <PullQuote
+            header="What it's like working together"
+            quote="Alessandro helped us optimize our limited funds, reduce our risk, & give our members what they need."
+            body={
+              <>
+                "Working with Alessandro has not only been one of the greatest experiences I've had since starting my company, but also one of the most critical. We have been working on our startup for a couple of years. While our mission has always been about empowerment and strengthening the system for the arts, we were really struggling to figure out a sustainable business from that. Through his design process, Alessandro helped us optimize our limited funds. We created a step-by-step plan that reduces our risk and makes sure that our intentions match our execution: that we are actually giving our members what they need. He is a clear communicator who is phenomenal at organizing and distilling information to its essence. I could not be happier with our relationship."
+              </>
+            }
+            attribution={
+              <>
+                Allyson Ditchey, Founder & CEO of <a href="https://www.connectthearts.com" target="_blank" rel="noopener noreferrer">Connect the Arts</a>
+              </>
+            }
+          />
           {/* TESTIMONIAL END */}
 
           <br />

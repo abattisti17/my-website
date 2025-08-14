@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Work from './pages/Work';
 import About from './pages/About';
 import Consulting from './pages/Consulting';
+import StyleGuide from './pages/StyleGuide';
 import ProjectPage from './pages/ProjectPage';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="/work" element={<Work />} />
           <Route path="/about" element={<About />} />
           <Route path="/consulting" element={<Consulting />} />
+          <Route path="/style-guide" element={<StyleGuide />} />
           <Route path="/project/:id" element={<ProjectPage />} />
         </Routes>
       </div>

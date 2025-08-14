@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Icon from './Icon';
 
 interface BackButtonProps {
   to?: string;
@@ -20,7 +21,7 @@ const BackButton: React.FC<BackButtonProps> = ({ to, text = "Back" }) => {
   return (
     <div className="floating-back-link">
       <button onClick={handleBack} className="back-button-link">
-        <img src="/back-button.svg" alt="Back" className="back-button-icon" />
+        <Icon name="back" size="medium" className="back-button-icon" alt="Back" />
         <span className="back-button-text">{text}</span>
       </button>
     </div>

@@ -20,6 +20,9 @@ const Home: React.FC = () => {
           <Link to="/consulting" className="nav-link custom-cursor-consulting">
             Consulting
           </Link>
+          <Link to="/style-guide" className="nav-link" style={{ fontSize: '14px', opacity: 0.7 }}>
+            Style Guide
+          </Link>
         </div>
         
         <p className="home-description">

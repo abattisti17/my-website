@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import BackButton from '../components/BackButton';
+import ResponsiveImage from '../components/ResponsiveImage';
 
 const Work: React.FC = () => {
   return (
@@ -9,7 +10,13 @@ const Work: React.FC = () => {
 
       <div className="page-container">
         <div className="page-content">
-          <img src="/mywork.png" alt="grid of logos" className="page-image" />
+          <ResponsiveImage 
+            src="/mywork.png" 
+            alt="grid of logos showing companies Alessandro has worked with" 
+            className="page-image-hero"
+            loading="eager"
+            sizes="(max-width: 768px) 100vw, 800px"
+          />
           <div className="page-header">
             <h1 className="page-title">Examples of work</h1>
             <p>My work has mainly focused on early stage foundational and generative research to inform new products, services, and platforms.</p>

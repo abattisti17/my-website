@@ -1,5 +1,6 @@
 import React from 'react';
 import BackButton from '../components/BackButton';
+import ResponsiveImage from '../components/ResponsiveImage';
 
 const About: React.FC = () => {
   return (
@@ -8,7 +9,13 @@ const About: React.FC = () => {
 
       <div className="page-container">
         <div className="page-content">
-          <img src="/aboutme.jpeg" alt="Alessandro Battisti" className="page-image" />
+          <ResponsiveImage 
+            src="/aboutme.jpeg" 
+            alt="Alessandro Battisti" 
+            className="page-image"
+            loading="eager"
+            sizes="(max-width: 768px) 100vw, 800px"
+          />
           <div className="page-header">
             <h1 className="page-title">About me</h1>
             <p>I'm a design researcher & strategist passionate about creating ethical products & services. I'm currently working at Twitter on making the Twitter community a safer place for everyone.</p>
@@ -33,7 +40,13 @@ const About: React.FC = () => {
             I've worked with organizations of all sizes, from startups to non-profits to big corporations to agencies.
           </p>
 
-          <img className="content-image" src="/who-ive-worked-w.png" alt="grid of logos" />
+          <ResponsiveImage 
+            className="content-image-adaptive" 
+            src="/who-ive-worked-w.png" 
+            alt="grid of logos showing companies Alessandro has worked with"
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, 600px"
+          />
         </div>
       </div>
     </>
