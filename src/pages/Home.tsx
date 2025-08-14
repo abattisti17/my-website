@@ -1,26 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import FloatingStagingBanner from '../components/FloatingStagingBanner';
 
 const Home: React.FC = () => {
   const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
   
   return (
     <div className="home-container">
-      {/* 🎯 STAGING BANNER - Only shows on staging.alessandrobattisti.com */}
-      {isStaging && (
-        <div style={{
-          backgroundColor: '#FF9800',
-          color: 'white',
-          padding: '12px',
-          textAlign: 'center',
-          fontWeight: 'bold',
-          marginBottom: '20px',
-          border: '3px solid #F57C00',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-        }}>
-          🔧 STAGING ENVIRONMENT - This is not the live site
-        </div>
-      )}
+      {/* 🎯 FLOATING STAGING BANNER - Only shows on staging.alessandrobattisti.com */}
+      {isStaging && <FloatingStagingBanner />}
       
       <div className="home-header">
         <h1 className="home-title">Alessandro Battisti</h1>
