@@ -28,7 +28,7 @@ const FloatingStagingBanner: React.FC = () => {
     const maxAllowedRight = windowWidth - padding;
     
     if (rightEdge > maxAllowedRight) {
-      // Calculate how much we need to shift left
+      // Calculate how much we need to shift left, but keep consistent padding
       const overflow = rightEdge - maxAllowedRight;
       const newX = Math.max(padding, position.x - overflow);
       
@@ -39,13 +39,22 @@ const FloatingStagingBanner: React.FC = () => {
     }
   }, [position.x]);
 
-  // Initialize position to bottom-left with proper padding
+  // Initialize position to bottom-left with proper padding (only on first load)
+  const [hasInitialized, setHasInitialized] = useState(false);
+  
+  const collapsedSize = 50;
+  const expandedWidth = Math.min(400, window.innerWidth - 50); // Wider for single line text
+  const expandedHeight = 80;
+  
   useEffect(() => {
     const updatePosition = () => {
       const windowHeight = window.innerHeight;
       const bannerHeight = bannerRef.current?.offsetHeight || 60;
-      // Ensure 25px padding from bottom edge
-      setPosition({ x: 25, y: windowHeight - bannerHeight - 25 });
+      // Only set initial position if not initialized yet
+      if (!hasInitialized) {
+        setPosition({ x: 25, y: windowHeight - bannerHeight - 25 });
+        setHasInitialized(true);
+      }
     };
 
     // Small delay to ensure component is fully rendered and has proper dimensions
@@ -58,10 +67,19 @@ const FloatingStagingBanner: React.FC = () => {
     }, 100);
     
     const handleResize = () => {
-      updatePosition();
+      // On resize, only adjust for expansion overflow, don't reset position
       if (isExpanded) {
         setTimeout(adjustPositionForExpansion, 50);
       }
+      // Keep banner within bounds on resize
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const padding = 25;
+      
+      setPosition(prev => ({
+        x: Math.max(padding, Math.min(windowWidth - (isExpanded ? expandedWidth : collapsedSize) - padding, prev.x)),
+        y: Math.max(padding, Math.min(windowHeight - (isExpanded ? expandedHeight : collapsedSize) - padding, prev.y))
+      }));
     };
     
     window.addEventListener('resize', handleResize);
@@ -69,7 +87,7 @@ const FloatingStagingBanner: React.FC = () => {
       clearTimeout(timer);
       window.removeEventListener('resize', handleResize);
     };
-  }, [isExpanded, adjustPositionForExpansion]);
+  }, [isExpanded, adjustPositionForExpansion, hasInitialized, expandedWidth, expandedHeight]);
 
   // Snap to nearest edge with spring physics
   const snapToEdge = useCallback((currentPos: Position) => {
@@ -135,14 +153,14 @@ const FloatingStagingBanner: React.FC = () => {
     
     e.preventDefault();
     
-    // Slight lag/spring effect - interpolate between current and target position
+    // Direct position tracking for perfect diagonal movement
     const targetX = e.clientX - dragOffset.x;
     const targetY = e.clientY - dragOffset.y;
     
-    setPosition(prev => ({
-      x: prev.x + (targetX - prev.x) * 0.8, // 80% interpolation for slight lag
-      y: prev.y + (targetY - prev.y) * 0.8
-    }));
+    setPosition({
+      x: targetX,
+      y: targetY
+    });
   }, [isDragging, dragOffset]);
 
   const handleMouseUp = useCallback((e: MouseEvent) => {
@@ -192,10 +210,6 @@ const FloatingStagingBanner: React.FC = () => {
 
 
 
-  const collapsedSize = 50;
-  const expandedWidth = Math.min(320, window.innerWidth - 50); // Responsive width
-  const expandedHeight = 80;
-
   return (
     <div
       ref={bannerRef}
@@ -211,9 +225,11 @@ const FloatingStagingBanner: React.FC = () => {
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 2px 10px rgba(0, 0, 0, 0.1)',
         cursor: isDragging ? 'grabbing' : 'grab',
         zIndex: 9999,
-        transition: isAnimating 
-          ? 'left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)' 
-          : 'width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s ease-out',
+        transition: isDragging 
+          ? 'none' // No transitions while dragging for smooth movement
+          : isAnimating 
+            ? 'left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)' 
+            : 'width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s ease-out',
         overflow: 'hidden',
         border: '2px solid #45a049',
         userSelect: 'none'
@@ -249,15 +265,16 @@ const FloatingStagingBanner: React.FC = () => {
             alignItems: 'center',
             padding: '12px 16px',
             color: 'white',
-            fontSize: '14px',
-            fontWeight: '600'
+            fontSize: '13px',
+            fontWeight: '500',
+            fontFamily: 'IBM Plex Mono, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
           }}
         >
           {/* Wrench Icon */}
           <span style={{ fontSize: '20px', marginRight: '12px' }}>🔧</span>
           
           {/* Text */}
-          <span style={{ flex: 1, fontSize: '13px' }}>
+          <span style={{ flex: 1, fontSize: '13px', whiteSpace: 'nowrap' }}>
             Staging - not a live site
           </span>
           

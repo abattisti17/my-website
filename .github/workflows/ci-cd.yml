@@ -43,7 +43,7 @@ jobs:
         name: build-files
         path: build/
 
-  deploy-staging:
+  build-staging:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
@@ -66,6 +66,24 @@ jobs:
       env:
         REACT_APP_ENVIRONMENT: staging
         
+    - name: Upload staging build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: staging-build-files
+        path: build/
+
+  deploy-staging:
+    needs: build-staging
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Download staging build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: staging-build-files
+        path: build/
+        
     - name: Deploy to staging
       env:
         SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
@@ -82,7 +100,7 @@ jobs:
         echo "Target path: ${STAGING_SFTP_PATH}"
         
         # Deploy to staging subdomain using environment variables (handles spaces properly)
-        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -r build/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}"
+        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}"
         
         echo "🎉 Staging deployment complete!"
         echo "View at: https://${{ secrets.STAGING_DOMAIN }}"
@@ -115,7 +133,7 @@ jobs:
         echo "Target path: ${SFTP_PATH}"
         
         # Deploy to production using environment variables (handles spaces properly)
-        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -r build/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}"
+        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}"
         
         echo "🎉 Production deployment complete!"
         echo "View at: https://${{ secrets.PRODUCTION_DOMAIN }}"

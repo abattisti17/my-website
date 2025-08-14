@@ -6,11 +6,17 @@ import About from './pages/About';
 import Consulting from './pages/Consulting';
 import StyleGuide from './pages/StyleGuide';
 import ProjectPage from './pages/ProjectPage';
+import FloatingStagingBanner from './components/FloatingStagingBanner';
 
 function App() {
+  const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
+  
   return (
     <Router>
       <div className="App">
+        {/* 🎯 FLOATING STAGING BANNER - Persistent on all pages */}
+        {isStaging && <FloatingStagingBanner />}
+        
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/work" element={<Work />} />

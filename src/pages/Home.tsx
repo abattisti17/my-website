@@ -1,14 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import FloatingStagingBanner from '../components/FloatingStagingBanner';
 
 const Home: React.FC = () => {
-  const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
-  
   return (
     <div className="home-container">
-      {/* 🎯 FLOATING STAGING BANNER - Only shows on staging.alessandrobattisti.com */}
-      {isStaging && <FloatingStagingBanner />}
       
       <div className="home-header">
         <h1 className="home-title">Alessandro Battisti</h1>
