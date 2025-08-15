@@ -40,10 +40,10 @@ const AppNavigation: React.FC = () => {
   const portfolioPages = ['/', '/work', '/about', '/consulting', '/style-guide'];
   const isOnPortfolio = portfolioPages.includes(location.pathname) || location.pathname.startsWith('/project/');
 
-  // Always show navigation if any apps are enabled OR if we're in development/staging
-  const shouldShowNav = enabledNavItems.length > 0 || isOnPortfolio;
-
-  if (!shouldShowNav) {
+  // Only show navigation in staging environment
+  const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
+  
+  if (!isStaging) {
     return null;
   }
 
