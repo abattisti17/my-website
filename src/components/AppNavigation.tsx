@@ -16,10 +16,12 @@ const AppNavigation: React.FC = () => {
   const todoEnabled = useFeatureFlag('todoApp');
   const budgetEnabled = useFeatureFlag('budgetTracker');
   const snippetsEnabled = useFeatureFlag('codeSnippets');
+  const crewGeneratorEnabled = useFeatureFlag('crewGenerator');
 
   // Define all possible navigation items (notes first, then others)
   const allNavItems: NavItem[] = [
     { label: 'NOTES', path: '/notes', flagKey: 'notesApp' },
+    { label: 'CREW', path: '/crew', flagKey: 'crewGenerator' },
     { label: 'TODOS', path: '/todos', flagKey: 'todoApp' },
     { label: 'BUDGET', path: '/budget', flagKey: 'budgetTracker' },
     { label: 'SNIPPETS', path: '/snippets', flagKey: 'codeSnippets' },
@@ -29,6 +31,7 @@ const AppNavigation: React.FC = () => {
   const enabledNavItems = allNavItems.filter(item => {
     switch (item.flagKey) {
       case 'notesApp': return notesEnabled;
+      case 'crewGenerator': return crewGeneratorEnabled;
       case 'todoApp': return todoEnabled;
       case 'budgetTracker': return budgetEnabled;
       case 'codeSnippets': return snippetsEnabled;

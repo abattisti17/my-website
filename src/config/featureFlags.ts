@@ -10,6 +10,7 @@ export const defaultFeatureFlags: FeatureFlagConfig = {
   todoApp: false,
   budgetTracker: false,
   codeSnippets: false,
+  crewGenerator: process.env.REACT_APP_ENVIRONMENT === 'staging',
   
   // Development features
   debugMode: process.env.NODE_ENV === 'development',

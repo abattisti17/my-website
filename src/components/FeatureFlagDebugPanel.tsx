@@ -7,7 +7,7 @@ const FeatureFlagDebugPanel: React.FC = () => {
   const [showInfo, setShowInfo] = React.useState(false);
 
   const flagCategories = {
-    'Mini Apps': ['notesApp', 'todoApp', 'budgetTracker', 'codeSnippets'] as FeatureFlagKey[],
+    'Mini Apps': ['notesApp', 'crewGenerator', 'todoApp', 'budgetTracker', 'codeSnippets'] as FeatureFlagKey[],
     'Development': ['debugMode', 'performanceMetrics'] as FeatureFlagKey[],
     'UI Experiments': ['newNavigation', 'darkMode', 'animationsEnabled'] as FeatureFlagKey[],
     'Database': ['localStorageEnabled', 'indexedDbEnabled', 'firebaseEnabled'] as FeatureFlagKey[],
@@ -20,6 +20,7 @@ const FeatureFlagDebugPanel: React.FC = () => {
   const flagDescriptions: Record<FeatureFlagKey, { description: string; status: 'working' | 'placeholder' }> = {
     // Mini Apps
     notesApp: { description: 'A full-featured notes app with local storage. Creates and manages text notes with CRUD operations.', status: 'working' },
+    crewGenerator: { description: 'Standalone crew generator app for building and managing teams. Runs independently and can be extracted to separate domain.', status: 'working' },
     todoApp: { description: 'Todo list application with task management (not implemented yet)', status: 'placeholder' },
     budgetTracker: { description: 'Personal budget tracking application (not implemented yet)', status: 'placeholder' },
     codeSnippets: { description: 'Code snippet manager with syntax highlighting (not implemented yet)', status: 'placeholder' },
