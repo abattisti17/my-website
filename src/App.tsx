@@ -16,7 +16,6 @@ import AppNavigation from './components/AppNavigation';
 const AppContent: React.FC = () => {
   const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
   const debugMode = useFeatureFlag('debugMode');
-  const notesAppEnabled = useFeatureFlag('notesApp');
   
   // Local state for debug panel visibility
   // null = follow debugMode flag, true = force show, false = force hide
