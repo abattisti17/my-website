@@ -2,6 +2,11 @@
    DESIGN SYSTEM - Alessandro Battisti Portfolio
    ========================================================================== */
 
+/* App Navigation Spacing */
+.App {
+  min-height: 100vh;
+}
+
 /* Design Tokens - Color Palette */
 :root {
   /* Brand Colors */

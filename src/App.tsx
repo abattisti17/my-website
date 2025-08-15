@@ -11,6 +11,7 @@ import { FeatureFlagProvider } from './contexts/FeatureFlagContext';
 import { useFeatureFlag } from './hooks/useFeatureFlag';
 import FeatureFlagDebugPanel from './components/FeatureFlagDebugPanel';
 import NotesApp from './components/NotesApp';
+import AppNavigation from './components/AppNavigation';
 
 const AppContent: React.FC = () => {
   const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
@@ -49,6 +50,9 @@ const AppContent: React.FC = () => {
         {/* 🚩 FEATURE FLAG DEBUG PANEL - Show based on calculated state */}
         {shouldShowDebugPanel && <FeatureFlagDebugPanel />}
         
+        {/* 📱 APP NAVIGATION - Shows when feature-flagged apps are enabled */}
+        <AppNavigation />
+        
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/work" element={<Work />} />
@@ -57,7 +61,7 @@ const AppContent: React.FC = () => {
           <Route path="/style-guide" element={<StyleGuide />} />
           <Route path="/project/:id" element={<ProjectPage />} />
           {/* 📝 NOTES APP - Feature flagged route */}
-          {notesAppEnabled && <Route path="/notes" element={<NotesApp />} />}
+          <Route path="/notes" element={<NotesApp />} />
         </Routes>
       </div>
     </Router>
