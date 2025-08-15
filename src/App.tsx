@@ -6,11 +6,49 @@ import About from './pages/About';
 import Consulting from './pages/Consulting';
 import StyleGuide from './pages/StyleGuide';
 import ProjectPage from './pages/ProjectPage';
+import FloatingStagingBanner from './components/FloatingStagingBanner';
+import { FeatureFlagProvider } from './contexts/FeatureFlagContext';
+import { useFeatureFlag } from './hooks/useFeatureFlag';
+import FeatureFlagDebugPanel from './components/FeatureFlagDebugPanel';
+import NotesApp from './components/NotesApp';
 
-function App() {
+const AppContent: React.FC = () => {
+  const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
+  const debugMode = useFeatureFlag('debugMode');
+  const notesAppEnabled = useFeatureFlag('notesApp');
+  
+  // Local state for debug panel visibility
+  // null = follow debugMode flag, true = force show, false = force hide
+  const [debugPanelOverride, setDebugPanelOverride] = React.useState<boolean | null>(null);
+  
+  const toggleDebugPanel = () => {
+    setDebugPanelOverride(prev => {
+      // If currently following debugMode, set opposite of current state
+      if (prev === null) {
+        return !debugMode;
+      }
+      // If manually controlled, toggle
+      return !prev;
+    });
+  };
+  
+  // Determine if debug panel should show
+  const shouldShowDebugPanel = debugPanelOverride !== null ? debugPanelOverride : debugMode;
+  
   return (
     <Router>
       <div className="App">
+        {/* 🎯 FLOATING STAGING BANNER - Persistent on all pages */}
+        {isStaging && (
+          <FloatingStagingBanner 
+            onToggleDebugPanel={toggleDebugPanel}
+            isDebugPanelVisible={shouldShowDebugPanel}
+          />
+        )}
+        
+        {/* 🚩 FEATURE FLAG DEBUG PANEL - Show based on calculated state */}
+        {shouldShowDebugPanel && <FeatureFlagDebugPanel />}
+        
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/work" element={<Work />} />
@@ -18,9 +56,19 @@ function App() {
           <Route path="/consulting" element={<Consulting />} />
           <Route path="/style-guide" element={<StyleGuide />} />
           <Route path="/project/:id" element={<ProjectPage />} />
+          {/* 📝 NOTES APP - Feature flagged route */}
+          {notesAppEnabled && <Route path="/notes" element={<NotesApp />} />}
         </Routes>
       </div>
     </Router>
+  );
+};
+
+function App() {
+  return (
+    <FeatureFlagProvider>
+      <AppContent />
+    </FeatureFlagProvider>
   );
 }
 
