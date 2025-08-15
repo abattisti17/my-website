@@ -126,8 +126,14 @@ jobs:
         # Deploy main site to staging subdomain
         sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}"
         
-        # Deploy crew generator to /crew subdirectory
-        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r crew-generator/dist/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}/crew/"
+        # Deploy crew generator to /crew subdirectory (check if dist exists first)
+        if [ -d "crew-generator/dist" ]; then
+          sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r crew-generator/dist/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}/crew/"
+        else
+          echo "⚠️ crew-generator/dist not found, checking alternative paths..."
+          find . -name "dist" -type d
+          ls -la
+        fi
         
         echo "🎉 Staging deployment complete!"
         echo "View at: https://${{ secrets.STAGING_DOMAIN }}"
@@ -162,8 +168,14 @@ jobs:
         # Deploy main site to production
         sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}"
         
-        # Deploy crew generator to /crew subdirectory
-        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r crew-generator/dist/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}/crew/"
+        # Deploy crew generator to /crew subdirectory (check if dist exists first)
+        if [ -d "crew-generator/dist" ]; then
+          sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r crew-generator/dist/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}/crew/"
+        else
+          echo "⚠️ crew-generator/dist not found, checking alternative paths..."
+          find . -name "dist" -type d
+          ls -la
+        fi
         
         echo "🎉 Production deployment complete!"
         echo "View at: https://${{ secrets.PRODUCTION_DOMAIN }}"
