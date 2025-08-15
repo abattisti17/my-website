@@ -11,6 +11,7 @@ import { FeatureFlagProvider } from './contexts/FeatureFlagContext';
 import { useFeatureFlag } from './hooks/useFeatureFlag';
 import FeatureFlagDebugPanel from './components/FeatureFlagDebugPanel';
 import NotesApp from './components/NotesApp';
+import CrewGeneratorIframe from './components/CrewGeneratorIframe';
 import AppNavigation from './components/AppNavigation';
 
 const AppContent: React.FC = () => {
@@ -61,6 +62,8 @@ const AppContent: React.FC = () => {
           <Route path="/project/:id" element={<ProjectPage />} />
           {/* 📝 NOTES APP - Feature flagged route */}
           <Route path="/notes" element={<NotesApp />} />
+          {/* 🚀 CREW GENERATOR - Feature flagged route */}
+          <Route path="/crew" element={<CrewGeneratorIframe />} />
         </Routes>
       </div>
     </Router>

@@ -8,6 +8,7 @@ export interface FeatureFlagConfig {
   todoApp: boolean;
   budgetTracker: boolean;
   codeSnippets: boolean;
+  crewGenerator: boolean;
   
   // Development features
   debugMode: boolean;
