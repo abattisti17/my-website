@@ -8,6 +8,7 @@ A modern React rebuild of Alessandro Battisti's personal portfolio website, main
 - **TypeScript**: Full type safety throughout the application
 - **React Router**: Clean navigation between pages
 - **Component-Based Architecture**: Reusable components for maintainability
+- **Travel Crew Generator**: Standalone PWA app available at `/crew` endpoint
 - **Original Content**: All original projects and content preserved
 - **IBM Plex Typography**: Maintains the original font choices
 - **Accessibility**: Proper semantic HTML and ARIA attributes
