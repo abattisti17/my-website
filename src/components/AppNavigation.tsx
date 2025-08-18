@@ -16,7 +16,6 @@ const AppNavigation: React.FC = () => {
   const todoEnabled = useFeatureFlag('todoApp');
   const budgetEnabled = useFeatureFlag('budgetTracker');
   const snippetsEnabled = useFeatureFlag('codeSnippets');
-  const crewGeneratorEnabled = useFeatureFlag('crewGenerator');
 
   // Define all possible navigation items (notes first, then others)
   const allNavItems: NavItem[] = [
