@@ -1,11 +1,79 @@
-import React from 'react';
-import { useFeatureFlags } from '../contexts/FeatureFlagContext';
-import { FeatureFlagKey } from '../types/featureFlags';
+/**
+ * FEATURE FLAG DEBUG PANEL COMPONENT
+ * 
+ * This is the floating control panel that appears on staging and development sites.
+ * Think of it like a "control room" or "mission control" for your website features.
+ * 
+ * 🎯 Purpose:
+ * - Let developers instantly turn features on/off without code changes
+ * - Test different feature combinations quickly
+ * - Show which features are working vs. placeholders
+ * - Provide real-time preview of changes (no page refresh needed)
+ * 
+ * 🎨 Visual Design:
+ * - Floating panel on the right side of screen
+ * - Organized into categories (Mini Apps, Development, UI, Database)
+ * - Color-coded status indicators (🟢 working, 🟡 placeholder)
+ * - Toggle switches for instant on/off control
+ * 
+ * 🔧 Technical Features:
+ * - Saves settings to browser localStorage (persists across sessions)
+ * - Real-time updates (changes take effect immediately)
+ * - Responsive design (adapts to different screen sizes)
+ * - Keyboard accessible (can be operated without mouse)
+ * 
+ * 💡 Think of it like: The soundboard at a concert - lots of sliders and 
+ *    buttons that let you control different aspects of the performance in real-time
+ */
 
+import React from 'react';
+import { useFeatureFlags } from '../contexts/FeatureFlagContext';  // Hook to access and modify feature flags
+import { FeatureFlagKey } from '../types/featureFlags';            // TypeScript type for flag names
+
+/**
+ * Main FeatureFlagDebugPanel Component Function
+ * 
+ * This function creates the interactive debug panel with all its functionality.
+ * It's like building a sophisticated control dashboard with multiple sections.
+ */
 const FeatureFlagDebugPanel: React.FC = () => {
+  /**
+   * ACCESS FEATURE FLAG SYSTEM
+   * 
+   * This connects to the global feature flag system to:
+   * - Get current state of all flags (flags object)
+   * - Get function to toggle flags on/off (toggleFlag function)
+   * 
+   * 🔌 Think of it like: Plugging into the electrical system to control all the lights
+   */
   const { flags, toggleFlag } = useFeatureFlags();
+  
+  /**
+   * INFORMATION PANEL STATE
+   * 
+   * Controls whether the detailed information panel is visible.
+   * When true, shows descriptions and status for each feature flag.
+   * When false, shows only the toggle switches.
+   * 
+   * 📖 Think of it like: A "more details" button that expands explanations
+   */
   const [showInfo, setShowInfo] = React.useState(false);
 
+  /**
+   * FEATURE FLAG ORGANIZATION
+   * 
+   * This object organizes all feature flags into logical categories.
+   * It's like organizing your remote control buttons into groups:
+   * - Channel buttons, Volume buttons, Power buttons, etc.
+   * 
+   * 📂 Categories:
+   * - Mini Apps: The different applications users can access
+   * - Development: Tools for developers and testing
+   * - UI Experiments: Visual and interaction changes being tested
+   * - Database: Different ways to store and retrieve data
+   * 
+   * 💡 Each category contains an array of flag names (FeatureFlagKey[])
+   */
   const flagCategories = {
     'Mini Apps': ['notesApp', 'crew', 'todoApp', 'budgetTracker', 'codeSnippets'] as FeatureFlagKey[],
     'Development': ['debugMode', 'performanceMetrics'] as FeatureFlagKey[],
@@ -13,6 +81,22 @@ const FeatureFlagDebugPanel: React.FC = () => {
     'Database': ['localStorageEnabled', 'indexedDbEnabled', 'firebaseEnabled'] as FeatureFlagKey[],
   };
 
+  /**
+   * UTILITY FUNCTION: Format Flag Names for Display
+   * 
+   * Converts camelCase flag names into readable titles.
+   * This makes the debug panel more user-friendly.
+   * 
+   * 🔄 Examples:
+   * - 'notesApp' → 'Notes App'
+   * - 'debugMode' → 'Debug Mode'  
+   * - 'localStorageEnabled' → 'Local Storage Enabled'
+   * 
+   * 🎯 How it works:
+   * 1. Find capital letters in the middle of words
+   * 2. Add spaces before them
+   * 3. Capitalize the first letter
+   */
   const formatFlagName = (flag: string): string => {
     return flag.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
   };
