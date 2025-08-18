@@ -4,20 +4,16 @@ import { FeatureFlagConfig } from '../types/featureFlags';
  * Default feature flag configuration
  * You can override these with environment variables or local storage
  */
-// Helper to detect staging environment at runtime
-const isStaging = typeof window !== 'undefined' && window.location.hostname.includes('staging');
-const isDevelopment = typeof window !== 'undefined' && window.location.hostname.includes('localhost');
-
 export const defaultFeatureFlags: FeatureFlagConfig = {
-  // Experimental mini-apps - enable for staging and development
-  notesApp: isStaging || isDevelopment,
-  crewGenerator: isStaging || isDevelopment,
+  // Experimental mini-apps - force enable for now, will be controlled via localStorage
+  notesApp: true,
+  crewGenerator: true,
   todoApp: false,
   budgetTracker: false,
   codeSnippets: false,
   
-  // Development features - enable for staging and development
-  debugMode: isStaging || isDevelopment,
+  // Development features - force enable to show debug panel
+  debugMode: true,
   performanceMetrics: false,
   
   // UI experiments

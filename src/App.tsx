@@ -15,9 +15,17 @@ import CrewGeneratorIframe from './components/CrewGeneratorIframe';
 import AppNavigation from './components/AppNavigation';
 
 const AppContent: React.FC = () => {
-  // Detect staging environment by hostname instead of process.env
-  const isStaging = window.location.hostname.includes('staging');
+  // Detect staging environment by hostname, with fallback for development
+  const [isStaging, setIsStaging] = React.useState(false);
   const debugMode = useFeatureFlag('debugMode');
+
+  React.useEffect(() => {
+    // Set staging status after component mounts to ensure window is available
+    const hostname = window.location.hostname;
+    const staging = hostname.includes('staging') || hostname.includes('localhost');
+    setIsStaging(staging);
+    console.log('🔍 Staging detection:', { hostname, staging });
+  }, []);
   
   // Local state for debug panel visibility
   // null = follow debugMode flag, true = force show, false = force hide
