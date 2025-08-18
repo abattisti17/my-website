@@ -1,0 +1,376 @@
+import { useEffect, useState } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import { useAuth } from '../components/AuthProvider'
+import { supabase } from '../lib/supabase'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { toast } from 'sonner'
+import CreatePodForm from '../components/CreatePodForm'
+
+interface Event {
+  id: string
+  slug: string
+  artist: string
+  city: string
+  venue: string | null
+  date_utc: string
+  created_at: string
+}
+
+interface EventMember {
+  user_id: string
+  vibe_badges: string[]
+  joined_at: string
+  profiles: {
+    display_name: string
+    avatar_url: string | null
+  } | null
+}
+
+interface Pod {
+  id: string
+  name: string | null
+  created_by: string
+  created_at: string
+  pod_members: { user_id: string }[]
+}
+
+export default function EventPage() {
+  const { slug } = useParams<{ slug: string }>()
+  const { user } = useAuth()
+  const [event, setEvent] = useState<Event | null>(null)
+  const [members, setMembers] = useState<EventMember[]>([])
+  const [pods, setPods] = useState<Pod[]>([])
+  const [isJoined, setIsJoined] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [joinLoading, setJoinLoading] = useState(false)
+
+  useEffect(() => {
+    if (slug) {
+      fetchEventData()
+    }
+  }, [slug, user])
+
+  const fetchEventData = async () => {
+    try {
+      // Fetch event details
+      const { data: eventData, error: eventError } = await supabase
+        .from('events')
+        .select('*')
+        .eq('slug', slug)
+        .single()
+
+      if (eventError) throw eventError
+      setEvent(eventData)
+
+      // Temporarily skip event_members due to RLS policy issues
+      // TODO: Fix RLS policies in Supabase to allow proper access
+      console.log('Skipping event_members fetch due to RLS policy recursion')
+      setMembers([])
+      setIsJoined(false)
+
+      // Fetch pods
+      const { data: podsData, error: podsError } = await supabase
+        .from('pods')
+        .select(`
+          id,
+          name,
+          created_by,
+          created_at,
+          pod_members (user_id)
+        `)
+        .eq('event_id', eventData.id)
+
+      if (podsError) throw podsError
+      setPods(podsData || [])
+
+    } catch (error) {
+      console.error('Error fetching event data:', error)
+      toast.error('Failed to load event details')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleJoinEvent = async () => {
+    if (!user || !event) return
+
+    setJoinLoading(true)
+    try {
+      const { error } = await supabase
+        .from('event_members')
+        .insert({
+          event_id: event.id,
+          user_id: user.id,
+          vibe_badges: []
+        })
+
+      if (error) throw error
+
+      setIsJoined(true)
+      toast.success('Welcome to the crew! 🎉')
+      fetchEventData() // Refresh data
+    } catch (error) {
+      console.error('Error joining event:', error)
+      toast.error('Failed to join event')
+    } finally {
+      setJoinLoading(false)
+    }
+  }
+
+  const handleLeaveEvent = async () => {
+    if (!user || !event) return
+
+    setJoinLoading(true)
+    try {
+      const { error } = await supabase
+        .from('event_members')
+        .delete()
+        .eq('event_id', event.id)
+        .eq('user_id', user.id)
+
+      if (error) throw error
+
+      setIsJoined(false)
+      toast.success('Left the event')
+      fetchEventData() // Refresh data
+    } catch (error) {
+      console.error('Error leaving event:', error)
+      toast.error('Failed to leave event')
+    } finally {
+      setJoinLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl font-medium">🎵 Loading event...</div>
+      </div>
+    )
+  }
+
+  if (!event) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-3xl font-bold mb-4">Event Not Found</h1>
+        <p className="text-gray-600 mb-4">The event you're looking for doesn't exist.</p>
+        <Button asChild>
+          <Link to="/">← Back to Events</Link>
+        </Button>
+      </div>
+    )
+  }
+
+  const eventDate = new Date(event.date_utc)
+  const isUpcoming = eventDate > new Date()
+
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {/* Back Button */}
+      <Button variant="outline" className="mb-6" asChild>
+        <Link to="/">← Back to Events</Link>
+      </Button>
+
+      {/* Event Header */}
+      <Card className="mb-8">
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="text-3xl mb-2">{event.artist}</CardTitle>
+              <CardDescription className="text-lg">
+                {event.city}
+                {event.venue && ` • ${event.venue}`}
+              </CardDescription>
+              <p className="text-sm text-gray-700 font-medium mt-2">
+                {eventDate.toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Badge variant={isUpcoming ? "default" : "secondary"}>
+                {isUpcoming ? "Upcoming" : "Past Event"}
+              </Badge>
+              <Badge variant="outline">
+                {members.length} {members.length === 1 ? 'Member' : 'Members'}
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+        {user && isUpcoming && (
+          <CardContent>
+            {isJoined ? (
+              <div className="flex gap-3">
+                <Button 
+                  onClick={handleLeaveEvent} 
+                  disabled={joinLoading}
+                  variant="outline"
+                >
+                  Leave Event
+                </Button>
+                <Button asChild>
+                  <Link to={`/event/${slug}/memorabilia`}>
+                    📸 Add Memorabilia
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                onClick={handleJoinEvent} 
+                disabled={joinLoading}
+                className="bg-purple-600 hover:bg-purple-700 text-white font-medium"
+              >
+                {joinLoading ? 'Joining...' : '🎟️ Join Event'}
+              </Button>
+            )}
+          </CardContent>
+        )}
+      </Card>
+
+      {/* Pods Section */}
+      {isJoined && (
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Pods ({pods.length})</CardTitle>
+            <CardDescription>
+              Small groups for planning and chatting (max 5 members each)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm text-gray-600">
+                Create small groups for planning and coordination
+              </span>
+              {pods.length > 0 && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button size="sm" variant="outline">
+                      ➕ New Pod
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Create New Pod</DialogTitle>
+                      <DialogDescription>
+                        Create a small group to hang out with at this event (max 5 people).
+                      </DialogDescription>
+                    </DialogHeader>
+                    <CreatePodForm 
+                      eventId={event.id} 
+                      onSuccess={() => {
+                        fetchEventData() // Refresh to show new pod
+                      }} 
+                    />
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+            {pods.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-gray-800 mb-4">No pods created yet. Be the first!</p>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="bg-purple-600 hover:bg-purple-700 text-white font-medium">
+                      Create First Pod
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Create First Pod</DialogTitle>
+                      <DialogDescription>
+                        Start the first pod for this event! You can create a small group to hang out with (max 5 people).
+                      </DialogDescription>
+                    </DialogHeader>
+                    <CreatePodForm 
+                      eventId={event.id} 
+                      onSuccess={() => {
+                        fetchEventData() // Refresh to show new pod
+                      }} 
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2">
+                {pods.map((pod) => (
+                  <Card key={pod.id} className="hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg">
+                        {pod.name || 'Unnamed Pod'}
+                      </CardTitle>
+                      <CardDescription>
+                        {pod.pod_members.length}/5 members
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button asChild size="sm" className="w-full">
+                        <Link to={`/event/${slug}/pod/${pod.id}`}>
+                          {pod.pod_members.some(m => m.user_id === user?.id) 
+                            ? 'Open Chat' 
+                            : 'Join Pod'
+                          }
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Members Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Crew Members ({members.length})</CardTitle>
+          <CardDescription>
+            Everyone who's joined this event
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {members.length === 0 ? (
+            <p className="text-gray-800 text-center py-4">
+              No members yet. Be the first to join!
+            </p>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {members.map((member) => (
+                <div 
+                  key={member.user_id} 
+                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                >
+                  <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-medium" aria-label={`Avatar for ${member.profiles?.display_name || 'Anonymous'}`}>
+                    {member.profiles?.display_name?.[0] || '?'}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">
+                      {member.profiles?.display_name || 'Anonymous'}
+                    </p>
+                    {member.vibe_badges.length > 0 && (
+                      <div className="flex gap-1 mt-1">
+                        {member.vibe_badges.slice(0, 2).map((badge, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {badge}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

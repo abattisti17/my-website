@@ -5,14 +5,15 @@ import { FeatureFlagConfig } from '../types/featureFlags';
  * You can override these with environment variables or local storage
  */
 export const defaultFeatureFlags: FeatureFlagConfig = {
-  // Experimental mini-apps - enable notes app for demo
-  notesApp: process.env.REACT_APP_ENVIRONMENT === 'staging',
+  // Experimental mini-apps - force enable for now, will be controlled via localStorage
+  notesApp: true,
+  crewGenerator: true,
   todoApp: false,
-  budgetTracker: false,
+  budgetTracker: true,  // Hijacked for crew generator
   codeSnippets: false,
   
-  // Development features
-  debugMode: process.env.NODE_ENV === 'development',
+  // Development features - force enable to show debug panel
+  debugMode: true,
   performanceMetrics: false,
   
   // UI experiments
@@ -43,6 +44,7 @@ export const getEnvironmentOverrides = (): Partial<FeatureFlagConfig> => {
   // Check for environment overrides
   const envOverrides = {
     notesApp: parseBool(process.env.REACT_APP_FF_NOTES_APP),
+    crewGenerator: parseBool(process.env.REACT_APP_FF_CREW_GENERATOR),
     todoApp: parseBool(process.env.REACT_APP_FF_TODO_APP),
     budgetTracker: parseBool(process.env.REACT_APP_FF_BUDGET_TRACKER),
     codeSnippets: parseBool(process.env.REACT_APP_FF_CODE_SNIPPETS),

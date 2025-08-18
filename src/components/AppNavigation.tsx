@@ -20,8 +20,8 @@ const AppNavigation: React.FC = () => {
   // Define all possible navigation items (notes first, then others)
   const allNavItems: NavItem[] = [
     { label: 'NOTES', path: '/notes', flagKey: 'notesApp' },
+    { label: 'CREW', path: '/crew', flagKey: 'budgetTracker' },
     { label: 'TODOS', path: '/todos', flagKey: 'todoApp' },
-    { label: 'BUDGET', path: '/budget', flagKey: 'budgetTracker' },
     { label: 'SNIPPETS', path: '/snippets', flagKey: 'codeSnippets' },
   ];
 
@@ -29,8 +29,8 @@ const AppNavigation: React.FC = () => {
   const enabledNavItems = allNavItems.filter(item => {
     switch (item.flagKey) {
       case 'notesApp': return notesEnabled;
+      case 'budgetTracker': return budgetEnabled;  // Now controls CREW
       case 'todoApp': return todoEnabled;
-      case 'budgetTracker': return budgetEnabled;
       case 'codeSnippets': return snippetsEnabled;
       default: return false;
     }
@@ -40,10 +40,11 @@ const AppNavigation: React.FC = () => {
   const portfolioPages = ['/', '/work', '/about', '/consulting', '/style-guide'];
   const isOnPortfolio = portfolioPages.includes(location.pathname) || location.pathname.startsWith('/project/');
 
-  // Only show navigation in staging environment
-  const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
+  // Only show navigation when any mini-app is enabled
+  // This replaces the staging environment check since process.env isn't available in browser
+  const hasEnabledApps = enabledNavItems.length > 0;
   
-  if (!isStaging) {
+  if (!hasEnabledApps) {
     return null;
   }
 

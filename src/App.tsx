@@ -11,11 +11,21 @@ import { FeatureFlagProvider } from './contexts/FeatureFlagContext';
 import { useFeatureFlag } from './hooks/useFeatureFlag';
 import FeatureFlagDebugPanel from './components/FeatureFlagDebugPanel';
 import NotesApp from './components/NotesApp';
+import CrewGeneratorIframe from './components/CrewGeneratorIframe';
 import AppNavigation from './components/AppNavigation';
 
 const AppContent: React.FC = () => {
-  const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
+  // Detect staging environment by hostname, with fallback for development
+  const [isStaging, setIsStaging] = React.useState(false);
   const debugMode = useFeatureFlag('debugMode');
+
+  React.useEffect(() => {
+    // Set staging status after component mounts to ensure window is available
+    const hostname = window.location.hostname;
+    const staging = hostname.includes('staging') || hostname.includes('localhost');
+    setIsStaging(staging);
+    console.log('🔍 Staging detection:', { hostname, staging });
+  }, []);
   
   // Local state for debug panel visibility
   // null = follow debugMode flag, true = force show, false = force hide
@@ -61,6 +71,8 @@ const AppContent: React.FC = () => {
           <Route path="/project/:id" element={<ProjectPage />} />
           {/* 📝 NOTES APP - Feature flagged route */}
           <Route path="/notes" element={<NotesApp />} />
+          {/* 🚀 CREW GENERATOR - Feature flagged route */}
+          <Route path="/crew" element={<CrewGeneratorIframe />} />
         </Routes>
       </div>
     </Router>

@@ -36,12 +36,24 @@ jobs:
       run: npm run build
       env:
         REACT_APP_ENVIRONMENT: production
+    
+    - name: Build crew generator
+      run: |
+        cd crew-generator
+        npm ci
+        npm run build
+      env:
+        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+        VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        VITE_PUBLIC_BASE_PATH: /crew/
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-files
-        path: build/
+        path: |
+          build/
+          crew-generator/dist/
 
   build-staging:
     needs: test
@@ -65,12 +77,24 @@ jobs:
       run: npm run build
       env:
         REACT_APP_ENVIRONMENT: staging
+    
+    - name: Build crew generator for staging
+      run: |
+        cd crew-generator
+        npm ci
+        npm run build
+      env:
+        VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+        VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        VITE_PUBLIC_BASE_PATH: /crew/
         
     - name: Upload staging build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: staging-build-files
-        path: build/
+        path: |
+          build/
+          crew-generator/dist/
 
   deploy-staging:
     needs: build-staging
@@ -99,8 +123,19 @@ jobs:
         echo "Connecting to: ${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}"
         echo "Target path: ${STAGING_SFTP_PATH}"
         
-        # Deploy to staging subdomain using environment variables (handles spaces properly)
+        # Deploy main site to staging subdomain
         sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}"
+        
+        # Deploy crew generator to /crew subdirectory
+        if [ -d "crew-generator/dist" ]; then
+          sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r crew-generator/dist/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}/crew/"
+        elif [ -d "./build/crew-generator/dist" ]; then
+          echo "✅ Found crew generator at ./build/crew-generator/dist"
+          sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r ./build/crew-generator/dist/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}/crew/"
+        else
+          echo "❌ crew-generator/dist not found in any expected location"
+          find . -name "dist" -type d
+        fi
         
         echo "🎉 Staging deployment complete!"
         echo "View at: https://${{ secrets.STAGING_DOMAIN }}"
@@ -132,8 +167,19 @@ jobs:
         echo "Connecting to: ${SFTP_USERNAME}@${SFTP_HOST}"
         echo "Target path: ${SFTP_PATH}"
         
-        # Deploy to production using environment variables (handles spaces properly)
+        # Deploy main site to production
         sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}"
+        
+        # Deploy crew generator to /crew subdirectory
+        if [ -d "crew-generator/dist" ]; then
+          sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r crew-generator/dist/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}/crew/"
+        elif [ -d "./build/crew-generator/dist" ]; then
+          echo "✅ Found crew generator at ./build/crew-generator/dist"
+          sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r ./build/crew-generator/dist/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}/crew/"
+        else
+          echo "❌ crew-generator/dist not found in any expected location"
+          find . -name "dist" -type d
+        fi
         
         echo "🎉 Production deployment complete!"
         echo "View at: https://${{ secrets.PRODUCTION_DOMAIN }}"
