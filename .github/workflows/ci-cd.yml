@@ -74,7 +74,17 @@ jobs:
       run: npm ci
       
     - name: Build for staging with banner
-      run: npm run build
+      run: |
+        echo "🏗️ Starting staging build at $(date)"
+        echo "📦 Node version: $(node --version)"
+        echo "📦 NPM version: $(npm --version)"
+        echo "🔍 Environment: staging"
+        rm -rf build/ || true
+        npm run build
+        echo "✅ Build completed, checking output..."
+        ls -la build/
+        echo "📦 Checking for crew flag in bundle..."
+        find build/static/js -name "*.js" -exec grep -c "crew" {} \; || echo "No crew found in any JS files"
       env:
         REACT_APP_ENVIRONMENT: staging
     
@@ -116,14 +126,28 @@ jobs:
         STAGING_SFTP_PATH: ${{ secrets.STAGING_SFTP_PATH }}
       run: |
         echo "🚀 Deploying to staging environment..."
+        echo "🕐 Deployment started at: $(date)"
+        
         # Install sshpass for automated SFTP
         sudo apt-get update && sudo apt-get install -y sshpass
         
-        # Debug connection info (without password)
+        # Debug connection info (without password)  
         echo "Connecting to: ${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}"
         echo "Target path: ${STAGING_SFTP_PATH}"
         
+        # Verify build contains our changes before deploying
+        echo "🔍 Pre-deployment verification..."
+        CREW_COUNT=$(find build/static/js -name "*.js" -exec grep -c "crew" {} \; | awk '{sum+=$1} END {print sum}')
+        echo "📊 Found $CREW_COUNT instances of 'crew' in build files"
+        
+        if [ "$CREW_COUNT" -lt 5 ]; then
+          echo "❌ Build verification failed: crew flag not found in sufficient quantity"
+          echo "🔍 Expected at least 5 instances, found: $CREW_COUNT" 
+          exit 1
+        fi
+        
         # Deploy main site to staging subdomain
+        echo "📤 Uploading files to staging..."
         sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}"
         
         # Deploy crew generator to /crew subdirectory
