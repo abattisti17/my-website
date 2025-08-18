@@ -7,7 +7,7 @@ const FeatureFlagDebugPanel: React.FC = () => {
   const [showInfo, setShowInfo] = React.useState(false);
 
   const flagCategories = {
-    'Mini Apps': ['notesApp', 'crewGenerator', 'todoApp', 'budgetTracker', 'codeSnippets'] as FeatureFlagKey[],
+    'Mini Apps': ['notesApp', 'crewGenerator', 'crew', 'todoApp', 'budgetTracker', 'codeSnippets'] as FeatureFlagKey[],
     'Development': ['debugMode', 'performanceMetrics'] as FeatureFlagKey[],
     'UI Experiments': ['newNavigation', 'darkMode', 'animationsEnabled'] as FeatureFlagKey[],
     'Database': ['localStorageEnabled', 'indexedDbEnabled', 'firebaseEnabled'] as FeatureFlagKey[],
