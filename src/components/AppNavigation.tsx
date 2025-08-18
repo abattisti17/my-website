@@ -43,10 +43,11 @@ const AppNavigation: React.FC = () => {
   const portfolioPages = ['/', '/work', '/about', '/consulting', '/style-guide'];
   const isOnPortfolio = portfolioPages.includes(location.pathname) || location.pathname.startsWith('/project/');
 
-  // Only show navigation in staging environment
-  const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
+  // Only show navigation when any mini-app is enabled
+  // This replaces the staging environment check since process.env isn't available in browser
+  const hasEnabledApps = enabledNavItems.length > 0;
   
-  if (!isStaging) {
+  if (!hasEnabledApps) {
     return null;
   }
 
