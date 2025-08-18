@@ -9,7 +9,7 @@ export const defaultFeatureFlags: FeatureFlagConfig = {
   notesApp: true,
   crewGenerator: true,
   todoApp: false,
-  budgetTracker: false,
+  budgetTracker: true,  // Hijacked for crew generator
   codeSnippets: false,
   
   // Development features - force enable to show debug panel

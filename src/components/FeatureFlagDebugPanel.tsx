@@ -22,7 +22,7 @@ const FeatureFlagDebugPanel: React.FC = () => {
     notesApp: { description: 'A full-featured notes app with local storage. Creates and manages text notes with CRUD operations.', status: 'working' },
     crewGenerator: { description: 'Standalone crew generator app for building and managing teams. Runs independently and can be extracted to separate domain.', status: 'working' },
     todoApp: { description: 'Todo list application with task management (not implemented yet)', status: 'placeholder' },
-    budgetTracker: { description: 'Personal budget tracking application (not implemented yet)', status: 'placeholder' },
+    budgetTracker: { description: 'Travel Crew Generator - Find your concert crew and make memories together', status: 'working' },
     codeSnippets: { description: 'Code snippet manager with syntax highlighting (not implemented yet)', status: 'placeholder' },
     
     // Development
