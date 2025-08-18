@@ -5,12 +5,12 @@ import { FeatureFlagConfig } from '../types/featureFlags';
  * You can override these with environment variables or local storage
  */
 export const defaultFeatureFlags: FeatureFlagConfig = {
-  // Experimental mini-apps - enable notes app for demo
-  notesApp: process.env.REACT_APP_ENVIRONMENT === 'staging',
+  // Experimental mini-apps - enable for staging (hardcoded for now)
+  notesApp: true,  // Always enabled in staging
   todoApp: false,
   budgetTracker: false,
   codeSnippets: false,
-  crewGenerator: process.env.REACT_APP_ENVIRONMENT === 'staging',
+  crewGenerator: true,  // Always enabled in staging
   
   // Development features
   debugMode: process.env.NODE_ENV === 'development',
