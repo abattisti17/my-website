@@ -44,6 +44,7 @@ export const getEnvironmentOverrides = (): Partial<FeatureFlagConfig> => {
   // Check for environment overrides
   const envOverrides = {
     notesApp: parseBool(process.env.REACT_APP_FF_NOTES_APP),
+    crewGenerator: parseBool(process.env.REACT_APP_FF_CREW_GENERATOR),
     todoApp: parseBool(process.env.REACT_APP_FF_TODO_APP),
     budgetTracker: parseBool(process.env.REACT_APP_FF_BUDGET_TRACKER),
     codeSnippets: parseBool(process.env.REACT_APP_FF_CODE_SNIPPETS),
