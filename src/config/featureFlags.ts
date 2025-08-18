@@ -6,11 +6,11 @@ import { FeatureFlagConfig } from '../types/featureFlags';
  */
 export const defaultFeatureFlags: FeatureFlagConfig = {
   // Experimental mini-apps - enable for staging (hardcoded for now)
-  notesApp: true,  // Always enabled in staging
+  notesApp: true,  // Always enabled in staging  
+  crewGenerator: true,  // Copy exact same setup as notesApp
   todoApp: false,
   budgetTracker: false,
   codeSnippets: false,
-  crewGenerator: true,  // Always enabled in staging
   
   // Development features
   debugMode: process.env.NODE_ENV === 'development',
