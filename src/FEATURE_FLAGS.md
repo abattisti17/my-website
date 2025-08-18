@@ -12,10 +12,9 @@ This website uses a flexible feature flag system to enable/disable experimental 
 
 ### Mini Apps
 - `notesApp` - A simple notes app with local storage
-- `crewGenerator` - Crew generator application for managing teams
-- `crew` - Core crew management functionality
+- `crew` - Travel Crew Generator - Find your concert crew and make memories together
 - `todoApp` - Todo list application (not implemented yet)
-- `budgetTracker` - Budget tracking app (not implemented yet) 
+- `budgetTracker` - Budget tracking app (legacy, replaced by crew functionality)
 - `codeSnippets` - Code snippet manager (not implemented yet)
 
 ### Development

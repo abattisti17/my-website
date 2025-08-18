@@ -14,13 +14,13 @@ const AppNavigation: React.FC = () => {
   // Check which mini-apps are enabled
   const notesEnabled = useFeatureFlag('notesApp');
   const todoEnabled = useFeatureFlag('todoApp');
-  const budgetEnabled = useFeatureFlag('budgetTracker');
+  const crewEnabled = useFeatureFlag('crew');
   const snippetsEnabled = useFeatureFlag('codeSnippets');
 
   // Define all possible navigation items (notes first, then others)
   const allNavItems: NavItem[] = [
     { label: 'NOTES', path: '/notes', flagKey: 'notesApp' },
-    { label: 'CREW', path: '/crew', flagKey: 'budgetTracker' },
+    { label: 'CREW', path: '/crew', flagKey: 'crew' },
     { label: 'TODOS', path: '/todos', flagKey: 'todoApp' },
     { label: 'SNIPPETS', path: '/snippets', flagKey: 'codeSnippets' },
   ];
@@ -29,7 +29,7 @@ const AppNavigation: React.FC = () => {
   const enabledNavItems = allNavItems.filter(item => {
     switch (item.flagKey) {
       case 'notesApp': return notesEnabled;
-      case 'budgetTracker': return budgetEnabled;  // Now controls CREW
+      case 'crew': return crewEnabled;  // Now uses the dedicated crew flag
       case 'todoApp': return todoEnabled;
       case 'codeSnippets': return snippetsEnabled;
       default: return false;
