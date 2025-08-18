@@ -12,6 +12,8 @@ This website uses a flexible feature flag system to enable/disable experimental 
 
 ### Mini Apps
 - `notesApp` - A simple notes app with local storage
+- `crewGenerator` - Crew generator application for managing teams
+- `crew` - Core crew management functionality
 - `todoApp` - Todo list application (not implemented yet)
 - `budgetTracker` - Budget tracking app (not implemented yet) 
 - `codeSnippets` - Code snippet manager (not implemented yet)
@@ -36,6 +38,7 @@ This website uses a flexible feature flag system to enable/disable experimental 
 Add to your `.env.local` file:
 ```bash
 REACT_APP_FF_NOTES_APP=true
+REACT_APP_FF_CREW=true
 REACT_APP_FF_DEBUG_MODE=true
 ```
 
@@ -48,10 +51,12 @@ import { useFeatureFlag } from './hooks/useFeatureFlag';
 
 const MyComponent = () => {
   const notesEnabled = useFeatureFlag('notesApp');
+  const crewEnabled = useFeatureFlag('crew');
   
   return (
     <div>
       {notesEnabled && <NotesApp />}
+      {crewEnabled && <CrewManagement />}
     </div>
   );
 };

@@ -9,6 +9,7 @@ export interface FeatureFlagConfig {
   budgetTracker: boolean;
   codeSnippets: boolean;
   crewGenerator: boolean;
+  crew: boolean;
   
   // Development features
   debugMode: boolean;

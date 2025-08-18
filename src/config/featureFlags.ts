@@ -8,6 +8,7 @@ export const defaultFeatureFlags: FeatureFlagConfig = {
   // Experimental mini-apps - force enable for now, will be controlled via localStorage
   notesApp: true,
   crewGenerator: true,
+  crew: false,
   todoApp: false,
   budgetTracker: true,  // Hijacked for crew generator
   codeSnippets: false,
@@ -45,6 +46,7 @@ export const getEnvironmentOverrides = (): Partial<FeatureFlagConfig> => {
   const envOverrides = {
     notesApp: parseBool(process.env.REACT_APP_FF_NOTES_APP),
     crewGenerator: parseBool(process.env.REACT_APP_FF_CREW_GENERATOR),
+    crew: parseBool(process.env.REACT_APP_FF_CREW),
     todoApp: parseBool(process.env.REACT_APP_FF_TODO_APP),
     budgetTracker: parseBool(process.env.REACT_APP_FF_BUDGET_TRACKER),
     codeSnippets: parseBool(process.env.REACT_APP_FF_CODE_SNIPPETS),
