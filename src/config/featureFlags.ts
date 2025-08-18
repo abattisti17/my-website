@@ -12,8 +12,8 @@ export const defaultFeatureFlags: FeatureFlagConfig = {
   budgetTracker: false,
   codeSnippets: false,
   
-  // Development features
-  debugMode: process.env.NODE_ENV === 'development',
+  // Development features - enable by default to show feature flag panel
+  debugMode: true,
   performanceMetrics: false,
   
   // UI experiments

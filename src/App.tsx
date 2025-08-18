@@ -15,7 +15,8 @@ import CrewGeneratorIframe from './components/CrewGeneratorIframe';
 import AppNavigation from './components/AppNavigation';
 
 const AppContent: React.FC = () => {
-  const isStaging = process.env.REACT_APP_ENVIRONMENT === 'staging';
+  // Force staging mode since process.env is not available in browser
+  const isStaging = true;  // Always show staging features for now
   const debugMode = useFeatureFlag('debugMode');
   
   // Local state for debug panel visibility
