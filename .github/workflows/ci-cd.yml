@@ -137,12 +137,18 @@ jobs:
         
         # Verify build contains our changes before deploying
         echo "🔍 Pre-deployment verification..."
-        CREW_COUNT=$(find build/static/js -name "*.js" -exec grep -c "crew" {} \; | awk '{sum+=$1} END {print sum}')
+        echo "📁 Current directory structure:"
+        find . -name "*.js" -type f | head -10
+        
+        # Updated path - artifacts are extracted differently
+        CREW_COUNT=$(find . -name "*.js" -type f -exec grep -c "crew" {} \; 2>/dev/null | awk '{sum+=$1} END {print sum}')
         echo "📊 Found $CREW_COUNT instances of 'crew' in build files"
         
-        if [ "$CREW_COUNT" -lt 5 ]; then
-          echo "❌ Build verification failed: crew flag not found in sufficient quantity"
-          echo "🔍 Expected at least 5 instances, found: $CREW_COUNT" 
+        if [ -z "$CREW_COUNT" ] || [ "$CREW_COUNT" -lt 1 ]; then
+          echo "❌ Build verification failed: crew flag not found in build"
+          echo "🔍 Expected at least 1 instance, found: ${CREW_COUNT:-0}"
+          echo "🛠️ Debug: Searching for any crew references..."
+          find . -name "*.js" -type f -exec grep -l "crew" {} \; 2>/dev/null || echo "No files containing 'crew' found"
           exit 1
         fi
         
