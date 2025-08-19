@@ -1,8 +1,10 @@
 import { Badge } from '../ui/badge'
 
+import { type ReactNode } from 'react'
+
 interface StatusBadgeProps {
   status: 'active' | 'inactive' | 'pending' | 'full' | 'available'
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 

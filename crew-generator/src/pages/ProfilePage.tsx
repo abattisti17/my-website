@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { User, Mail, Calendar, Edit, ArrowLeft } from 'lucide-react'
+import { Mail, Calendar, Edit, ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface Profile {
