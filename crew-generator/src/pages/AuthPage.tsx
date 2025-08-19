@@ -75,61 +75,79 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold">Welcome to Travel Crew</h2>
-          <p className="mt-2 text-gray-600">
-            Sign in with your email to join the community
-          </p>
+    <div className="min-h-screen-dynamic flex items-center justify-center px-safe py-safe">
+      <div className="w-full max-w-md space-y-8">
+        {/* Hero Section */}
+        <div className="text-center space-y-4">
+          <div className="mx-auto w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center">
+            <span className="text-3xl">🎵</span>
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Welcome Back</h1>
+            <p className="text-muted-foreground mt-2">Sign in with your email to join the community</p>
+          </div>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSignIn}>
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className="relative block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-            />
+        {/* Auth Card */}
+        <div className="bg-card border-2 border-primary/20 rounded-2xl shadow-xl p-6 sm:p-8">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-semibold text-foreground mb-2">Continue Your Journey</h2>
+            <p className="text-muted-foreground text-sm">Enter your email to receive a magic link</p>
           </div>
 
-          <div>
+          <form className="space-y-6" onSubmit={handleSignIn}>
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium text-foreground">
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors touch-target"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 px-4 bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-primary-foreground font-semibold rounded-xl transition-all duration-200 touch-target-lg shadow-sm disabled:cursor-not-allowed"
             >
-              {loading ? 'Sending...' : 'Send Magic Link'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+                  Sending...
+                </span>
+              ) : (
+                'Send Magic Link'
+              )}
             </button>
+
+            {message && (
+              <div className={`text-center text-sm p-3 rounded-xl ${
+                message.includes('Check your email') 
+                  ? 'bg-green-100 text-green-800 border border-green-200' 
+                  : 'bg-red-100 text-red-800 border border-red-200'
+              }`}>
+                {message}
+              </div>
+            )}
+          </form>
+
+          <div className="text-center mt-6 pt-6 border-t border-border">
+            <p className="text-sm text-muted-foreground">
+              🔐 We'll send you a secure link to sign in instantly.
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              No passwords required. Just pure magic ✨
+            </p>
           </div>
-
-          {message && (
-            <div className={`text-center text-sm ${
-              message.includes('Check your email') 
-                ? 'text-green-600' 
-                : 'text-red-600'
-            }`}>
-              {message}
-            </div>
-          )}
-        </form>
-
-        <div className="text-center">
-          <p className="text-sm text-gray-500">
-            We'll send you a secure link to sign in instantly.
-            <br />
-            No password required!
-          </p>
         </div>
       </div>
     </div>

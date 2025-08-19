@@ -80,44 +80,58 @@ export default function HomePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold mb-4 text-gray-900">
-          🎵 Travel Crew Generator
-        </h1>
-        <p className="text-xl text-gray-800 mb-8 max-w-2xl mx-auto">
-          Find your concert crew and make memories together
-        </p>
+    <div className="min-h-screen-dynamic flex flex-col safe-scroll-content">
+      {/* Hero Section - Mobile-first with proper spacing */}
+      <div className="px-safe pt-safe pb-8">
+        <div className="text-center space-y-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+            🎵 Travel Crew Generator
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Find your concert crew and make memories together
+          </p>
+        </div>
       </div>
 
+      {/* Auth CTA Section - Modern card design */}
       {!user ? (
-        <Card className="text-center mb-12 max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Join the Community</CardTitle>
-            <CardDescription className="text-gray-700">
-              Connect with fellow music fans and find your perfect concert crew!
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700 text-white font-medium">
-              <Link to="/auth">Sign In / Sign Up</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="px-safe pb-8">
+          <Card className="mx-auto max-w-md border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30 shadow-lg">
+            <CardHeader className="text-center space-y-4 pb-6">
+              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+                <span className="text-2xl">🎤</span>
+              </div>
+              <div>
+                <CardTitle className="text-xl font-semibold">Join the Community</CardTitle>
+                <CardDescription className="text-muted-foreground mt-2 leading-relaxed">
+                  Connect with fellow music fans and find your perfect concert crew!
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Button asChild size="lg" className="w-full touch-target-lg rounded-xl font-semibold">
+                <Link to="/auth">Sign In / Sign Up</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       ) : (
-        <div className="mb-8 max-w-md mx-auto">
+        <div className="px-safe pb-8">
           <ProfileEditor />
         </div>
       )}
 
-      <div className="mb-12">
+      {/* Events Section - Modern layout */}
+      <section className="flex-1 px-safe pb-safe">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-semibold">Upcoming Events</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Upcoming Events</h2>
           {user && (
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white font-medium">
-                  ➕ Create Event
+                <Button className="touch-target rounded-xl font-semibold shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground">
+                  <span className="mr-2">➕</span>
+                  <span className="hidden sm:inline">Create Event</span>
+                  <span className="sm:hidden">Create</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
@@ -174,13 +188,27 @@ export default function HomePage() {
             ))}
           </div>
         )}
-      </div>
+      </section>
 
+      {/* Tour Book CTA - Modern design */}
       {user && (
-        <div className="text-center mb-8">
-          <Button asChild variant="outline" size="lg">
-            <Link to="/tour">📚 View Your Tour Book</Link>
-          </Button>
+        <div className="px-safe pb-safe">
+          <Card className="border border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+            <CardContent className="p-6 text-center">
+              <div className="space-y-4">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">📚</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-2">Your Tour Book</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Relive your concert memories and experiences</p>
+                </div>
+                <Button asChild variant="outline" size="lg" className="touch-target-lg rounded-xl font-semibold bg-primary/5 hover:bg-primary hover:text-primary-foreground border-primary/30">
+                  <Link to="/tour">View Tour Book</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 

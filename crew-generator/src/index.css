@@ -1,5 +1,7 @@
 
 @import "tw-animate-css";
+@import "./styles/design-tokens.css";
+@import "./styles/mobile-enhancements.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -53,10 +55,85 @@ body {
 
 /* PWA safe area support for notched devices */
 body {
+  margin: 0;
+  padding: 0;
   padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+  /* Note: bottom padding handled by components to avoid conflicts */
+  /* Remove any default spacing that interferes with fixed positioning */
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Reset for consistent bottom positioning across browsers */
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Safe area utilities - Industry standard mobile patterns */
+.pb-safe {
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+}
+
+.pt-safe {
+  padding-top: calc(0.5rem + env(safe-area-inset-top));
+}
+
+.px-safe {
+  padding-left: calc(1rem + env(safe-area-inset-left));
+  padding-right: calc(1rem + env(safe-area-inset-right));
+}
+
+/* Viewport adhesion utilities - Follows iOS and Material Design guidelines */
+.safe-area-bottom {
+  /* Ensures nav sticks to true bottom edge including safe areas */
+  bottom: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0;
+}
+
+/* Modern viewport units for true full-height layouts */
+.min-h-screen-dynamic {
+  min-height: 100vh; /* Fallback */
+  min-height: 100dvh; /* Dynamic viewport height - accounts for mobile browser UI */
+}
+
+.h-screen-dynamic {
+  height: 100vh; /* Fallback */  
+  height: 100dvh; /* Dynamic viewport height */
+}
+
+/* Remove any browser default spacing that could affect bottom positioning */
+.bottom-nav-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Safe scroll areas - Industry standard mobile patterns */
+.safe-scroll-content {
+  /* Ensures content can scroll past bottom navigation */
+  scroll-padding-bottom: var(--scroll-padding-bottom);
+  /* On mobile, add bottom margin to prevent content trapping */
+  margin-bottom: var(--page-bottom-spacing);
+}
+
+/* Desktop doesn't need bottom spacing since no bottom nav */
+@media (min-width: 768px) {
+  .safe-scroll-content {
+    margin-bottom: var(--space-6); /* Standard section spacing */
+  }
 }
 
 /* PWA specific styles */
