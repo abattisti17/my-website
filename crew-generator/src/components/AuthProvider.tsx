@@ -29,24 +29,82 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    // Get initial session with timeout
+    const getSessionWithTimeout = async () => {
+      try {
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Auth timeout')), 3000)
+        )
+        
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]) as any
+        setSession(session)
+        setUser(session?.user ?? null)
+      } catch (error: any) {
+        console.warn('⚠️ Auth session check failed:', error.message)
+        console.warn('Continuing without authentication...')
+        setSession(null)
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    getSessionWithTimeout()
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    // Listen for auth changes (with error handling)
+    let subscription: any
+    try {
+      const authListener = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('🔄 Auth state change:', event)
+        setSession(session)
+        setUser(session?.user ?? null)
+        
+        // Create or update profile when user signs in
+        if (event === 'SIGNED_IN' && session?.user) {
+          await upsertProfile(session.user)
+        }
+      })
+      subscription = authListener.data.subscription
+    } catch (error) {
+      console.warn('⚠️ Failed to set up auth listener:', error)
+    }
 
-    return () => subscription.unsubscribe()
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe()
+      }
+    }
   }, [])
+
+  const upsertProfile = async (user: User) => {
+    try {
+      const email = user.email
+      if (!email) return
+
+      // Generate display name from email prefix
+      const emailPrefix = email.split('@')[0]
+      const displayName = emailPrefix.replace(/[^a-zA-Z0-9]/g, '') // Clean up special chars
+      
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          email: email,
+          display_name: displayName,
+        }, {
+          onConflict: 'id'
+        })
+
+      if (error) {
+        console.error('Error upserting profile:', error)
+      } else {
+        console.log('✅ Profile created/updated successfully')
+      }
+    } catch (error) {
+      console.error('Error in upsertProfile:', error)
+    }
+  }
 
   const signOut = async () => {
     await supabase.auth.signOut()

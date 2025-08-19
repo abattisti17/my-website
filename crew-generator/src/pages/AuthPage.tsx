@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../components/AuthProvider'
 
@@ -9,12 +9,17 @@ export default function AuthPage() {
   const [message, setMessage] = useState('')
   const { user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Get return path from navigation state
+  const returnTo = location.state?.returnTo || '/'
 
   // Redirect if already logged in
-  if (user) {
-    navigate('/')
-    return null
-  }
+  useEffect(() => {
+    if (user) {
+      navigate(returnTo, { replace: true })
+    }
+  }, [user, navigate, returnTo])
 
   const testSupabaseConnection = async () => {
     console.log('🧪 Testing Supabase connection...')
@@ -59,8 +64,8 @@ export default function AuthPage() {
       let userMessage = error.message || 'An error occurred'
       if (error.message?.includes('Invalid API key')) {
         userMessage = 'Configuration error: Please check Supabase API credentials'
-      } else if (error.message?.includes('rate limit')) {
-        userMessage = 'Too many requests. Please wait a moment and try again.'
+      } else if (error.message?.includes('rate limit') || error.message?.includes('security purposes')) {
+        userMessage = 'Rate limit reached. Please wait 60 seconds before trying again.'
       }
       
       setMessage(userMessage)

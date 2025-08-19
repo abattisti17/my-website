@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
+import { uploadAndSaveMedia } from '../lib/uploadMedia'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { toast } from 'sonner'
 import CreatePodForm from '../components/CreatePodForm'
+import MediaGallery from '../components/MediaGallery'
 
 interface Event {
   id: string
@@ -46,12 +48,43 @@ export default function EventPage() {
   const [isJoined, setIsJoined] = useState(false)
   const [loading, setLoading] = useState(true)
   const [joinLoading, setJoinLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (slug) {
       fetchEventData()
     }
   }, [slug, user])
+
+  // Check membership status after event is loaded
+  useEffect(() => {
+    if (user && event?.id) {
+      checkMembershipStatus()
+    }
+  }, [user, event?.id])
+
+  // Check if user is already a member
+  const checkMembershipStatus = async () => {
+    if (!user || !event?.id) return
+    
+    try {
+      // Try to select current user's membership
+      const { data } = await supabase
+        .from('event_members')
+        .select('user_id')
+        .eq('event_id', event.id)
+        .eq('user_id', user.id)
+        .single()
+      
+      if (data) {
+        setIsJoined(true)
+      }
+    } catch (error) {
+      // If error or no data, assume not joined
+      setIsJoined(false)
+    }
+  }
 
   const fetchEventData = async () => {
     try {
@@ -71,20 +104,35 @@ export default function EventPage() {
       setMembers([])
       setIsJoined(false)
 
-      // Fetch pods
+      // Fetch pods (without pod_members to avoid RLS recursion)
       const { data: podsData, error: podsError } = await supabase
         .from('pods')
         .select(`
           id,
           name,
           created_by,
-          created_at,
-          pod_members (user_id)
+          created_at
         `)
         .eq('event_id', eventData.id)
 
       if (podsError) throw podsError
-      setPods(podsData || [])
+
+      // For each pod, fetch member count separately to avoid RLS issues
+      const podsWithMemberCount = await Promise.all(
+        (podsData || []).map(async (pod) => {
+          const { count } = await supabase
+            .from('pod_members')
+            .select('*', { count: 'exact', head: true })
+            .eq('pod_id', pod.id)
+          
+          return {
+            ...pod,
+            pod_members: Array(count || 0).fill({ user_id: 'placeholder' }) // Just for count display
+          }
+        })
+      )
+
+      setPods(podsWithMemberCount)
 
     } catch (error) {
       console.error('Error fetching event data:', error)
@@ -112,9 +160,16 @@ export default function EventPage() {
       setIsJoined(true)
       toast.success('Welcome to the crew! 🎉')
       fetchEventData() // Refresh data
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error joining event:', error)
-      toast.error('Failed to join event')
+      
+      // Handle duplicate key error (already joined)
+      if (error?.code === '23505' && error?.message?.includes('event_members_pkey')) {
+        setIsJoined(true)
+        toast.success('You\'re already part of this crew! 🎉')
+      } else {
+        toast.error('Failed to join event')
+      }
     } finally {
       setJoinLoading(false)
     }
@@ -142,6 +197,35 @@ export default function EventPage() {
     } finally {
       setJoinLoading(false)
     }
+  }
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !event) return
+
+    setUploading(true)
+    try {
+      const result = await uploadAndSaveMedia(file, event.id)
+      
+      if (result.success) {
+        toast.success('Photo uploaded successfully! 📸')
+        // Reset file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+      } else {
+        toast.error(result.error || 'Failed to upload photo')
+      }
+    } catch (error) {
+      console.error('Photo upload error:', error)
+      toast.error('Failed to upload photo')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click()
   }
 
   if (loading) {
@@ -208,7 +292,7 @@ export default function EventPage() {
         {user && isUpcoming && (
           <CardContent>
             {isJoined ? (
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
                 <Button 
                   onClick={handleLeaveEvent} 
                   disabled={joinLoading}
@@ -216,11 +300,27 @@ export default function EventPage() {
                 >
                   Leave Event
                 </Button>
+                <Button 
+                  onClick={triggerFileInput}
+                  disabled={uploading}
+                  className="bg-green-600 hover:bg-green-700 text-white font-medium"
+                >
+                  {uploading ? '📤 Uploading...' : '📷 Add Photo'}
+                </Button>
                 <Button asChild>
                   <Link to={`/event/${slug}/memorabilia`}>
                     📸 Add Memorabilia
                   </Link>
                 </Button>
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                  aria-label="Upload photo"
+                />
               </div>
             ) : (
               <Button 
@@ -300,30 +400,62 @@ export default function EventPage() {
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
-                {pods.map((pod) => (
-                  <Card key={pod.id} className="hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">
-                        {pod.name || 'Unnamed Pod'}
-                      </CardTitle>
-                      <CardDescription>
-                        {pod.pod_members.length}/5 members
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button asChild size="sm" className="w-full">
-                        <Link to={`/event/${slug}/pod/${pod.id}`}>
-                          {pod.pod_members.some(m => m.user_id === user?.id) 
-                            ? 'Open Chat' 
-                            : 'Join Pod'
-                          }
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
+                {pods.map((pod) => {
+                  const memberCount = pod.pod_members.length
+                  const isFull = memberCount >= 5
+                  const isUserMember = pod.pod_members.some(m => m.user_id === user?.id)
+                  
+                  return (
+                    <Card key={pod.id} className={`hover:shadow-md transition-shadow ${isFull ? 'opacity-75' : ''}`}>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          {pod.name || 'Unnamed Pod'}
+                          {isFull && <Badge variant="secondary" className="text-xs">FULL</Badge>}
+                        </CardTitle>
+                        <CardDescription>
+                          <span className={isFull ? 'text-orange-600 font-medium' : ''}>
+                            {memberCount}/5 members
+                          </span>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        {isUserMember ? (
+                          <Button asChild size="sm" className="w-full">
+                            <Link to={`/event/${slug}/pod/${pod.id}`}>
+                              💬 Open Chat
+                            </Link>
+                          </Button>
+                        ) : isFull ? (
+                          <Button 
+                            size="sm" 
+                            className="w-full" 
+                            variant="outline" 
+                            disabled
+                          >
+                            Pod Full
+                          </Button>
+                        ) : (
+                          <Button asChild size="sm" className="w-full">
+                            <Link to={`/event/${slug}/pod/${pod.id}`}>
+                              🚀 Join Pod
+                            </Link>
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )
+                })}
               </div>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Media Gallery Section */}
+      {event && (
+        <Card>
+          <CardContent className="pt-6">
+            <MediaGallery eventId={event.id} />
           </CardContent>
         </Card>
       )}

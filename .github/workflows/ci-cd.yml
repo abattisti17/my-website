@@ -152,16 +152,43 @@ jobs:
           exit 1
         fi
         
-        # Deploy main site to staging subdomain
+        # CRITICAL DEPLOYMENT SECTION
+        # 
+        # 🚨 COMMON ISSUE: "Changes don't appear on staging despite successful deployment"
+        # 
+        # SYMPTOMS:
+        # - GitHub Actions shows "deployment successful" ✅
+        # - But staging site shows old content/missing features
+        # - Browser shows old JavaScript bundle names (e.g., main.c8ad5816.js instead of main.1b7019ed.js)
+        # 
+        # ROOT CAUSES & FIXES:
+        # 1. WRONG UPLOAD PATH: GitHub Actions artifacts extract to build/build/* not build/*
+        #    ❌ Wrong: scp -r build/* → uploads build contents incorrectly
+        #    ✅ Fixed: scp -r build/build/* → uploads from correct nested structure
+        # 
+        # 2. STALE FILES NOT CLEANED: Old files remain on server, causing conflicts
+        #    ❌ Problem: New main.abc123.js uploaded but old main.xyz789.js still served
+        #    ✅ Solution: Clean staging directory before upload (see cleanup step below)
+        # 
+        # 3. BROWSER CACHING: User sees cached version even after deployment
+        #    ✅ Solution: Hard refresh (Ctrl+F5) or private browsing window
+        # 
+        # DEBUGGING STEPS:
+        # 1. Check "🗂️ Current build structure" logs below to verify file paths
+        # 2. Compare main.*.js filename in logs vs. staging site source
+        # 3. Verify cleanup step ran without errors
+        # 4. Check verification found expected content (e.g., feature flags)
+        
         echo "📤 Uploading files to staging..."
         echo "🗂️ Current build structure:"
         find build -name "*.js" -o -name "*.html" | head -10
         
-        # Clean deployment - remove old files first to prevent stale content
+        # CLEANUP STEP: Remove old files to prevent serving stale content
+        # This is CRITICAL - without this, old JavaScript bundles remain on server
         echo "🧹 Cleaning staging directory..."
         sshpass -p "${SFTP_PASSWORD}" ssh -p 22212 -o StrictHostKeyChecking=no "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}" "rm -rf ${STAGING_SFTP_PATH}/static ${STAGING_SFTP_PATH}/*.js ${STAGING_SFTP_PATH}/*.css ${STAGING_SFTP_PATH}/*.html"
         
-        # Upload the build directory contents (corrected path)
+        # CORRECTED UPLOAD PATH: Use build/build/* for GitHub Actions artifact structure
         echo "📤 Uploading main site build files..."
         sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/build/* "${STAGING_SFTP_USERNAME}@${STAGING_SFTP_HOST}:${STAGING_SFTP_PATH}/"
         
