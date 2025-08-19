@@ -4,7 +4,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(() => {
+  const basePath = process.env.VITE_PUBLIC_BASE_PATH || '/'
+  
+  return {
   plugins: [
     react(),
     VitePWA({
@@ -18,21 +21,21 @@ export default defineConfig({
         background_color: '#f9fafb',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
+        scope: basePath,
+        start_url: basePath,
         icons: [
           {
-            src: 'icon-192.svg',
+            src: `${basePath}icon-192.svg`.replace('//', '/'),
             sizes: '192x192',
             type: 'image/svg+xml'
           },
           {
-            src: 'icon-512.svg',
+            src: `${basePath}icon-512.svg`.replace('//', '/'),
             sizes: '512x512',
             type: 'image/svg+xml'
           },
           {
-            src: 'icon-512.svg',
+            src: `${basePath}icon-512.svg`.replace('//', '/'),
             sizes: '512x512',
             type: 'image/svg+xml',
             purpose: 'any maskable'
@@ -62,13 +65,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: process.env.VITE_PUBLIC_BASE_PATH || '/',
-  server: {
-    port: 5173,
-    host: true
-  },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets'
+    base: basePath,
+    server: {
+      port: 5173,
+      host: true
+    },
+    build: {
+      outDir: 'dist',
+      assetsDir: 'assets'
+    }
   }
 })

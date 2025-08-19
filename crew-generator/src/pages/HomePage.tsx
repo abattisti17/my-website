@@ -7,6 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import CreateEventForm from '../components/CreateEventForm'
+import ProfileEditor from '../components/ProfileEditor'
+
+
 
 
 interface Event {
@@ -22,6 +25,7 @@ export default function HomePage() {
   const { user } = useAuth()
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchEvents()
@@ -29,15 +33,20 @@ export default function HomePage() {
 
   const fetchEvents = async () => {
     try {
-      const { data, error } = await supabase
+            const { data: eventData, error: eventError } = await supabase
         .from('events')
-        .select('*')
-        .order('date_utc', { ascending: true })
+        .select('id, slug, artist, city, venue, date_utc')
+        .limit(10)
 
-      if (error) throw error
-      setEvents(data || [])
-    } catch (error) {
+      if (eventError) {
+        throw eventError
+      }
+
+      setEvents(eventData || [])
+      setError(null)
+    } catch (error: any) {
       console.error('Error fetching events:', error)
+      setError('Failed to load events. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -47,6 +56,25 @@ export default function HomePage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-xl font-medium">🎵 Loading your concert experiences...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center max-w-2xl">
+          <div className="text-xl font-medium text-red-600 mb-4">❌ Error Loading Events</div>
+          <div className="text-gray-600 mb-4 whitespace-pre-line bg-gray-50 p-4 rounded border text-sm">
+            {error}
+          </div>
+          <div className="flex gap-4 justify-center">
+            <Button onClick={fetchEvents} className="bg-purple-600 hover:bg-purple-700 text-white">
+              🔄 Try Again
+            </Button>
+            
+          </div>
+        </div>
       </div>
     )
   }
@@ -62,7 +90,7 @@ export default function HomePage() {
         </p>
       </div>
 
-      {!user && (
+      {!user ? (
         <Card className="text-center mb-12 max-w-2xl mx-auto">
           <CardHeader>
             <CardTitle>Join the Community</CardTitle>
@@ -76,6 +104,10 @@ export default function HomePage() {
             </Button>
           </CardContent>
         </Card>
+      ) : (
+        <div className="mb-8 max-w-md mx-auto">
+          <ProfileEditor />
+        </div>
       )}
 
       <div className="mb-12">

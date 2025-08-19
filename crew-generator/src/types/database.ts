@@ -5,6 +5,7 @@ export interface Database {
         Row: {
           id: string
           display_name: string | null
+          email: string | null
           avatar_url: string | null
           ig_url: string | null
           reveal_ig: boolean
@@ -13,6 +14,7 @@ export interface Database {
         Insert: {
           id: string
           display_name?: string | null
+          email?: string | null
           avatar_url?: string | null
           ig_url?: string | null
           reveal_ig?: boolean
@@ -21,6 +23,7 @@ export interface Database {
         Update: {
           id?: string
           display_name?: string | null
+          email?: string | null
           avatar_url?: string | null
           ig_url?: string | null
           reveal_ig?: boolean
@@ -255,6 +258,32 @@ export interface Database {
           pod_id?: string | null
           url?: string
           kind?: 'image' | 'video'
+          created_at?: string
+        }
+      }
+      reports: {
+        Row: {
+          id: string
+          reporter: string
+          target_type: 'post' | 'message' | 'media' | 'profile'
+          target_id: string
+          reason: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          reporter: string
+          target_type: 'post' | 'message' | 'media' | 'profile'
+          target_id: string
+          reason?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          reporter?: string
+          target_type?: 'post' | 'message' | 'media' | 'profile'
+          target_id?: string
+          reason?: string | null
           created_at?: string
         }
       }

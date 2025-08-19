@@ -10,7 +10,6 @@
 /* Mobile-first responsive design */
 html {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  -webkit-text-size-adjust: 100%;
 }
 
 body {

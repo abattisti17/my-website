@@ -2,10 +2,12 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
+import { usePodChat } from '../hooks/usePodChat'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import ReportMenu from '../components/ReportMenu'
 import { toast } from 'sonner'
 
 interface Pod {
@@ -31,40 +33,39 @@ interface PodMember {
   } | null
 }
 
-interface Message {
-  id: string
-  user_id: string
-  text: string
-  created_at: string
-  profiles: {
-    display_name: string
-    avatar_url: string | null
-  } | null
-}
-
 export default function PodPage() {
   const { slug, podId } = useParams<{ slug: string; podId: string }>()
   const { user } = useAuth()
   const navigate = useNavigate()
   const [pod, setPod] = useState<Pod | null>(null)
   const [members, setMembers] = useState<PodMember[]>([])
-  const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
-  const [sending, setSending] = useState(false)
   const [isMember, setIsMember] = useState(false)
+  const [hiddenMessages, setHiddenMessages] = useState<Set<string>>(new Set())
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Use our new chat hook - only when user is a member
+  const { messages, sendMessage, sending: chatSending, error: chatError } = usePodChat(
+    isMember && podId ? podId : ''
+  )
 
   useEffect(() => {
     if (podId) {
       fetchPodData()
-      setupRealtimeSubscription()
     }
   }, [podId, user])
 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Show chat error if any
+  useEffect(() => {
+    if (chatError) {
+      toast.error(chatError)
+    }
+  }, [chatError])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -112,27 +113,6 @@ export default function PodPage() {
         setIsMember(!!userMember)
       }
 
-      // Fetch messages if user is a member
-      if (user && membersData?.find(m => m.user_id === user.id)) {
-        const { data: messagesData, error: messagesError } = await supabase
-          .from('messages')
-          .select(`
-            id,
-            user_id,
-            text,
-            created_at,
-            profiles (
-              display_name,
-              avatar_url
-            )
-          `)
-          .eq('pod_id', podId)
-          .order('created_at', { ascending: true })
-
-        if (messagesError) throw messagesError
-        setMessages((messagesData as any) || [])
-      }
-
     } catch (error) {
       console.error('Error fetching pod data:', error)
       toast.error('Failed to load pod details')
@@ -141,52 +121,14 @@ export default function PodPage() {
     }
   }
 
-  const setupRealtimeSubscription = () => {
-    const messagesSubscription = supabase
-      .channel(`pod-${podId}-messages`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `pod_id=eq.${podId}`,
-        },
-        (payload) => {
-          // Fetch the complete message with profile data
-          supabase
-            .from('messages')
-            .select(`
-              id,
-              user_id,
-              text,
-              created_at,
-              profiles (
-                display_name,
-                avatar_url
-              )
-            `)
-            .eq('id', payload.new.id)
-            .single()
-            .then(({ data, error }) => {
-              if (data && !error) {
-                setMessages(prev => [...prev, data as any])
-              }
-            })
-        }
-      )
-      .subscribe()
 
-    return () => {
-      messagesSubscription.unsubscribe()
-    }
-  }
 
   const handleJoinPod = async () => {
     if (!user || !pod) return
 
+    // Client-side check for better UX (but database trigger is the source of truth)
     if (members.length >= 5) {
-      toast.error('This pod is full (max 5 members)')
+      toast.error('Pod full — create another.')
       return
     }
 
@@ -199,41 +141,59 @@ export default function PodPage() {
           role: 'member'
         })
 
-      if (error) throw error
+      if (error) {
+        console.error('Error joining pod:', error)
+        
+        // Handle database trigger exception for pod full
+        if (error.message?.includes('Pod is full') || error.code === 'P0001') {
+          toast.error('Pod full — create another.')
+          // Refresh pod data to get accurate member count
+          fetchPodData()
+          return
+        }
+        
+        // Handle duplicate member constraint
+        if (error.code === '23505') {
+          toast.success('You\'re already in this pod! 🎉')
+          setIsMember(true)
+          return
+        }
+        
+        throw error
+      }
 
       setIsMember(true)
       toast.success('Welcome to the pod! 🎉')
       fetchPodData() // Refresh data
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error joining pod:', error)
-      toast.error('Failed to join pod')
+      
+      // Handle database trigger exception
+      if (error?.message?.includes('Pod is full')) {
+        toast.error('Pod full — create another.')
+        fetchPodData() // Refresh to get accurate count
+      } else {
+        toast.error('Failed to join pod')
+      }
     }
   }
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!user || !pod || !newMessage.trim()) return
+    if (!newMessage.trim()) return
 
-    setSending(true)
     try {
-      const { error } = await supabase
-        .from('messages')
-        .insert({
-          pod_id: pod.id,
-          user_id: user.id,
-          text: newMessage.trim()
-        })
-
-      if (error) throw error
-
+      await sendMessage(newMessage)
       setNewMessage('')
     } catch (error) {
       console.error('Error sending message:', error)
-      toast.error('Failed to send message')
-    } finally {
-      setSending(false)
+      // Error handling is done in the hook
     }
+  }
+
+  const handleHideMessage = (messageId: string) => {
+    setHiddenMessages(prev => new Set(prev).add(messageId))
   }
 
   const handleLeavePod = async () => {
@@ -321,7 +281,8 @@ export default function PodPage() {
               </Button>
             ) : (
               <div className="text-center py-4">
-                <p className="text-gray-800">This pod is full (5/5 members)</p>
+                <p className="text-gray-800">Pod full (5/5 members)</p>
+                <p className="text-sm text-gray-600 mt-1">Create another pod to join the crew!</p>
               </div>
             )}
           </CardContent>
@@ -376,39 +337,55 @@ export default function PodPage() {
 
         {/* Messages */}
         <CardContent className="flex-1 overflow-y-auto space-y-3 min-h-0">
-          {messages.length === 0 ? (
+          {messages.filter(msg => !hiddenMessages.has(msg.id)).length === 0 ? (
             <div className="text-center py-8 text-gray-700">
               <p>No messages yet. Start the conversation! 👋</p>
             </div>
           ) : (
-            messages.map((message) => (
-              <div 
-                key={message.id}
-                className={`flex gap-3 ${message.user_id === user?.id ? 'flex-row-reverse' : ''}`}
-              >
-                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0" aria-label={`Avatar for ${message.profiles?.display_name || 'Anonymous'}`}>
-                  {message.profiles?.display_name?.[0] || '?'}
-                </div>
-                <div className={`max-w-[70%] ${message.user_id === user?.id ? 'text-right' : ''}`}>
-                  <div className="chat-timestamp mb-1">
-                    {message.profiles?.display_name || 'Anonymous'} • {' '}
-                    {new Date(message.created_at).toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+            messages
+              .filter(msg => !hiddenMessages.has(msg.id))
+              .map((message) => (
+                <div 
+                  key={message.id}
+                  className={`flex gap-3 group ${message.user_id === user?.id ? 'flex-row-reverse' : ''}`}
+                >
+                  <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0" aria-label={`Avatar for ${message.profiles?.display_name || 'Anonymous'}`}>
+                    {message.profiles?.display_name?.[0] || '?'}
                   </div>
-                  <div 
-                    className={`p-3 rounded-lg ${
-                      message.user_id === user?.id 
-                        ? 'bg-purple-600 text-white' 
-                        : 'bg-gray-200 text-gray-900'
-                    }`}
-                  >
-                    {message.text}
+                  <div className={`max-w-[70%] ${message.user_id === user?.id ? 'text-right' : ''}`}>
+                    <div className="chat-timestamp mb-1">
+                      {message.profiles?.display_name || 'Anonymous'} • {' '}
+                      {new Date(message.created_at).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </div>
+                    <div className="relative">
+                      <div 
+                        className={`p-3 rounded-lg ${
+                          message.user_id === user?.id 
+                            ? 'bg-purple-600 text-white' 
+                            : 'bg-gray-200 text-gray-900'
+                        }`}
+                      >
+                        {message.text}
+                      </div>
+                      {/* Only show report menu for other users' messages */}
+                      {message.user_id !== user?.id && (
+                        <div className={`absolute top-1 opacity-0 group-hover:opacity-100 transition-opacity ${
+                          message.user_id === user?.id ? 'left-1' : 'right-1'
+                        }`}>
+                          <ReportMenu
+                            targetType="message"
+                            targetId={message.id}
+                            onItemHidden={() => handleHideMessage(message.id)}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))
           )}
           <div ref={messagesEndRef} />
         </CardContent>
@@ -420,14 +397,14 @@ export default function PodPage() {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message..."
-              disabled={sending}
+              disabled={chatSending}
               className="flex-1"
               maxLength={500}
               aria-label="Message input"
               autoComplete="off"
             />
-            <Button type="submit" disabled={sending || !newMessage.trim()} aria-label={sending ? 'Sending message' : 'Send message'}>
-              {sending ? '📤' : '🚀'}
+            <Button type="submit" disabled={chatSending || !newMessage.trim()} aria-label={chatSending ? 'Sending message' : 'Send message'}>
+              {chatSending ? '📤' : '🚀'}
             </Button>
           </form>
         </div>
