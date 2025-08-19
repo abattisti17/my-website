@@ -30,10 +30,7 @@ export function FeatureCard({
     secondary: 'border border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5'
   }
 
-  const ActionComponent = actionHref ? Link : 'button'
-  const actionProps = actionHref 
-    ? { to: actionHref }
-    : { onClick, type: 'button' as const }
+
 
   return (
     <Card className={`group hover:shadow-lg transition-all duration-200 ${variants[variant]} ${className}`}>
