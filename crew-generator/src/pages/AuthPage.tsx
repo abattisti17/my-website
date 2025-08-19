@@ -44,9 +44,35 @@ export default function AuthPage() {
     await testSupabaseConnection()
 
     try {
-      const redirectUrl = `${window.location.origin}${import.meta.env.VITE_PUBLIC_BASE_PATH}auth`
-      console.log('🔗 Auth redirect URL:', redirectUrl)
+      // Construct the redirect URL with proper environment handling
+      const basePath = import.meta.env.VITE_PUBLIC_BASE_PATH || '/'
+      const cleanBasePath = basePath.endsWith('/') ? basePath : `${basePath}/`
+      const redirectUrl = `${window.location.origin}${cleanBasePath}auth`
       
+      // Enhanced logging for debugging staging vs production redirects
+      console.log('🔗 Auth redirect URL construction:')
+      console.log('  - Origin:', window.location.origin)
+      console.log('  - Base path:', basePath)
+      console.log('  - Clean base path:', cleanBasePath)
+      console.log('  - Final redirect URL:', redirectUrl)
+      console.log('  - Current URL:', window.location.href)
+      
+      // Additional environment debugging
+      const isStaging = window.location.hostname.includes('staging')
+      const isLocal = window.location.hostname.includes('localhost')
+      console.log('🌍 Environment detection:')
+      console.log('  - Is staging:', isStaging)
+      console.log('  - Is local:', isLocal)
+      console.log('  - Hostname:', window.location.hostname)
+      
+      // Validate the redirect URL before sending
+      const url = new URL(redirectUrl)
+      console.log('✅ Parsed redirect URL:')
+      console.log('  - Protocol:', url.protocol)
+      console.log('  - Host:', url.host)
+      console.log('  - Pathname:', url.pathname)
+      console.log('  - Valid URL:', redirectUrl)
+
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
