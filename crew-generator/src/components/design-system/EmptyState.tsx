@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { Card, CardContent } from '../ui/card'
 import { Badge } from '../ui/badge'
 

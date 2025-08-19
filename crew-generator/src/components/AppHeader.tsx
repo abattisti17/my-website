@@ -13,7 +13,7 @@ import {
 
 export default function AppHeader() {
   const { user } = useAuth()
-  const { theme, setTheme } = useTheme()
+  const { setTheme } = useTheme()
 
   return (
     <header className="bg-background/80 backdrop-blur-sm border-b border-border sticky top-0 z-50 safe-area-inset">
