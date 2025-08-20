@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { useAuth } from './AuthProvider'
 import { supabase } from '../lib/supabase'
 import { toast } from 'sonner'
+import { supabaseWithRetry, validateRequired, sanitizeInput, devLog, devError, devSuccess } from '../lib/devAccelerators'
 
 interface CreateEventFormProps {
   onSuccess?: () => void
@@ -48,68 +49,77 @@ export default function CreateEventForm({ onSuccess }: CreateEventFormProps) {
       return
     }
 
-    if (!formData.artist || !formData.city || !formData.date) {
-      toast.error('Please fill in all required fields')
+    // Simple validation with better error messages
+    const validationError = validateRequired(formData, ['artist', 'city', 'date'])
+    if (validationError) {
+      toast.error(validationError)
       return
     }
 
+    // Sanitize inputs to prevent issues
+    const cleanData = {
+      artist: sanitizeInput(formData.artist),
+      city: sanitizeInput(formData.city),
+      venue: sanitizeInput(formData.venue),
+      date: formData.date,
+      time: formData.time
+    }
+
+    devLog('Creating event with clean data', cleanData)
     setLoading(true)
     
     try {
       // Combine date and time into a proper UTC timestamp
-      const dateTime = formData.time 
-        ? `${formData.date}T${formData.time}:00`
-        : `${formData.date}T20:00:00` // Default to 8 PM if no time specified
+      const dateTime = cleanData.time 
+        ? `${cleanData.date}T${cleanData.time}:00`
+        : `${cleanData.date}T20:00:00` // Default to 8 PM if no time specified
       
       const dateUtc = new Date(dateTime).toISOString()
-      const slug = generateSlug(formData.artist, formData.city, formData.date)
+      const slug = generateSlug(cleanData.artist, cleanData.city, cleanData.date)
 
-      // Create the event
-      const { data: event, error: eventError } = await supabase
-        .from('events')
-        .insert({
-          slug,
-          artist: formData.artist,
-          city: formData.city,
-          venue: formData.venue || null,
-          date_utc: dateUtc
-        })
-        .select()
-        .single()
+      // Create the event with automatic retry (eliminates most refresh needs!)
+      const eventResult = await supabaseWithRetry.insert(supabase, 'events', {
+        slug,
+        artist: cleanData.artist,
+        city: cleanData.city,
+        venue: cleanData.venue || null,
+        date_utc: dateUtc
+      })
 
-      if (eventError) {
-        if (eventError.code === '23505') { // Unique constraint violation
-          toast.error('An event with this details already exists. Try different date/city.')
-        } else {
-          throw eventError
-        }
-        return
-      }
+      const event = eventResult.data
 
-      // Automatically join the creator to the event
-      const { error: memberError } = await supabase
-        .from('event_members')
-        .insert({
+      // Automatically join the creator to the event (with retry)
+      try {
+        await supabaseWithRetry.insert(supabase, 'event_members', {
           event_id: event.id,
           user_id: user.id,
           vibe_badges: ['Event Creator']
         })
-
-      if (memberError) {
-        console.error('Error adding creator to event:', memberError)
+        devSuccess('Creator added to event')
+      } catch (memberError) {
+        devError(memberError, 'Adding creator to event')
         // Don't fail the whole operation for this
       }
 
       toast.success('Event created successfully! 🎉')
+      devSuccess('Event creation completed', { eventId: event.id, slug })
       
       if (onSuccess) {
         onSuccess()
       } else {
         navigate(`/event/${slug}`)
       }
-    } catch (error) {
-      console.error('Error creating event:', error)
-      toast.error('Failed to create event. Please try again.')
+    } catch (error: any) {
+      devError(error, 'Event creation')
+      
+      // Better error messages based on error type
+      if (error?.code === '23505') {
+        toast.error('An event with these details already exists. Try a different date/city.')
+      } else if (error?.message?.includes('network')) {
+        toast.error('Network error. Please check your connection and try again.')
+      } else {
+        toast.error('Failed to create event. Please try again.')
+      }
     } finally {
       setLoading(false)
     }
