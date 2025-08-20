@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
+import { supabaseWithRetry, devLog, devError, devSuccess } from '../lib/devAccelerators'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EventListItem } from '@/components/EventListItem'
@@ -86,20 +87,11 @@ export default function HomePage() {
 
   const fetchEvents = async () => {
     try {
-      console.log('🔄 Fetching events...')
+      devLog('Fetching events')
       
-      // Add timeout for production
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000)
-      )
-      
-      const { data: eventData, error: eventError } = await Promise.race([
-        supabase
-          .from('events')
-          .select('id, slug, artist, city, venue, date_utc')
-          .limit(10),
-        timeoutPromise
-      ]) as any
+      // Use retry logic for more reliable loading (eliminates timeout issues!)
+      const result = await supabaseWithRetry.select(supabase, 'events')
+      const eventData = result.data
 
       if (eventError) {
         console.error('❌ Supabase error:', eventError)

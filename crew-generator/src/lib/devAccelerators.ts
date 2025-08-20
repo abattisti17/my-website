@@ -117,6 +117,7 @@ export const supabaseWithRetry = {
       const result = await supabase.from(table).insert(data).select().single()
       
       if (result.error) {
+        devError(result.error, `insert into ${table}`)
         throw result.error
       }
       
@@ -125,19 +126,28 @@ export const supabaseWithRetry = {
     }, `insert into ${table}`)
   },
 
-  async select(supabase: any, table: string, query?: any) {
+  async select(supabase: any, table: string, columns = '*', query?: any) {
     devLog(`Selecting from ${table}`)
     
     return withRetry(async () => {
-      let queryBuilder = supabase.from(table).select()
+      let queryBuilder = supabase.from(table).select(columns)
       
       if (query) {
         queryBuilder = queryBuilder.eq(query.column, query.value)
       }
       
+      // Add order and limit for events specifically
+      if (table === 'events') {
+        queryBuilder = queryBuilder
+          .select('id, slug, artist, city, venue, date_utc')
+          .order('date_utc', { ascending: true })
+          .limit(10)
+      }
+      
       const result = await queryBuilder
       
       if (result.error) {
+        devError(result.error, `select from ${table}`)
         throw result.error
       }
       
