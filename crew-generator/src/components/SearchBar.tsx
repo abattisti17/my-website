@@ -147,7 +147,6 @@ export default function SearchBar({
           <Button
             type="button"
             variant="ghost"
-            size="sm"
             onClick={handleClear}
             className="search-icon-right h-6 w-6 p-0 hover:bg-muted/80 rounded-full touch-target-sm"
             aria-label="Clear search"

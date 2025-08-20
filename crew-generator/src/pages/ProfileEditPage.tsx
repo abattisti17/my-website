@@ -126,7 +126,7 @@ export default function ProfileEditPage() {
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" asChild>
           <Link to="/profile" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
             Back to Profile

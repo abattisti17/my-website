@@ -247,7 +247,6 @@ export default function PhotosOverviewPage() {
                 </span>
                 <Button
                   variant="outline"
-                  size="sm"
                   onClick={() => {
                     const timestamp = new Date(item.created_at).getTime()
                     const filename = `${item.events.artist}-${item.events.city}-${timestamp}.webp`

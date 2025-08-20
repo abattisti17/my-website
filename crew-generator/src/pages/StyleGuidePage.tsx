@@ -388,9 +388,9 @@ export default function StyleGuidePage() {
                       <div>
                         <p className="text-sm text-muted-foreground mb-3">Example: Button Group</p>
                         <HStack spacing="sm">
-                          <Button variant="outline" size="sm">Cancel</Button>
-                          <Button size="sm">Save</Button>
-                          <Button variant="secondary" size="sm">Preview</Button>
+                          <Button variant="outline">Cancel</Button>
+                          <Button>Save</Button>
+                          <Button variant="secondary">Preview</Button>
                         </HStack>
                       </div>
                       

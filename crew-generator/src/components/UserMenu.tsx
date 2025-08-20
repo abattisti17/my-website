@@ -41,7 +41,7 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="flex items-center gap-2 touch-target">
+        <Button variant="outline" className="flex items-center gap-2 touch-target">
           <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xs font-medium">
             {displayName[0]?.toUpperCase()}
           </div>

@@ -37,7 +37,6 @@ export default function ReportMenu({
         <DropdownMenuTrigger asChild>
           <Button 
             variant="ghost" 
-            size="sm" 
             className={`h-8 w-8 p-0 text-gray-500 hover:text-gray-700 ${className}`}
             aria-label="More options"
           >

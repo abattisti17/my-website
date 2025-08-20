@@ -50,8 +50,8 @@ export function FeatureCard({
       <CardContent className="pt-0 px-card-md pb-card-md">
         <Button 
           asChild={!!actionHref}
-          size="lg" 
-          className="w-full touch-target-lg rounded-xl font-semibold"
+          fullWidth={true}
+          className="touch-target-lg rounded-xl font-semibold"
           {...(!actionHref && { onClick })}
         >
           {actionHref ? (
