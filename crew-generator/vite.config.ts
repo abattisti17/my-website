@@ -72,7 +72,27 @@ export default defineConfig(() => {
     },
     build: {
       outDir: 'dist',
-      assetsDir: 'assets'
+      assetsDir: 'assets',
+      // Safer build settings to prevent variable conflicts
+      minify: 'terser' as const,
+      sourcemap: false,
+      target: 'es2020',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Simpler chunking to avoid variable conflicts
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            'supabase-vendor': ['@supabase/supabase-js'],
+            'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select', '@radix-ui/react-avatar', 'lucide-react']
+          },
+          // Ensure proper variable naming to avoid conflicts
+          format: 'es' as const,
+          entryFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: 'assets/[name]-[hash].js'
+        }
+      },
+      // Increase chunk size warning limit since we're optimizing chunks
+      chunkSizeWarningLimit: 1000
     }
   }
 })

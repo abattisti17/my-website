@@ -201,6 +201,14 @@
     --content-padding-md: var(--space-6);     /* 24px - Tablet content */
     --content-padding-lg: var(--space-8);     /* 32px - Desktop content */
     
+    /* Page Layout Spacing - Consistent page margins */
+    --page-padding-x-sm: var(--space-4);     /* 16px - Mobile horizontal */
+    --page-padding-x-md: var(--space-6);     /* 24px - Tablet horizontal */
+    --page-padding-x-lg: var(--space-8);     /* 32px - Desktop horizontal */
+    --page-padding-y-sm: var(--space-4);     /* 16px - Mobile vertical */
+    --page-padding-y-md: var(--space-6);     /* 24px - Tablet vertical */
+    --page-padding-y-lg: var(--space-8);     /* 32px - Desktop vertical */
+    
     /* Card/Component Internal Spacing */
     --card-padding-sm: var(--space-4);        /* 16px - Mobile cards */
     --card-padding-md: var(--space-6);        /* 24px - Desktop cards */

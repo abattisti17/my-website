@@ -1,13 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { EventListItem } from '@/components/EventListItem'
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import CreateEventForm from '../components/CreateEventForm'
-import ProfileEditor from '../components/ProfileEditor'
+import SearchBar from '../components/SearchBar'
+import SearchResults from '../components/SearchResults'
+import { createEventsSearchService } from '../lib/searchService'
+import type { SearchResult } from '../lib/searchService'
+import { Stack } from '../components/design-system'
 
 
 
@@ -26,27 +31,87 @@ export default function HomePage() {
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<SearchResult<Event>[]>([])
+  const [searchLoading, setSearchLoading] = useState(false)
+
+  // Create search service when events change
+  // const searchService = useMemo(() => {
+  //   if (events.length === 0) return null
+  //   return createEventsSearchService(events)
+  // }, [events])
 
   useEffect(() => {
     fetchEvents()
   }, [])
 
+  // Handle search with debouncing built into SearchBar
+  const handleSearch = useCallback(async (query: string) => {
+    setSearchQuery(query)
+    
+    // Always create fresh search service with current events data
+    if (events.length === 0) {
+      setSearchResults([])
+      return
+    }
+
+    setSearchLoading(true)
+    
+    try {
+      // Use requestAnimationFrame for smoother UX
+      requestAnimationFrame(() => {
+        try {
+          // Always create fresh search service to ensure we have latest events
+          const currentSearchService = createEventsSearchService(events)
+          const results = currentSearchService.search(query, 20) // Limit to 20 results
+          setSearchResults(results)
+        } catch (error) {
+          console.error('Search error:', error)
+          setSearchResults([])
+        } finally {
+          setSearchLoading(false)
+        }
+      })
+    } catch (error) {
+      console.error('Search error:', error)
+      setSearchResults([])
+      setSearchLoading(false)
+    }
+  }, [events]) // Include events in dependencies
+
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery('')
+    setSearchResults([])
+  }, [])
+
   const fetchEvents = async () => {
     try {
-            const { data: eventData, error: eventError } = await supabase
-        .from('events')
-        .select('id, slug, artist, city, venue, date_utc')
-        .limit(10)
+      console.log('🔄 Fetching events...')
+      
+      // Add timeout for production
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000)
+      )
+      
+      const { data: eventData, error: eventError } = await Promise.race([
+        supabase
+          .from('events')
+          .select('id, slug, artist, city, venue, date_utc')
+          .limit(10),
+        timeoutPromise
+      ]) as any
 
       if (eventError) {
+        console.error('❌ Supabase error:', eventError)
         throw eventError
       }
 
+      console.log('✅ Events loaded:', eventData?.length || 0)
       setEvents(eventData || [])
       setError(null)
     } catch (error: any) {
-      console.error('Error fetching events:', error)
-      setError('Failed to load events. Please try again.')
+      console.error('❌ Error fetching events:', error)
+      setError(`Failed to load events: ${error.message || 'Unknown error'}`)
     } finally {
       setLoading(false)
     }
@@ -69,7 +134,7 @@ export default function HomePage() {
             {error}
           </div>
           <div className="flex gap-4 justify-center">
-            <Button onClick={fetchEvents} className="bg-purple-600 hover:bg-purple-700 text-white">
+            <Button onClick={fetchEvents}>
               🔄 Try Again
             </Button>
             
@@ -81,48 +146,48 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen-dynamic flex flex-col safe-scroll-content">
-      {/* Hero Section - Mobile-first with proper spacing */}
-      <div className="px-safe pt-safe pb-8">
-        <div className="text-center space-y-6">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-            🎵 Travel Crew Generator
-          </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Find your concert crew and make memories together
-          </p>
+      <Stack spacing="lg" className="flex-1">
+        {/* Hero Section - Mobile-first with proper spacing */}
+        <div className="page-padding-x page-padding-y">
+          <div className="text-center space-y-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+              🎵 Travel Crew Generator
+            </h1>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Find your concert crew and make memories together
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Auth CTA Section - Modern card design */}
-      {!user ? (
-        <div className="px-safe pb-8">
-          <Card className="mx-auto max-w-md border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30 shadow-lg">
-            <CardHeader className="text-center space-y-4 pb-6">
-              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
-                <span className="text-2xl">🎤</span>
-              </div>
-              <div>
-                <CardTitle className="text-xl font-semibold">Join the Community</CardTitle>
-                <CardDescription className="text-muted-foreground mt-2 leading-relaxed">
-                  Connect with fellow music fans and find your perfect concert crew!
-                </CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <Button asChild size="lg" className="w-full touch-target-lg rounded-xl font-semibold">
-                <Link to="/auth">Sign In / Sign Up</Link>
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Auth CTA Section - Always present but conditionally visible */}
+        <div className="page-padding-x">
+          {!user ? (
+            <Card className="mx-auto max-w-md border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30 shadow-lg">
+              <CardHeader className="text-center space-y-4 pb-6">
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+                  <span className="text-2xl">🎤</span>
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-semibold">Join the Community</CardTitle>
+                  <CardDescription className="text-muted-foreground mt-2 leading-relaxed">
+                    Connect with fellow music fans and find your perfect concert crew!
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Button asChild fullWidth={true}>
+                  <Link to="/auth">Sign In / Sign Up</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            // Empty div to maintain consistent spacing when signed in
+            <div></div>
+          )}
         </div>
-      ) : (
-        <div className="px-safe pb-8">
-          <ProfileEditor />
-        </div>
-      )}
 
-      {/* Events Section - Modern layout */}
-      <section className="flex-1 px-safe pb-safe">
+        {/* Events Section - Modern layout */}
+        <section className="page-padding-x pb-safe">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Upcoming Events</h2>
           {user && (
@@ -149,6 +214,22 @@ export default function HomePage() {
             </Dialog>
           )}
         </div>
+
+        {/* Search Bar and Events with proper spacing */}
+        <Stack spacing="md">
+          {/* Search Bar */}
+          {events.length > 0 && (
+            <SearchBar
+              placeholder="Search events by artist, city, or venue..."
+              onSearch={handleSearch}
+              onClear={handleClearSearch}
+              loading={searchLoading}
+              className="max-w-md"
+              debounceMs={300}
+            />
+          )}
+          
+          {/* Events Display */}
         {events.length === 0 ? (
           <Card className="text-center p-8">
             <CardContent className="pt-6">
@@ -156,62 +237,69 @@ export default function HomePage() {
               <Badge variant="secondary">Sample events will appear here</Badge>
             </CardContent>
           </Card>
+        ) : searchQuery ? (
+          // Show search results when searching - using Stack for consistent spacing
+          <SearchResults
+            results={searchResults}
+            query={searchQuery}
+            renderItem={(event) => (
+              <EventListItem
+                event={{
+                  id: event.id,
+                  slug: event.slug,
+                  artist: event.artist,
+                  venue: event.venue || '',
+                  city: event.city,
+                  date: event.date_utc
+                }}
+              />
+            )}
+            emptyMessage="No events match your search"
+            maxResults={12}
+          />
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          // Show all events when not searching - using Stack for consistent spacing
+          <Stack spacing="sm">
             {events.map((event) => (
-              <Card key={event.id} className="hover:shadow-lg transition-shadow group">
-                <CardHeader>
-                  <CardTitle className="text-xl group-hover:text-purple-600 transition-colors">
-                    {event.artist}
-                  </CardTitle>
-                  <CardDescription className="text-base text-gray-700">
-                    {event.city}
-                    {event.venue && ` • ${event.venue}`}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm text-gray-700 font-medium">
-                      {new Date(event.date_utc).toLocaleDateString('en-US', {
-                        weekday: 'short',
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </p>
-                    <Button asChild size="sm">
-                      <Link to={`/event/${event.slug}`}>View Event</Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <EventListItem
+                key={event.id}
+                event={{
+                  id: event.id,
+                  slug: event.slug,
+                  artist: event.artist,
+                  venue: event.venue || '',
+                  city: event.city,
+                  date: event.date_utc
+                }}
+              />
             ))}
-          </div>
+          </Stack>
         )}
-      </section>
+        </Stack>
+        </section>
 
-      {/* Tour Book CTA - Modern design */}
-      {user && (
-        <div className="px-safe pb-safe">
-          <Card className="border border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
-            <CardContent className="p-6 text-center">
-              <div className="space-y-4">
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <span className="text-xl">📚</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">Your Tour Book</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Relive your concert memories and experiences</p>
-                </div>
-                <Button asChild variant="outline" size="lg" className="touch-target-lg rounded-xl font-semibold bg-primary/5 hover:bg-primary hover:text-primary-foreground border-primary/30">
-                  <Link to="/tour">View Tour Book</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Create Event Button - Full width at bottom */}
+        <div className="mt-8">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button fullWidth={true} className="bg-slate-900 hover:bg-slate-800 text-white">
+                Add event
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Create New Event</DialogTitle>
+                <DialogDescription>
+                  Add a new concert or event for people to join.
+                </DialogDescription>
+              </DialogHeader>
+              <CreateEventForm onSuccess={() => {
+                fetchEvents() // Refresh events list
+              }} />
+            </DialogContent>
+          </Dialog>
         </div>
-      )}
-
+      </Stack>
     </div>
   )
 }

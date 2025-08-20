@@ -14,6 +14,11 @@
     touch-action: manipulation; /* Prevent double-tap zoom */
   }
 
+  .touch-target-sm {
+    min-height: 32px; /* Compact touch targets */
+    min-width: 32px;
+  }
+
   .touch-target-lg {
     min-height: 56px; /* Material Design recommendation */
     min-width: 56px;
@@ -22,6 +27,63 @@
   /* ==========================================================================
      MOBILE SPACING & LAYOUT
      ========================================================================== */
+
+  /* Page Layout Utilities - Consistent spacing across all pages */
+  .page-padding {
+    padding-left: var(--page-padding-x-sm);
+    padding-right: var(--page-padding-x-sm);
+    padding-top: var(--page-padding-y-sm);
+    padding-bottom: var(--page-padding-y-sm);
+  }
+
+  .page-padding-x {
+    padding-left: var(--page-padding-x-sm);
+    padding-right: var(--page-padding-x-sm);
+  }
+
+  .page-padding-y {
+    padding-top: var(--page-padding-y-sm);
+    padding-bottom: var(--page-padding-y-sm);
+  }
+
+  /* Responsive page padding */
+  @media (min-width: 768px) {
+    .page-padding {
+      padding-left: var(--page-padding-x-md);
+      padding-right: var(--page-padding-x-md);
+      padding-top: var(--page-padding-y-md);
+      padding-bottom: var(--page-padding-y-md);
+    }
+    
+    .page-padding-x {
+      padding-left: var(--page-padding-x-md);
+      padding-right: var(--page-padding-x-md);
+    }
+    
+    .page-padding-y {
+      padding-top: var(--page-padding-y-md);
+      padding-bottom: var(--page-padding-y-md);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-padding {
+      padding-left: var(--page-padding-x-lg);
+      padding-right: var(--page-padding-x-lg);
+      padding-top: var(--page-padding-y-lg);
+      padding-bottom: var(--page-padding-y-lg);
+    }
+    
+    .page-padding-x {
+      padding-left: var(--page-padding-x-lg);
+      padding-right: var(--page-padding-x-lg);
+    }
+    
+    .page-padding-y {
+      padding-top: var(--page-padding-y-lg);
+      padding-bottom: var(--page-padding-y-lg);
+    }
+  }
 
   /* Safe area support for notched devices */
   .safe-area-top { padding-top: env(safe-area-inset-top); }
@@ -195,6 +257,29 @@
      MOBILE FORM ENHANCEMENTS
      ========================================================================== */
 
+  /* Search input specific styling */
+  .search-input {
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+
+  .search-icon-left {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .search-icon-right {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
+
   /* Sticky form footer */
   .sticky-form-footer {
     position: sticky;
@@ -212,6 +297,14 @@
     font-weight: var(--font-semibold);
     border-radius: var(--radius-lg);
     touch-action: manipulation;
+  }
+
+  /* Force button padding - override any conflicting styles */
+  button[data-slot="button"] {
+    padding: 1rem 2rem !important;
+    height: 3.5rem !important;
+    min-height: 3.5rem !important;
+    /* Removed width forcing - now controlled by fullWidth prop */
   }
 
   /* ==========================================================================

@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, devAutoLogin } from '../lib/supabase'
 import { useAuth } from '../components/AuthProvider'
+import { PageLayout } from '../components/design-system/PageLayout'
 
 export default function AuthPage() {
   const [email, setEmail] = useState('')
@@ -101,7 +102,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen-dynamic flex items-center justify-center px-safe py-safe">
+    <PageLayout className="flex items-center justify-center">
       <div className="w-full max-w-md space-y-8">
         {/* Hero Section */}
         <div className="text-center space-y-4">
@@ -155,6 +156,38 @@ export default function AuthPage() {
               )}
             </button>
 
+            {/* Development Auto-Login Button */}
+            {import.meta.env.DEV && (
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border"></div>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">Development Only</span>
+                </div>
+              </div>
+            )}
+            
+            {import.meta.env.DEV && (
+              <button
+                type="button"
+                onClick={async () => {
+                  setLoading(true)
+                  const success = await devAutoLogin()
+                  if (success) {
+                    setMessage('🔧 Development auto-login initiated! Check your email for the magic link.')
+                  } else {
+                    setMessage('⚠️ Auto-login failed. Add VITE_DEV_TEST_EMAIL to .env.local')
+                  }
+                  setLoading(false)
+                }}
+                disabled={loading}
+                className="w-full py-2 px-4 bg-yellow-500 hover:bg-yellow-600 disabled:bg-yellow-500/50 text-yellow-900 font-medium text-sm rounded-lg transition-all duration-200 touch-target"
+              >
+                {loading ? 'Auto-logging...' : '🔧 Dev Auto-Login'}
+              </button>
+            )}
+
             {message && (
               <div className={`text-center text-sm p-3 rounded-xl ${
                 message.includes('Check your email') 
@@ -176,6 +209,6 @@ export default function AuthPage() {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

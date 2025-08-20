@@ -190,16 +190,28 @@ export default function ProfileEditPage() {
             </p>
           </div>
 
-          {/* Reveal Instagram */}
-          <div className="flex items-center space-x-2">
-            <Checkbox 
-              id="reveal_ig"
-              checked={formData.reveal_ig}
-              onCheckedChange={(checked) => handleInputChange('reveal_ig', checked as boolean)}
-            />
-            <Label htmlFor="reveal_ig" className="text-sm">
-              Show my Instagram profile to other users
-            </Label>
+          {/* Reveal Instagram - Enhanced visibility */}
+          <div className="space-y-3">
+            <Label className="text-base font-medium">Instagram Visibility</Label>
+            <div className="flex items-start space-x-3 p-4 border rounded-lg bg-muted/30">
+              <Checkbox 
+                id="reveal_ig"
+                checked={formData.reveal_ig}
+                onCheckedChange={(checked) => handleInputChange('reveal_ig', checked as boolean)}
+                className="mt-0.5"
+              />
+              <div className="flex-1">
+                <Label htmlFor="reveal_ig" className="text-sm font-medium cursor-pointer">
+                  Show my Instagram profile to other users
+                </Label>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {formData.reveal_ig 
+                    ? "✅ Your Instagram will be visible on your profile" 
+                    : "❌ Your Instagram will remain private"
+                  }
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Save Button */}

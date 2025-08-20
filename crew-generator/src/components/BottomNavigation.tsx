@@ -19,7 +19,7 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Chat',
-    href: '/pods', // We'll add this route later
+    href: '/pods',
     icon: MessageCircle,
     authRequired: true,
   },

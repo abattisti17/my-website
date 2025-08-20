@@ -10,6 +10,9 @@ import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, Dialog
 import { toast } from 'sonner'
 import CreatePodForm from '../components/CreatePodForm'
 import MediaGallery from '../components/MediaGallery'
+import { PageLayout } from '../components/design-system/PageLayout'
+import { Stack } from '../components/design-system/Stack'
+// import { PageSection } from '../components/design-system/PageLayout' // Temporarily disabled
 
 interface Event {
   id: string
@@ -252,14 +255,15 @@ export default function EventPage() {
   const isUpcoming = eventDate > new Date()
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* Back Button */}
-      <Button variant="outline" className="mb-6" asChild>
-        <Link to="/">← Back to Events</Link>
-      </Button>
+    <PageLayout className="max-w-4xl">
+      <Stack spacing="lg">
+        {/* Back Button */}
+        <Button variant="outline" asChild className="self-start">
+          <Link to="/">← Back to Events</Link>
+        </Button>
 
-      {/* Event Header */}
-      <Card className="mb-8">
+        {/* Event Header */}
+        <Card>
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
@@ -326,7 +330,6 @@ export default function EventPage() {
               <Button 
                 onClick={handleJoinEvent} 
                 disabled={joinLoading}
-                className="bg-purple-600 hover:bg-purple-700 text-white font-medium"
               >
                 {joinLoading ? 'Joining...' : '🎟️ Join Event'}
               </Button>
@@ -337,7 +340,7 @@ export default function EventPage() {
 
       {/* Pods Section */}
       {isJoined && (
-        <Card className="mb-8">
+        <Card>
           <CardHeader>
             <CardTitle>Pods ({pods.length})</CardTitle>
             <CardDescription>
@@ -352,7 +355,7 @@ export default function EventPage() {
               {pods.length > 0 && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button size="sm" variant="outline">
+                    <Button variant="outline">
                       ➕ New Pod
                     </Button>
                   </DialogTrigger>
@@ -378,7 +381,7 @@ export default function EventPage() {
                 <p className="text-gray-800 mb-4">No pods created yet. Be the first!</p>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="bg-purple-600 hover:bg-purple-700 text-white font-medium">
+                    <Button>
                       Create First Pod
                     </Button>
                   </DialogTrigger>
@@ -420,14 +423,14 @@ export default function EventPage() {
                       </CardHeader>
                       <CardContent>
                         {isUserMember ? (
-                          <Button asChild size="sm" className="w-full">
+                          <Button asChild className="w-full">
                             <Link to={`/event/${slug}/pod/${pod.id}`}>
                               💬 Open Chat
                             </Link>
                           </Button>
                         ) : isFull ? (
                           <Button 
-                            size="sm" 
+                            
                             className="w-full" 
                             variant="outline" 
                             disabled
@@ -435,7 +438,7 @@ export default function EventPage() {
                             Pod Full
                           </Button>
                         ) : (
-                          <Button asChild size="sm" className="w-full">
+                          <Button asChild className="w-full">
                             <Link to={`/event/${slug}/pod/${pod.id}`}>
                               🚀 Join Pod
                             </Link>
@@ -502,7 +505,8 @@ export default function EventPage() {
             </div>
           )}
         </CardContent>
-      </Card>
-    </div>
+        </Card>
+      </Stack>
+    </PageLayout>
   )
 }

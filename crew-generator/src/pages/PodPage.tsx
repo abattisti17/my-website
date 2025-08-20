@@ -276,7 +276,7 @@ export default function PodPage() {
             </div>
 
             {members.length < 5 ? (
-              <Button onClick={handleJoinPod} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium">
+              <Button onClick={handleJoinPod}>
                 🚀 Join Pod
               </Button>
             ) : (
@@ -296,7 +296,7 @@ export default function PodPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" asChild>
+          <Button variant="outline" asChild>
             <Link to={`/event/${slug}`}>← Back</Link>
           </Button>
           <div>
@@ -306,7 +306,7 @@ export default function PodPage() {
             </p>
           </div>
         </div>
-        <Button variant="outline" size="sm" onClick={handleLeavePod}>
+        <Button variant="outline" onClick={handleLeavePod}>
           Leave Pod
         </Button>
       </div>

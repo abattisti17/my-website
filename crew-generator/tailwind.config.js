@@ -4,6 +4,21 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    // Stack component spacing classes
+    'space-y-2',
+    'space-y-4', 
+    'space-y-6',
+    'space-y-8',
+    'space-y-12',
+    'space-y-16',
+    'space-x-2',
+    'space-x-4',
+    'space-x-6', 
+    'space-x-8',
+    'space-x-12',
+    'space-x-16',
+  ],
   darkMode: ["class"],
   theme: {
     extend: {
@@ -234,6 +249,43 @@ export default {
           'padding-bottom': 'env(safe-area-inset-bottom)',
           'padding-left': 'env(safe-area-inset-left)', 
           'padding-right': 'env(safe-area-inset-right)',
+        },
+        // Stack component spacing utilities for Tailwind v4
+        '.space-y-2 > * + *': {
+          'margin-top': 'var(--space-2)',
+        },
+        '.space-y-4 > * + *': {
+          'margin-top': 'var(--space-4)',
+        },
+        '.space-y-6 > * + *': {
+          'margin-top': 'var(--space-6)',
+        },
+        '.space-y-8 > * + *': {
+          'margin-top': 'var(--space-8)',
+        },
+        '.space-y-12 > * + *': {
+          'margin-top': 'var(--space-12)',
+        },
+        '.space-y-16 > * + *': {
+          'margin-top': 'var(--space-16)',
+        },
+        '.space-x-2 > * + *': {
+          'margin-left': 'var(--space-2)',
+        },
+        '.space-x-4 > * + *': {
+          'margin-left': 'var(--space-4)',
+        },
+        '.space-x-6 > * + *': {
+          'margin-left': 'var(--space-6)',
+        },
+        '.space-x-8 > * + *': {
+          'margin-left': 'var(--space-8)',
+        },
+        '.space-x-12 > * + *': {
+          'margin-left': 'var(--space-12)',
+        },
+        '.space-x-16 > * + *': {
+          'margin-left': 'var(--space-16)',
         },
       })
     }
