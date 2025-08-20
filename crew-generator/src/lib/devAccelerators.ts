@@ -106,9 +106,19 @@ export function sanitizeInput(input: string): string {
   if (typeof input !== 'string') return ''
   
   return input
+    // Remove script tags
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    // Remove javascript: URLs
+    .replace(/javascript:/gi, '')
+    // Remove on* event handlers
+    .replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
+    // Remove data: URLs (except images)
+    .replace(/data:(?!image\/)/gi, '')
+    // Remove basic HTML tags
+    .replace(/[<>]/g, '')
+    // Trim whitespace and limit length
     .trim()
-    .replace(/[<>]/g, '') // Remove basic HTML tags
-    .slice(0, 500) // Limit length
+    .slice(0, 500)
 }
 
 /**
@@ -132,35 +142,27 @@ export const supabaseWithRetry = {
     }, `insert into ${table}`)
   },
 
-  async select(supabase: SupabaseClient<Database>, table: string, columns = '*', query?: QueryOptions) {
-    devLog(`Selecting from ${table}`)
-    
-    return withRetry(async () => {
-      let queryBuilder = supabase.from(table).select(columns)
-      
-      if (query) {
-        queryBuilder = queryBuilder.eq(query.column, query.value)
-      }
-      
-      // Add order and limit for events specifically
-      if (table === 'events') {
-        queryBuilder = queryBuilder
-          .select('id, slug, artist, city, venue, date_utc')
-          .order('date_utc', { ascending: true })
-          .limit(10)
-      }
-      
-      const result = await queryBuilder
-      
-      if (result.error) {
-        devError(result.error, `select from ${table}`)
-        throw result.error
-      }
-      
-      devSuccess(`Selected from ${table}`, { count: result.data?.length })
-      return result
-    }, `select from ${table}`)
-  },
+        async select(supabase: SupabaseClient<Database>, table: string, columns = '*', query?: QueryOptions) {
+        devLog(`Selecting from ${table}`)
+        
+        return withRetry(async () => {
+          let queryBuilder = supabase.from(table).select(columns)
+          
+          if (query) {
+            queryBuilder = queryBuilder.eq(query.column, query.value)
+          }
+          
+          const result = await queryBuilder
+          
+          if (result.error) {
+            devError(result.error, `select from ${table}`)
+            throw result.error
+          }
+          
+          devSuccess(`Selected from ${table}`, { count: result.data?.length })
+          return result
+        }, `select from ${table}`)
+      },
 
   async signInWithOtp(supabase: SupabaseClient<Database>, email: string) {
     devLog('Signing in with OTP', { email })

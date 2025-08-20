@@ -5,6 +5,7 @@
 
 import { useState, useCallback } from 'react'
 import { validateRequired, sanitizeInput } from '../lib/devAccelerators'
+import { formSubmissionLimiter } from '../lib/security'
 
 interface UseFormOptions<T> {
   initialValues: T
@@ -48,6 +49,13 @@ export function useForm<T extends Record<string, any>>({
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Rate limiting - prevent spam submissions
+    const formId = `form-${Date.now()}`
+    if (!formSubmissionLimiter.isAllowed(formId)) {
+      setErrors({ _form: 'Too many submissions. Please wait a moment.' })
+      return
+    }
     
     // Validate required fields
     const validationError = validateRequired(values, requiredFields)

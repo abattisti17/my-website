@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback } from 'react'
-import { supabaseWithRetry, devLog, devError, devSuccess } from '../lib/devAccelerators'
+import { supabaseWithRetry, devError, devSuccess } from '../lib/devAccelerators'
 import { supabase } from '../lib/supabase'
 import { toast } from 'sonner'
 

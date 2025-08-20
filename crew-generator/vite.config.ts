@@ -10,6 +10,20 @@ export default defineConfig(() => {
   return {
   plugins: [
     react(),
+    // Security headers plugin for development
+    {
+      name: 'security-headers',
+      configureServer(server) {
+        server.middlewares.use((_req, res, next) => {
+          // Add security headers in development
+          res.setHeader('X-Content-Type-Options', 'nosniff')
+          res.setHeader('X-Frame-Options', 'DENY')
+          res.setHeader('X-XSS-Protection', '1; mode=block')
+          res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+          next()
+        })
+      }
+    },
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],

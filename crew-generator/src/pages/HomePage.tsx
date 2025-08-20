@@ -106,7 +106,7 @@ export default function HomePage() {
       }
 
       devSuccess('Events loaded', { count: eventData.length })
-      setEvents(eventData)
+      setEvents(eventData as unknown as Event[])
       setError(null)
     } catch (error: any) {
       console.error('❌ Error fetching events:', error)
@@ -241,18 +241,21 @@ export default function HomePage() {
           <SearchResults
             results={searchResults}
             query={searchQuery}
-            renderItem={(event: Event) => (
-              <EventListItem
-                event={{
-                  id: event.id,
-                  slug: event.slug,
-                  artist: event.artist,
-                  venue: event.venue || '',
-                  city: event.city,
-                  date: event.date_utc
-                }}
-              />
-            )}
+            renderItem={(event) => {
+              const e = event as any
+              return (
+                <EventListItem
+                  event={{
+                    id: e.id,
+                    slug: e.slug,
+                    artist: e.artist,
+                    venue: e.venue || '',
+                    city: e.city,
+                    date: e.date_utc
+                  }}
+                />
+              )
+            }}
             emptyMessage="No events match your search"
             maxResults={12}
           />

@@ -27,7 +27,7 @@ export default function ProfileEditPage() {
   const { update } = useSupabaseMutation()
 
   // Fetch profile data with automatic loading state
-  const { data: profile, loading } = useSupabaseRecord<Profile>('profiles', user?.id)
+  const { data: profile, loading } = useSupabaseRecord<Profile>('profiles', user?.id || null)
 
   // Form management with automatic validation
   const form = useForm({
@@ -97,7 +97,7 @@ export default function ProfileEditPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" asChild>
             <Link to="/profile">
               <ArrowLeft className="h-5 w-5" />
             </Link>

@@ -79,7 +79,7 @@ export function InlineError({
       <div className="space-y-2">
         <p className="text-sm text-red-600">{message}</p>
         {onRetry && (
-          <Button onClick={onRetry} variant="outline" size="sm">
+          <Button onClick={onRetry} variant="outline">
             <RefreshCw className="w-3 h-3 mr-1" />
             Retry
           </Button>

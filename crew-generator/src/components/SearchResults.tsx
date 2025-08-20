@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react'
 import type { SearchResult } from '../lib/searchService'
 import { Badge } from '@/components/ui/badge'
 import { Stack } from './design-system'
-import { highlightMatches, type HighlightMatch } from '../lib/constants'
+import type { HighlightMatch } from '../lib/constants'
 
 export interface SearchResultsProps<T> {
   results: SearchResult<T>[]
@@ -77,7 +77,7 @@ const SearchResults = memo(function SearchResults<T>({
             )}
             
             {/* Render the actual item */}
-            {renderItem(result.item, result.matches ? [...result.matches] : undefined)}
+            {renderItem(result.item)}
           </div>
         ))}
       </Stack>
