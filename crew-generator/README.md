@@ -2,6 +2,22 @@
 
 A mobile-first PWA for building and managing concert crews. Built with React + TypeScript + Vite + Supabase.
 
+## 🤖 For AI Assistants
+
+**⚠️ CRITICAL**: When working on this project, ALWAYS run commands from the `/crew-generator` directory, NOT the repository root.
+
+```bash
+# ❌ WRONG - Running from repository root
+cd /Users/battist/Documents/GitHub/my-website
+npm run dev  # This will fail - no dev script here
+
+# ✅ CORRECT - Running from crew-generator directory  
+cd /Users/battist/Documents/GitHub/my-website/crew-generator
+npm run dev  # This starts Vite dev server on localhost:5173
+```
+
+**Directory Context**: This project is located at `/crew-generator/` within a larger repository that also contains Alessandro's portfolio website.
+
 ## 🚀 Quick Start
 
 1. **Install dependencies**
