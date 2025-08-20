@@ -6,23 +6,29 @@
  */
 
 import { toast } from 'sonner'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '../types/database'
+
+// Types for better type safety
+type SupabaseRecord = Record<string, unknown>
+type QueryOptions = { column: string; value: unknown }
 
 // Simple development logger
-export const devLog = (label: string, data?: any) => {
+export const devLog = (label: string, data?: unknown) => {
   if (import.meta.env.DEV) {
     console.log(`🔧 ${label}:`, data)
   }
 }
 
 // Simple error logger with better messages
-export const devError = (error: any, context?: string) => {
+export const devError = (error: unknown, context?: string) => {
   if (import.meta.env.DEV) {
     console.error(`❌ ${context || 'Error'}:`, error)
   }
 }
 
 // Simple success logger
-export const devSuccess = (message: string, data?: any) => {
+export const devSuccess = (message: string, data?: unknown) => {
   if (import.meta.env.DEV) {
     console.log(`✅ ${message}`, data)
   }
@@ -82,7 +88,7 @@ export async function withRetry<T>(
  * Simple form validation helper
  * Prevents crashes from bad form data
  */
-export function validateRequired(data: Record<string, any>, requiredFields: string[]): string | null {
+export function validateRequired(data: Record<string, unknown>, requiredFields: string[]): string | null {
   for (const field of requiredFields) {
     const value = data[field]
     if (!value || (typeof value === 'string' && value.trim() === '')) {
@@ -110,7 +116,7 @@ export function sanitizeInput(input: string): string {
  * Drop-in replacements for common Supabase operations
  */
 export const supabaseWithRetry = {
-  async insert(supabase: any, table: string, data: any) {
+  async insert(supabase: SupabaseClient<Database>, table: string, data: SupabaseRecord) {
     devLog(`Inserting into ${table}`, data)
     
     return withRetry(async () => {
@@ -126,7 +132,7 @@ export const supabaseWithRetry = {
     }, `insert into ${table}`)
   },
 
-  async select(supabase: any, table: string, columns = '*', query?: any) {
+  async select(supabase: SupabaseClient<Database>, table: string, columns = '*', query?: QueryOptions) {
     devLog(`Selecting from ${table}`)
     
     return withRetry(async () => {
@@ -156,7 +162,7 @@ export const supabaseWithRetry = {
     }, `select from ${table}`)
   },
 
-  async signInWithOtp(supabase: any, email: string) {
+  async signInWithOtp(supabase: SupabaseClient<Database>, email: string) {
     devLog('Signing in with OTP', { email })
     
     return withRetry(async () => {
@@ -179,13 +185,13 @@ export const supabaseWithRetry = {
  * Simple form submission wrapper
  * Handles loading states and basic validation
  */
-export function createFormHandler(onSubmit: (data: any) => Promise<void>) {
+export function createFormHandler(onSubmit: (data: Record<string, string>) => Promise<void>) {
   return async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     
     // Get form data
     const formData = new FormData(e.currentTarget)
-    const data: Record<string, any> = {}
+    const data: Record<string, string> = {}
     
     formData.forEach((value, key) => {
       data[key] = sanitizeInput(value.toString())
