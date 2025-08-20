@@ -99,7 +99,7 @@ const SearchResults = memo(function SearchResults<T>({
 export function highlightMatches(
   text: string, 
   matches?: any[], 
-  className: string = "bg-yellow-200 dark:bg-yellow-800 px-1 rounded"
+  className = "bg-yellow-200 dark:bg-yellow-800 px-1 rounded"
 ): React.ReactNode {
   if (!matches || matches.length === 0) {
     return text
