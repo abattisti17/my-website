@@ -390,7 +390,7 @@ export default function StyleGuidePage() {
                         <HStack spacing="sm">
                           <Button variant="outline">Cancel</Button>
                           <Button>Save</Button>
-                          <Button variant="secondary">Preview</Button>
+                          <Button variant="outline">Preview</Button>
                         </HStack>
                       </div>
                       
@@ -400,7 +400,7 @@ export default function StyleGuidePage() {
 {`<HStack spacing="sm">
   <Button variant="outline">Cancel</Button>
   <Button>Save</Button>
-  <Button variant="secondary">Preview</Button>
+  <Button variant="outline">Preview</Button>
 </HStack>`}
                         </pre>
                       </div>
