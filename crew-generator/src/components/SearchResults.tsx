@@ -91,7 +91,7 @@ const SearchResults = memo(function SearchResults<T>({
       )}
     </div>
   )
-}
+})
 
 /**
  * Utility function to highlight search matches in text
