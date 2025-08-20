@@ -137,6 +137,6 @@ export function highlightMatches(
   }
 
   return result.length > 0 ? result : text
-})
+}
 
 export default SearchResults
