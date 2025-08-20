@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import type { SearchResult } from '../lib/searchService'
 import { Badge } from '@/components/ui/badge'
 import { Stack } from './design-system'
@@ -13,7 +13,7 @@ export interface SearchResultsProps<T> {
   maxResults?: number
 }
 
-export default function SearchResults<T>({
+const SearchResults = memo(function SearchResults<T>({
   results,
   query,
   renderItem,
@@ -22,7 +22,10 @@ export default function SearchResults<T>({
   className = "",
   maxResults
 }: SearchResultsProps<T>) {
-  const displayResults = maxResults ? results.slice(0, maxResults) : results
+  // Memoize processed results for performance
+  const displayResults = useMemo(() => {
+    return maxResults ? results.slice(0, maxResults) : results
+  }, [results, maxResults])
 
   if (!query.trim()) {
     return null
@@ -134,4 +137,6 @@ export function highlightMatches(
   }
 
   return result.length > 0 ? result : text
-}
+})
+
+export default SearchResults

@@ -17,7 +17,7 @@ export interface SearchBarProps {
   onSuggestionSelect?: (suggestion: string) => void
 }
 
-export default function SearchBar({
+const SearchBar = React.memo(function SearchBar({
   placeholder = "Search...",
   onSearch,
   onClear,
@@ -178,4 +178,6 @@ export default function SearchBar({
       )}
     </div>
   )
-}
+})
+
+export default SearchBar

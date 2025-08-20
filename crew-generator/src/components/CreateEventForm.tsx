@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,7 +13,7 @@ interface CreateEventFormProps {
   onSuccess?: () => void
 }
 
-export default function CreateEventForm({ onSuccess }: CreateEventFormProps) {
+const CreateEventForm = memo(function CreateEventForm({ onSuccess }: CreateEventFormProps) {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
@@ -25,10 +25,10 @@ export default function CreateEventForm({ onSuccess }: CreateEventFormProps) {
     time: ''
   })
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-  }
+  }, [])
 
   const generateSlug = (artist: string, city: string, date: string) => {
     const cleanArtist = artist.toLowerCase().replace(/[^a-z0-9]/g, '-')
@@ -223,4 +223,6 @@ export default function CreateEventForm({ onSuccess }: CreateEventFormProps) {
       </CardContent>
     </Card>
   )
-}
+})
+
+export default CreateEventForm

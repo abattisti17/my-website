@@ -1,3 +1,4 @@
+import React, { memo, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, CardContent } from '@/components/ui/card'
 import { ChevronRight } from 'lucide-react'
@@ -13,17 +14,17 @@ interface EventListItemProps {
   }
 }
 
-export function EventListItem({ event }: EventListItemProps) {
-  // Format the date to match target design (e.g., "Fri, Dec 12, 2025")
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+export const EventListItem = memo(function EventListItem({ event }: EventListItemProps) {
+  // Memoize expensive date formatting
+  const formattedDate = useMemo(() => {
+    const date = new Date(event.date)
     return date.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short', 
       day: 'numeric',
       year: 'numeric'
     })
-  }
+  }, [event.date])
 
   return (
     <Card className="border border-border hover:bg-accent/50 transition-colors cursor-pointer">
@@ -42,7 +43,7 @@ export function EventListItem({ event }: EventListItemProps) {
             
             {/* Date - clean formatting */}
             <p className="text-sm text-muted-foreground">
-              {formatDate(event.date)}
+              {formattedDate}
             </p>
           </div>
           
@@ -52,4 +53,4 @@ export function EventListItem({ event }: EventListItemProps) {
       </Link>
     </Card>
   )
-}
+})

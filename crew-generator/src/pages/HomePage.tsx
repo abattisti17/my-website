@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
@@ -37,10 +37,11 @@ export default function HomePage() {
   const [searchLoading, setSearchLoading] = useState(false)
 
   // Create search service when events change
-  // const searchService = useMemo(() => {
-  //   if (events.length === 0) return null
-  //   return createEventsSearchService(events)
-  // }, [events])
+  // Optimized search service with memoization for better performance
+  const searchService = useMemo(() => {
+    if (events.length === 0) return null
+    return createEventsSearchService(events)
+  }, [events])
 
   useEffect(() => {
     fetchEvents()
@@ -62,23 +63,27 @@ export default function HomePage() {
       // Use requestAnimationFrame for smoother UX
       requestAnimationFrame(() => {
         try {
-          // Always create fresh search service to ensure we have latest events
-          const currentSearchService = createEventsSearchService(events)
-          const results = currentSearchService.search(query, 20) // Limit to 20 results
+          // Use memoized search service for better performance
+          if (!searchService) {
+            devLog('Search service not ready')
+            setSearchResults([])
+            return
+          }
+          const results = searchService.search(query, 20) // Limit to 20 results
           setSearchResults(results)
         } catch (error) {
-          console.error('Search error:', error)
+          devError(error, 'search execution')
           setSearchResults([])
         } finally {
           setSearchLoading(false)
         }
       })
     } catch (error) {
-      console.error('Search error:', error)
+      devError(error, 'search initialization')
       setSearchResults([])
       setSearchLoading(false)
     }
-  }, [events]) // Include events in dependencies
+  }, [events, searchService]) // Include searchService for proper optimization
 
   const handleClearSearch = useCallback(() => {
     setSearchQuery('')
@@ -93,13 +98,15 @@ export default function HomePage() {
       const result = await supabaseWithRetry.select(supabase, 'events')
       const eventData = result.data
 
-      if (eventError) {
-        console.error('❌ Supabase error:', eventError)
-        throw eventError
+      if (!eventData) {
+        devLog('No events found')
+        setEvents([])
+        setError(null)
+        return
       }
 
-      console.log('✅ Events loaded:', eventData?.length || 0)
-      setEvents(eventData || [])
+      devSuccess('Events loaded', { count: eventData.length })
+      setEvents(eventData)
       setError(null)
     } catch (error: any) {
       console.error('❌ Error fetching events:', error)
@@ -234,7 +241,7 @@ export default function HomePage() {
           <SearchResults
             results={searchResults}
             query={searchQuery}
-            renderItem={(event) => (
+            renderItem={(event: Event) => (
               <EventListItem
                 event={{
                   id: event.id,
