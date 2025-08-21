@@ -137,7 +137,7 @@ export function usePodChat(podId: string): UsePodChatReturn {
             // Profile data will be fetched lazily or cached
             profiles: {
               display_name: 'Loading...', // Temporary, will be updated
-              avatar_url: null
+              avatar_url: undefined
             }
           }
 
