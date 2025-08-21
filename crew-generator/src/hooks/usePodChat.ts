@@ -124,16 +124,16 @@ export function usePodChat(podId: string): UsePodChatReturn {
           table: 'messages',
           filter: `pod_id=eq.${podId}`
         },
-        (payload) => {
+        (payload: any) => {
           console.log('New message received:', payload)
           
           // Use the payload data directly instead of making another query
-          const newMessage = {
-            id: payload.new.id,
-            pod_id: payload.new.pod_id,
-            user_id: payload.new.user_id,
-            text: payload.new.text,
-            created_at: payload.new.created_at,
+          const newMessage: Message = {
+            id: payload.new.id as string,
+            pod_id: payload.new.pod_id as string,
+            user_id: payload.new.user_id as string,
+            text: payload.new.text as string,
+            created_at: payload.new.created_at as string,
             // Profile data will be fetched lazily or cached
             profiles: {
               display_name: 'Loading...', // Temporary, will be updated
