@@ -101,11 +101,26 @@ export default function EventPage() {
       if (eventError) throw eventError
       setEvent(eventData)
 
-      // Temporarily skip event_members due to RLS policy issues
-      // TODO: Fix RLS policies in Supabase to allow proper access
-      console.log('Skipping event_members fetch due to RLS policy recursion')
-      setMembers([])
-      setIsJoined(false)
+      // Fetch event members now that RLS policies are fixed
+      const { data: membersData, error: membersError } = await supabase
+        .from('event_members')
+        .select(`
+          user_id,
+          vibe_badges,
+          joined_at,
+          profiles:user_id (
+            display_name,
+            avatar_url
+          )
+        `)
+        .eq('event_id', eventData.id)
+
+      if (membersError) {
+        console.error('Error fetching members:', membersError)
+        setMembers([])
+      } else {
+        setMembers((membersData as any) || [])
+      }
 
       // Fetch pods (without pod_members to avoid RLS recursion)
       const { data: podsData, error: podsError } = await supabase
@@ -120,20 +135,23 @@ export default function EventPage() {
 
       if (podsError) throw podsError
 
-      // For each pod, fetch member count separately to avoid RLS issues
-      const podsWithMemberCount = await Promise.all(
-        (podsData || []).map(async (pod) => {
-          const { count } = await supabase
-            .from('pod_members')
-            .select('*', { count: 'exact', head: true })
-            .eq('pod_id', pod.id)
-          
-          return {
-            ...pod,
-            pod_members: Array(count || 0).fill({ user_id: 'placeholder' }) // Just for count display
-          }
-        })
-      )
+      // Fetch all pod member counts in a single query to avoid N+1 pattern
+      const { data: podMemberCounts } = await supabase
+        .from('pod_members')
+        .select('pod_id')
+        .in('pod_id', (podsData || []).map(p => p.id))
+
+      // Group member counts by pod_id
+      const memberCountsByPod = (podMemberCounts || []).reduce((acc, member) => {
+        acc[member.pod_id] = (acc[member.pod_id] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+
+      // Add member counts to pods
+      const podsWithMemberCount = (podsData || []).map(pod => ({
+        ...pod,
+        pod_members: Array(memberCountsByPod[pod.id] || 0).fill({ user_id: 'placeholder' })
+      }))
 
       setPods(podsWithMemberCount)
 

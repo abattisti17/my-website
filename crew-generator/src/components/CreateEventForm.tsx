@@ -1,33 +1,22 @@
-import { useState } from 'react'
+import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from './AuthProvider'
-import { supabase } from '../lib/supabase'
-import { toast } from 'sonner'
+import { useForm } from '../hooks/useForm'
+import { useSupabaseMutation } from '../hooks/useSupabaseMutation'
+import { devLog, devSuccess } from '../lib/devAccelerators'
 
 interface CreateEventFormProps {
   onSuccess?: () => void
 }
 
-export default function CreateEventForm({ onSuccess }: CreateEventFormProps) {
+const CreateEventForm = memo(function CreateEventForm({ onSuccess }: CreateEventFormProps) {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    artist: '',
-    city: '',
-    venue: '',
-    date: '',
-    time: ''
-  })
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
+  const { insert } = useSupabaseMutation()
 
   const generateSlug = (artist: string, city: string, date: string) => {
     const cleanArtist = artist.toLowerCase().replace(/[^a-z0-9]/g, '-')
@@ -40,80 +29,56 @@ export default function CreateEventForm({ onSuccess }: CreateEventFormProps) {
     return `${cleanArtist}-${cleanCity}-${year}-${month}-${day}`
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!user) {
-      toast.error('You must be signed in to create an event')
-      return
-    }
-
-    if (!formData.artist || !formData.city || !formData.date) {
-      toast.error('Please fill in all required fields')
-      return
-    }
-
-    setLoading(true)
-    
-    try {
-      // Combine date and time into a proper UTC timestamp
-      const dateTime = formData.time 
-        ? `${formData.date}T${formData.time}:00`
-        : `${formData.date}T20:00:00` // Default to 8 PM if no time specified
-      
-      const dateUtc = new Date(dateTime).toISOString()
-      const slug = generateSlug(formData.artist, formData.city, formData.date)
-
-      // Create the event
-      const { data: event, error: eventError } = await supabase
-        .from('events')
-        .insert({
-          slug,
-          artist: formData.artist,
-          city: formData.city,
-          venue: formData.venue || null,
-          date_utc: dateUtc
-        })
-        .select()
-        .single()
-
-      if (eventError) {
-        if (eventError.code === '23505') { // Unique constraint violation
-          toast.error('An event with this details already exists. Try different date/city.')
-        } else {
-          throw eventError
-        }
-        return
+  const form = useForm({
+    initialValues: {
+      artist: '',
+      city: '',
+      venue: '',
+      date: '',
+      time: ''
+    },
+    requiredFields: ['artist', 'city', 'date'],
+    onSubmit: async (data) => {
+      if (!user) {
+        throw new Error('You must be signed in to create an event')
       }
 
-      // Automatically join the creator to the event
-      const { error: memberError } = await supabase
-        .from('event_members')
-        .insert({
-          event_id: event.id,
+      const dateTime = data.time ? `${data.date}T${data.time}:00` : `${data.date}T20:00:00`
+      const dateUtc = new Date(dateTime).toISOString()
+      const slug = generateSlug(data.artist, data.city, data.date)
+
+      devLog('Creating event with clean data', { ...data, slug, dateUtc })
+
+      // Create the event
+      const event = await insert('events', {
+        slug,
+        artist: data.artist,
+        city: data.city,
+        venue: data.venue || null,
+        date_utc: dateUtc
+      }, {
+        successMessage: 'Event created successfully! 🎉'
+      })
+
+      // Add creator as event member
+      try {
+        await insert('event_members', {
+          event_id: event.data.id,
           user_id: user.id,
           vibe_badges: ['Event Creator']
         })
-
-      if (memberError) {
-        console.error('Error adding creator to event:', memberError)
-        // Don't fail the whole operation for this
+        devSuccess('Creator added to event')
+      } catch (memberError) {
+        console.warn('Could not add creator to event:', memberError)
       }
 
-      toast.success('Event created successfully! 🎉')
-      
       if (onSuccess) {
         onSuccess()
       } else {
         navigate(`/event/${slug}`)
       }
-    } catch (error) {
-      console.error('Error creating event:', error)
-      toast.error('Failed to create event. Please try again.')
-    } finally {
-      setLoading(false)
     }
-  }
+  })
 
   if (!user) {
     return (
@@ -137,80 +102,98 @@ export default function CreateEventForm({ onSuccess }: CreateEventFormProps) {
     <Card>
       <CardHeader>
         <CardTitle>Create New Event</CardTitle>
-        <CardDescription className="text-gray-700">
+        <CardDescription>
           Set up a new concert event for your crew to join
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="artist">Artist/Band *</Label>
-              <Input
-                id="artist"
-                name="artist"
-                value={formData.artist}
-                onChange={handleInputChange}
-                placeholder="Taylor Swift"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="city">City *</Label>
-              <Input
-                id="city"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                placeholder="New York"
-                required
-              />
-            </div>
+        <form onSubmit={form.handleSubmit} className="space-y-4">
+          {/* Artist/Band Name - Required */}
+          <div className="space-y-2">
+            <Label htmlFor="artist">Artist/Band Name *</Label>
+            <Input
+              id="artist"
+              name="artist"
+              value={form.values.artist}
+              onChange={form.handleInputChange}
+              placeholder="Taylor Swift"
+              required
+            />
+            {form.errors.artist && (
+              <p className="text-sm text-red-600">{form.errors.artist}</p>
+            )}
           </div>
 
+          {/* City - Required */}
           <div className="space-y-2">
-            <Label htmlFor="venue">Venue</Label>
+            <Label htmlFor="city">City *</Label>
+            <Input
+              id="city"
+              name="city"
+              value={form.values.city}
+              onChange={form.handleInputChange}
+              placeholder="New York"
+              required
+            />
+            {form.errors.city && (
+              <p className="text-sm text-red-600">{form.errors.city}</p>
+            )}
+          </div>
+
+          {/* Venue - Optional */}
+          <div className="space-y-2">
+            <Label htmlFor="venue">Venue (Optional)</Label>
             <Input
               id="venue"
               name="venue"
-              value={formData.venue}
-              onChange={handleInputChange}
-              placeholder="MetLife Stadium"
+              value={form.values.venue}
+              onChange={form.handleInputChange}
+              placeholder="Madison Square Garden"
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="date">Date *</Label>
-              <Input
-                id="date"
-                name="date"
-                type="date"
-                value={formData.date}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="time">Time (optional)</Label>
-              <Input
-                id="time"
-                name="time"
-                type="time"
-                value={formData.time}
-                onChange={handleInputChange}
-                placeholder="20:00"
-              />
-            </div>
+          {/* Date - Required */}
+          <div className="space-y-2">
+            <Label htmlFor="date">Date *</Label>
+            <Input
+              id="date"
+              name="date"
+              type="date"
+              value={form.values.date}
+              onChange={form.handleInputChange}
+              required
+            />
+            {form.errors.date && (
+              <p className="text-sm text-red-600">{form.errors.date}</p>
+            )}
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? '🎵 Creating Event...' : '🎉 Create Event'}
+          {/* Time - Optional */}
+          <div className="space-y-2">
+            <Label htmlFor="time">Time (Optional)</Label>
+            <Input
+              id="time"
+              name="time"
+              type="time"
+              value={form.values.time}
+              onChange={form.handleInputChange}
+            />
+            <p className="text-sm text-gray-600">
+              Leave blank if time is TBD (defaults to 8:00 PM)
+            </p>
+          </div>
+
+          <Button 
+            type="submit" 
+            disabled={form.isSubmitting}
+            className="w-full"
+          >
+            {form.isSubmitting ? '🎵 Creating Event...' : '🎉 Create Event'}
           </Button>
         </form>
       </CardContent>
     </Card>
   )
-}
+})
+
+export default CreateEventForm

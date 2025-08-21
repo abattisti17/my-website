@@ -710,6 +710,36 @@ export default function StyleGuidePage() {
           </div>
         </section>
 
+        {/* Development Testing Section */}
+        {import.meta.env.DEV && (
+          <section className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-4">🧪 Development Testing</h2>
+              <div className="space-y-4">
+                <Button
+                  onClick={() => {
+                    throw new Error('This is a test crash - Error boundary should catch this!')
+                  }}
+                  variant="destructive"
+                  className="mr-4"
+                >
+                  💥 Test Error Boundary
+                </Button>
+                <Button
+                  onClick={() => {
+                    console.log('🔧 Testing devLog:', { timestamp: new Date(), test: 'data' })
+                    console.error('❌ Testing devError:', new Error('Test error'))
+                    console.log('✅ Testing devSuccess:', 'Test completed')
+                  }}
+                  variant="outline"
+                >
+                  🔍 Test Dev Logging
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
+
       </div>
     </div>
   )

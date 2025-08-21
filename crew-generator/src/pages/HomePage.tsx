@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
+import { supabaseWithRetry, devLog, devError, devSuccess } from '../lib/devAccelerators'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EventListItem } from '@/components/EventListItem'
@@ -36,10 +37,11 @@ export default function HomePage() {
   const [searchLoading, setSearchLoading] = useState(false)
 
   // Create search service when events change
-  // const searchService = useMemo(() => {
-  //   if (events.length === 0) return null
-  //   return createEventsSearchService(events)
-  // }, [events])
+  // Optimized search service with memoization for better performance
+  const searchService = useMemo(() => {
+    if (events.length === 0) return null
+    return createEventsSearchService(events)
+  }, [events])
 
   useEffect(() => {
     fetchEvents()
@@ -61,23 +63,27 @@ export default function HomePage() {
       // Use requestAnimationFrame for smoother UX
       requestAnimationFrame(() => {
         try {
-          // Always create fresh search service to ensure we have latest events
-          const currentSearchService = createEventsSearchService(events)
-          const results = currentSearchService.search(query, 20) // Limit to 20 results
+          // Use memoized search service for better performance
+          if (!searchService) {
+            devLog('Search service not ready')
+            setSearchResults([])
+            return
+          }
+          const results = searchService.search(query, 20) // Limit to 20 results
           setSearchResults(results)
         } catch (error) {
-          console.error('Search error:', error)
+          devError(error, 'search execution')
           setSearchResults([])
         } finally {
           setSearchLoading(false)
         }
       })
     } catch (error) {
-      console.error('Search error:', error)
+      devError(error, 'search initialization')
       setSearchResults([])
       setSearchLoading(false)
     }
-  }, [events]) // Include events in dependencies
+  }, [events, searchService]) // Include searchService for proper optimization
 
   const handleClearSearch = useCallback(() => {
     setSearchQuery('')
@@ -86,28 +92,21 @@ export default function HomePage() {
 
   const fetchEvents = async () => {
     try {
-      console.log('🔄 Fetching events...')
+      devLog('Fetching events')
       
-      // Add timeout for production
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000)
-      )
-      
-      const { data: eventData, error: eventError } = await Promise.race([
-        supabase
-          .from('events')
-          .select('id, slug, artist, city, venue, date_utc')
-          .limit(10),
-        timeoutPromise
-      ]) as any
+      // Use retry logic for more reliable loading (eliminates timeout issues!)
+      const result = await supabaseWithRetry.select(supabase, 'events')
+      const eventData = result.data
 
-      if (eventError) {
-        console.error('❌ Supabase error:', eventError)
-        throw eventError
+      if (!eventData) {
+        devLog('No events found')
+        setEvents([])
+        setError(null)
+        return
       }
 
-      console.log('✅ Events loaded:', eventData?.length || 0)
-      setEvents(eventData || [])
+      devSuccess('Events loaded', { count: eventData.length })
+      setEvents(eventData as unknown as Event[])
       setError(null)
     } catch (error: any) {
       console.error('❌ Error fetching events:', error)
@@ -242,18 +241,21 @@ export default function HomePage() {
           <SearchResults
             results={searchResults}
             query={searchQuery}
-            renderItem={(event) => (
-              <EventListItem
-                event={{
-                  id: event.id,
-                  slug: event.slug,
-                  artist: event.artist,
-                  venue: event.venue || '',
-                  city: event.city,
-                  date: event.date_utc
-                }}
-              />
-            )}
+            renderItem={(event) => {
+              const e = event as any
+              return (
+                <EventListItem
+                  event={{
+                    id: e.id,
+                    slug: e.slug,
+                    artist: e.artist,
+                    venue: e.venue || '',
+                    city: e.city,
+                    date: e.date_utc
+                  }}
+                />
+              )
+            }}
             emptyMessage="No events match your search"
             maxResults={12}
           />

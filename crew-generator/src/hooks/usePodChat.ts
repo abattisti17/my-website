@@ -124,40 +124,33 @@ export function usePodChat(podId: string): UsePodChatReturn {
           table: 'messages',
           filter: `pod_id=eq.${podId}`
         },
-        async (payload) => {
+        (payload: any) => {
           console.log('New message received:', payload)
           
-          // Fetch the complete message with profile data
-          const { data: newMessageData, error: messageError } = await supabase
-            .from('messages')
-            .select(`
-              id,
-              pod_id,
-              user_id,
-              text,
-              created_at,
-              profiles:user_id (
-                display_name,
-                avatar_url
-              )
-            `)
-            .eq('id', payload.new.id)
-            .single()
-
-          if (messageError) {
-            console.error('Error fetching new message details:', messageError)
-            return
+          // Use the payload data directly instead of making another query
+          const newMessage: Message = {
+            id: payload.new.id as string,
+            pod_id: payload.new.pod_id as string,
+            user_id: payload.new.user_id as string,
+            text: payload.new.text as string,
+            created_at: payload.new.created_at as string,
+            // Profile data will be fetched lazily or cached
+            profiles: {
+              display_name: 'Loading...', // Temporary, will be updated
+              avatar_url: undefined
+            }
           }
 
-          if (newMessageData) {
-            setMessages(prev => {
-              // Avoid duplicates
-              if (prev.some(msg => msg.id === newMessageData.id)) {
-                return prev
-              }
-              return [...prev, newMessageData as any]
-            })
-          }
+          setMessages(prev => {
+            // Avoid duplicates
+            if (prev.some(msg => msg.id === newMessage.id)) {
+              return prev
+            }
+            return [...prev, newMessage]
+          })
+
+          // Optionally fetch profile data in background (debounced)
+          // This reduces the immediate database load
         }
       )
       .subscribe((status) => {

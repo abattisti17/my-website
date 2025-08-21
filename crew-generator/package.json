@@ -1,5 +1,6 @@
 {
   "name": "crew-generator",
+  "description": "🎵 PWA for concert crews - MAIN DEVELOPMENT PROJECT (run 'npm run dev' from THIS directory)",
   "private": true,
   "version": "0.0.0",
   "type": "module",

@@ -1,19 +1,20 @@
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import type { SearchResult } from '../lib/searchService'
 import { Badge } from '@/components/ui/badge'
 import { Stack } from './design-system'
+import type { HighlightMatch } from '../lib/constants'
 
 export interface SearchResultsProps<T> {
   results: SearchResult<T>[]
   query: string
-  renderItem: (item: T, matches?: any[]) => React.ReactNode
+  renderItem: (item: T, matches?: HighlightMatch[]) => React.ReactNode
   emptyMessage?: string
   showScores?: boolean
   className?: string
   maxResults?: number
 }
 
-export default function SearchResults<T>({
+const SearchResults = memo(function SearchResults<T>({
   results,
   query,
   renderItem,
@@ -22,7 +23,10 @@ export default function SearchResults<T>({
   className = "",
   maxResults
 }: SearchResultsProps<T>) {
-  const displayResults = maxResults ? results.slice(0, maxResults) : results
+  // Memoize processed results for performance
+  const displayResults = useMemo(() => {
+    return maxResults ? results.slice(0, maxResults) : results
+  }, [results, maxResults])
 
   if (!query.trim()) {
     return null
@@ -73,7 +77,7 @@ export default function SearchResults<T>({
             )}
             
             {/* Render the actual item */}
-            {renderItem(result.item, result.matches ? [...result.matches] : undefined)}
+            {renderItem(result.item)}
           </div>
         ))}
       </Stack>
@@ -88,50 +92,6 @@ export default function SearchResults<T>({
       )}
     </div>
   )
-}
+})
 
-/**
- * Utility function to highlight search matches in text
- */
-export function highlightMatches(
-  text: string, 
-  matches?: any[], 
-  className: string = "bg-yellow-200 dark:bg-yellow-800 px-1 rounded"
-): React.ReactNode {
-  if (!matches || matches.length === 0) {
-    return text
-  }
-
-  // Find the match for this specific text
-  const match = matches.find(m => m.value === text)
-  if (!match || !match.indices) {
-    return text
-  }
-
-  const indices = match.indices
-  const result: React.ReactNode[] = []
-  let lastIndex = 0
-
-  indices.forEach(([start, end]: [number, number], i: number) => {
-    // Add text before the match
-    if (start > lastIndex) {
-      result.push(text.slice(lastIndex, start))
-    }
-    
-    // Add highlighted match
-    result.push(
-      <span key={i} className={className}>
-        {text.slice(start, end + 1)}
-      </span>
-    )
-    
-    lastIndex = end + 1
-  })
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    result.push(text.slice(lastIndex))
-  }
-
-  return result.length > 0 ? result : text
-}
+export default SearchResults

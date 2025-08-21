@@ -1,34 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-// Build-time validation - fails fast with clear errors
-if (!supabaseUrl) {
-  throw new Error(
-    `❌ Missing VITE_SUPABASE_URL environment variable\n` +
-    `Add it to your .env.local file or GitHub Actions secrets.\n` +
-    `See docs/ENVIRONMENT.md for setup instructions.`
-  )
-}
-
-if (!supabaseAnonKey) {
-  throw new Error(
-    `❌ Missing VITE_SUPABASE_ANON_KEY environment variable\n` +
-    `Add it to your .env.local file or GitHub Actions secrets.\n` +
-    `See docs/ENVIRONMENT.md for setup instructions.`
-  )
-}
+import { env } from './envValidation'
 
 // Optional: Development logging (only in dev, no sensitive data)
 if (import.meta.env.DEV) {
   console.log('✅ Supabase client initialized')
-  console.log('🔍 URL:', supabaseUrl)
-  console.log('🔑 API Key (last 10 chars):', supabaseAnonKey?.slice(-10))
+  console.log('🔍 URL:', env.VITE_SUPABASE_URL)
+  console.log('🔑 API Key (last 10 chars):', env.VITE_SUPABASE_ANON_KEY?.slice(-10))
 }
 
 // Optimized Supabase client configuration for development productivity
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,       // Enable session persistence 
     autoRefreshToken: true,     // Enable auto refresh 

@@ -20,6 +20,7 @@ import AppHeader from './components/AppHeader'
 import BottomNavigation from './components/BottomNavigation'
 import { ThemeProvider } from './components/ThemeProvider'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
+import { SimpleErrorBoundary } from './components/SimpleErrorBoundary'
 import { Toaster } from "@/components/ui/sonner"
 
 
@@ -33,7 +34,9 @@ function AppContent() {
   
   return (
     <div className="min-h-screen-dynamic bg-background text-foreground mobile-optimized">
-      <AppHeader />
+      <SimpleErrorBoundary>
+        <AppHeader />
+      </SimpleErrorBoundary>
       <main className="pb-20 md:pb-0 px-content-sm md:px-content-md lg:px-content-lg max-w-7xl mx-auto">
         <Suspense fallback={
           <div className="flex items-center justify-center min-h-[50vh]">
@@ -43,54 +46,84 @@ function AppContent() {
             </div>
           </div>
         }>
+          <SimpleErrorBoundary>
               <Routes>
                                              {/* Public routes */}
-                <Route path="/" element={<HomePage />} />
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/style-guide" element={<StyleGuidePage />} />
+                <Route path="/" element={
+                  <SimpleErrorBoundary>
+                    <HomePage />
+                  </SimpleErrorBoundary>
+                } />
+                <Route path="/auth" element={
+                  <SimpleErrorBoundary>
+                    <AuthPage />
+                  </SimpleErrorBoundary>
+                } />
+                <Route path="/style-guide" element={
+                  <SimpleErrorBoundary>
+                    <StyleGuidePage />
+                  </SimpleErrorBoundary>
+                } />
 
             {/* Protected routes - require authentication */}
             <Route path="/pods" element={
-              <RequireAuth>
-                <ChatOverviewPage />
-              </RequireAuth>
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <ChatOverviewPage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
             } />
             <Route path="/memorabilia" element={
-              <RequireAuth>
-                <PhotosOverviewPage />
-              </RequireAuth>
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <PhotosOverviewPage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
             } />
             <Route path="/profile" element={
-              <RequireAuth>
-                <ProfilePage />
-              </RequireAuth>
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <ProfilePage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
             } />
             <Route path="/profile/edit" element={
-              <RequireAuth>
-                <ProfileEditPage />
-              </RequireAuth>
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <ProfileEditPage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
             } />
             <Route path="/event/:slug" element={
-              <RequireAuth>
-                <EventPage />
-              </RequireAuth>
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <EventPage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
             } />
             <Route path="/event/:slug/pod/:podId" element={
-              <RequireAuth>
-                <PodPage />
-              </RequireAuth>
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <PodPage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
             } />
             <Route path="/event/:slug/memorabilia" element={
-              <RequireAuth>
-                <MemorabiliPage />
-              </RequireAuth>
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <MemorabiliPage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
             } />
             <Route path="/tour" element={
-              <RequireAuth>
-                <TourPage />
-              </RequireAuth>
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <TourPage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
             } />
               </Routes>
+          </SimpleErrorBoundary>
         </Suspense>
       </main>
       <BottomNavigation />
