@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { handleError } from '../lib/errorHandling'
+// import { useVisibilityAwareConnection } from './usePageVisibility' // Temporarily disabled
 
 interface Message {
   id: string
@@ -101,14 +102,18 @@ export function usePodChat(podId: string): UsePodChatReturn {
     }
   }, [podId])
 
-  // Set up realtime subscription
+  // Fetch initial messages when pod changes
+  useEffect(() => {
+    if (podId) {
+      fetchMessages()
+    }
+  }, [podId, fetchMessages])
+
+  // Set up standard realtime subscription (simplified for now)
   useEffect(() => {
     if (!podId) return
 
-    // Fetch initial messages
-    fetchMessages()
-
-    // Set up realtime subscription
+    console.log(`🔗 Setting up realtime subscription for pod: ${podId}`)
     const realtimeChannel = supabase
       .channel(`pod_chat_${podId}`)
       .on(
@@ -167,7 +172,7 @@ export function usePodChat(podId: string): UsePodChatReturn {
       console.log(`🧹 Cleaning up realtime subscription for pod: ${podId}`)
       realtimeChannel.unsubscribe()
     }
-  }, [podId, fetchMessages])
+  }, [podId])
 
   return {
     messages,

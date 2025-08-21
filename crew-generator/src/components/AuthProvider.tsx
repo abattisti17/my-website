@@ -29,17 +29,27 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session with timeout
+    // Get initial session with generous timeout for development
     const getSessionWithTimeout = async () => {
       try {
         const sessionPromise = supabase.auth.getSession()
+        // Much more generous timeout for development (30 seconds)
+        const timeoutMs = import.meta.env.DEV ? 30000 : 10000
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Auth timeout')), 3000)
+          setTimeout(() => reject(new Error('Auth timeout')), timeoutMs)
         )
         
         const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]) as any
-        setSession(session)
-        setUser(session?.user ?? null)
+        
+        if (session) {
+          console.log('✅ Session restored successfully')
+          setSession(session)
+          setUser(session.user)
+        } else {
+          console.log('ℹ️ No existing session found')
+          setSession(null)
+          setUser(null)
+        }
       } catch (error: any) {
         console.warn('⚠️ Auth session check failed:', error.message)
         console.warn('Continuing without authentication...')
@@ -52,7 +62,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     
     getSessionWithTimeout()
 
-    // Listen for auth changes (with error handling)
+    // Listen for auth changes (stable connection, no visibility management)
     let subscription: any
     try {
       const authListener = supabase.auth.onAuthStateChange(async (event, session) => {

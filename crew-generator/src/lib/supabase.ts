@@ -27,12 +27,17 @@ if (import.meta.env.DEV) {
   console.log('🔑 API Key (last 10 chars):', supabaseAnonKey?.slice(-10))
 }
 
-// Optimized Supabase client configuration to prevent auth hanging
+// Optimized Supabase client configuration for development productivity
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: true,       // Enable session persistence for production
-    autoRefreshToken: true,     // Enable auto refresh for production
+    persistSession: true,       // Enable session persistence 
+    autoRefreshToken: true,     // Enable auto refresh 
     detectSessionInUrl: true,   // Enable URL detection for magic links
+    // Development: Extend session duration to reduce auth friction
+    ...(import.meta.env.DEV && {
+      sessionRefreshMargin: 60 * 60 * 24 * 30, // 30 days in development (was 7)
+      refreshThreshold: 60 * 60 * 24 * 25,     // Start refreshing 5 days before expiry
+    }),
     storage: {                  // Custom storage implementation to prevent hanging
       getItem: (key: string) => {
         try {
@@ -61,7 +66,59 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     headers: {
       'X-Client-Info': 'crew-generator-v1'
     }
-  }
+  },
+  // Add request timeout for all Supabase requests
+  ...(import.meta.env.DEV && {
+    fetch: (url: RequestInfo | URL, options: RequestInit = {}) => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 15000) // 15s timeout in dev
+      
+      return fetch(url, {
+        ...options,
+        signal: controller.signal
+      }).finally(() => clearTimeout(timeoutId))
+    }
+  })
 })
+
+// Development auto-login helper
+export const devAutoLogin = async () => {
+  if (!import.meta.env.DEV) return false
+  
+  const DEV_TEST_EMAIL = import.meta.env.VITE_DEV_TEST_EMAIL
+  if (!DEV_TEST_EMAIL) return false
+  
+  try {
+    console.log('🔧 Development auto-login attempting...')
+    
+    // Dynamically determine redirect URL based on environment
+    const redirectTo = import.meta.env.VITE_DEV_REDIRECT_URL 
+      || (import.meta.env.DEV 
+          ? `${window.location.origin}/auth` // Development: current localhost
+          : `${window.location.origin}/auth`) // Production: current domain
+    
+    console.log('🔗 Redirect URL:', redirectTo)
+    
+    const { error } = await supabase.auth.signInWithOtp({
+      email: DEV_TEST_EMAIL,
+      options: {
+        shouldCreateUser: true,
+        emailRedirectTo: redirectTo
+      }
+    })
+    
+    if (error) {
+      console.warn('⚠️ Dev auto-login failed:', error.message)
+      return false
+    }
+    
+    console.log('📧 Dev magic link sent to:', DEV_TEST_EMAIL)
+    console.log('🎯 Magic link will redirect to:', redirectTo)
+    return true
+  } catch (error) {
+    console.warn('⚠️ Dev auto-login error:', error)
+    return false
+  }
+}
 
 

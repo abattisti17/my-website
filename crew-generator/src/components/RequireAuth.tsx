@@ -26,7 +26,7 @@ export default function RequireAuth({ children }: RequireAuthProps) {
         replace: true 
       })
     }
-  }, [user, loading, navigate, location])
+  }, [user, loading, navigate]) // Removed location from dependencies
 
   // Show loading while checking auth
   if (loading) {

@@ -66,10 +66,10 @@ export default function PWAInstallPrompt() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex gap-2">
-        <Button onClick={handleInstallClick} size="sm" className="flex-1">
+        <Button onClick={handleInstallClick} className="flex-1">
           Install
         </Button>
-        <Button onClick={handleDismiss} variant="outline" size="sm">
+        <Button onClick={handleDismiss} variant="outline">
           Later
         </Button>
       </CardContent>
