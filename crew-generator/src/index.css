@@ -125,14 +125,14 @@ html {
 .safe-scroll-content {
   /* Ensures content can scroll past bottom navigation */
   scroll-padding-bottom: var(--scroll-padding-bottom);
-  /* On mobile, add bottom margin to prevent content trapping */
-  margin-bottom: var(--page-bottom-spacing);
+  /* On mobile, add bottom padding to prevent content trapping under bottom nav */
+  padding-bottom: var(--page-bottom-spacing);
 }
 
 /* Desktop doesn't need bottom spacing since no bottom nav */
 @media (min-width: 768px) {
   .safe-scroll-content {
-    margin-bottom: var(--space-6); /* Standard section spacing */
+    padding-bottom: var(--space-6); /* Standard section spacing */
   }
 }
 

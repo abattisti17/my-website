@@ -97,6 +97,15 @@
     padding-right: env(safe-area-inset-right);
   }
 
+  /* Bottom navigation clearance utilities */
+  .pb-bottom-nav {
+    padding-bottom: var(--page-bottom-spacing);
+  }
+  
+  .mb-bottom-nav {
+    margin-bottom: var(--page-bottom-spacing);
+  }
+
   /* Thumb zones - easy reach areas */
   .thumb-zone {
     position: fixed;

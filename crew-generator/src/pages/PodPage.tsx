@@ -336,7 +336,7 @@ export default function PodPage() {
         </CardHeader>
 
         {/* Messages */}
-        <CardContent className="flex-1 overflow-y-auto space-y-3 min-h-0">
+        <CardContent className="flex-1 overflow-y-auto space-y-3 min-h-0 pb-20 md:pb-4">
           {messages.filter(msg => !hiddenMessages.has(msg.id)).length === 0 ? (
             <div className="text-center py-8 text-gray-700">
               <p>No messages yet. Start the conversation! 👋</p>
@@ -390,8 +390,8 @@ export default function PodPage() {
           <div ref={messagesEndRef} />
         </CardContent>
 
-        {/* Message Input */}
-        <div className="p-4 border-t">
+        {/* Desktop Message Input - Remains in card for desktop */}
+        <div className="hidden md:block p-4 border-t">
           <form onSubmit={handleSendMessage} className="flex gap-2">
             <Input
               value={newMessage}
@@ -409,6 +409,28 @@ export default function PodPage() {
           </form>
         </div>
       </Card>
+
+      {/* Fixed Mobile Message Input - Pinned above bottom navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border md:hidden z-40" 
+           style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
+        <div className="p-4">
+          <form onSubmit={handleSendMessage} className="flex gap-2">
+            <Input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message..."
+              disabled={chatSending}
+              className="flex-1"
+              maxLength={500}
+              aria-label="Message input"
+              autoComplete="off"
+            />
+            <Button type="submit" disabled={chatSending || !newMessage.trim()} aria-label={chatSending ? 'Sending message' : 'Send message'}>
+              {chatSending ? '📤' : '🚀'}
+            </Button>
+          </form>
+        </div>
+      </div>
     </div>
   )
 }

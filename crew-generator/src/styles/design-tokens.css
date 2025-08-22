@@ -225,8 +225,9 @@
     
     /* Safe Scroll Areas - Navigation Clearance */
     --bottom-nav-height: 80px;                /* Bottom nav + safe area */
-    --scroll-padding-bottom: var(--bottom-nav-height); /* Clear bottom nav */
-    --page-bottom-spacing: calc(var(--bottom-nav-height) + var(--space-6)); /* Extra breathing room */
+    --bottom-nav-height-with-safe-area: calc(80px + env(safe-area-inset-bottom)); /* Dynamic safe area */
+    --scroll-padding-bottom: var(--bottom-nav-height-with-safe-area); /* Clear bottom nav */
+    --page-bottom-spacing: calc(var(--bottom-nav-height-with-safe-area) + var(--space-8)); /* More breathing room for full card visibility */
 
     /* ==========================================================================
        SIZING TOKENS

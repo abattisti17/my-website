@@ -280,27 +280,7 @@ export default function HomePage() {
         </Stack>
         </section>
 
-        {/* Create Event Button - Full width at bottom */}
-        <div className="mt-8">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button fullWidth={true} className="bg-slate-900 hover:bg-slate-800 text-white">
-                Add event
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>Create New Event</DialogTitle>
-                <DialogDescription>
-                  Add a new concert or event for people to join.
-                </DialogDescription>
-              </DialogHeader>
-              <CreateEventForm onSuccess={() => {
-                fetchEvents() // Refresh events list
-              }} />
-            </DialogContent>
-          </Dialog>
-        </div>
+
       </Stack>
     </div>
   )
