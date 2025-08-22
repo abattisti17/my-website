@@ -296,9 +296,9 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
     )
   }
 
-  // Member chat view
+  // Member chat view - Fixed height container to prevent page scrolling
   return (
-    <div className={cn("h-screen flex flex-col max-w-4xl mx-auto", className)}>
+    <div className={cn("h-screen flex flex-col w-full overflow-hidden", className)}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur-sm flex-shrink-0">
         <div className="flex items-center gap-3">
@@ -318,11 +318,12 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
         </Button>
       </div>
 
-      {/* Chat Area */}
-      <Card className="flex-1 flex flex-col min-h-0">
-        <CardHeader className="pb-3 flex-shrink-0">
+      {/* Chat Area - Full width, no max-width constraint */}
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        {/* Chat Header */}
+        <div className="px-4 py-3 border-b bg-background flex-shrink-0">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Pod Chat</CardTitle>
+            <h2 className="text-lg font-semibold">Pod Chat</h2>
             {/* Member avatars */}
             <div className="flex -space-x-2">
               {members.slice(0, 3).map((member) => (
@@ -331,7 +332,15 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
                   className="w-8 h-8 bg-primary rounded-full border-2 border-background flex items-center justify-center text-primary-foreground text-sm font-medium"
                   title={member.profiles?.display_name || 'Anonymous'}
                 >
-                  {member.profiles?.display_name?.[0] || '?'}
+                  {member.profiles?.avatar_url ? (
+                    <img 
+                      src={member.profiles.avatar_url} 
+                      alt={`${member.profiles.display_name} avatar`}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    member.profiles?.display_name?.[0] || '?'
+                  )}
                 </div>
               ))}
               {members.length > 3 && (
@@ -341,10 +350,10 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
               )}
             </div>
           </div>
-        </CardHeader>
+        </div>
 
-        {/* Messages */}
-        <CardContent className="flex-1 overflow-hidden p-0">
+        {/* Messages - Full height, scrollable */}
+        <div className="flex-1 overflow-hidden">
           {messagesV2Enabled ? (
             <MessageList
               messages={messages.filter(msg => !hiddenMessages.has(msg.id || ''))}
@@ -353,7 +362,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
               hasMore={hasMore}
               onLoadMore={loadMore}
               onMessageHidden={handleMessageHidden}
-              height={500} // Will be adjusted by CSS
+              height={500} // Fixed height for react-window
               className="h-full"
             />
           ) : (
@@ -364,9 +373,9 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
               </div>
             </div>
           )}
-        </CardContent>
+        </div>
 
-        {/* Desktop Composer */}
+        {/* Desktop Composer - Full width */}
         <div className={`hidden ${mobileBreakpoint}:block border-t flex-shrink-0`}>
           {messagesV2Enabled ? (
             <MessageComposer
@@ -382,7 +391,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
             </div>
           )}
         </div>
-      </Card>
+      </div>
 
       {/* Mobile Composer - Fixed bottom */}
       <div className={cn(

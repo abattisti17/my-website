@@ -153,7 +153,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
         className
       )}
     >
-      <div className="flex items-end gap-2 max-w-4xl mx-auto">
+      <div className="flex items-end gap-2 w-full">
         {/* Action buttons - emoji/attachments */}
         <div className="flex gap-1 pb-2">
           <Button

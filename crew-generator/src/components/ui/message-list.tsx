@@ -156,7 +156,7 @@ const MessageGroupComponent: React.FC<{
       {/* Avatar */}
       <div className="flex-shrink-0">
         <div 
-          className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium"
+          className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium overflow-hidden"
           aria-hidden="true"
         >
           {group.sender.avatar_url ? (
@@ -166,7 +166,9 @@ const MessageGroupComponent: React.FC<{
               className="w-8 h-8 rounded-full object-cover"
             />
           ) : (
-            group.sender.display_name.charAt(0).toUpperCase()
+            <span className="text-primary font-medium">
+              {group.sender.display_name.charAt(0).toUpperCase()}
+            </span>
           )}
         </div>
       </div>
@@ -330,10 +332,13 @@ export const MessageList: React.FC<MessageListProps> = ({
     )
   }
 
+  // Ensure height is always a number for react-window
+  const listHeight = height > 0 ? height : 500
+
   return (
     <div 
       ref={containerRef}
-      className={cn("relative", className)}
+      className={cn("relative w-full h-full", className)}
       role="log"
       aria-label="Message list"
       aria-live="polite"
@@ -349,7 +354,8 @@ export const MessageList: React.FC<MessageListProps> = ({
       
       <List
         ref={listRef}
-        height={height}
+        height={listHeight}
+        width="100%"
         itemCount={messageGroups.length}
         itemSize={120} // Approximate height per group
         onScroll={handleScroll}

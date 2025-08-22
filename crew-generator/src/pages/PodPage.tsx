@@ -47,9 +47,9 @@ export default function PodPage() {
   
   if (useMessagesV2 && podId && slug) {
     return (
-      <PageLayout includeMaxWidth={false} includePaddingY={false}>
+      <div className="h-screen overflow-hidden">
         <PodChatView podId={podId} eventSlug={slug} />
-      </PageLayout>
+      </div>
     )
   }
 
