@@ -11,6 +11,7 @@ const AuthPage = lazy(() => import('./pages/AuthPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const ProfileEditPage = lazy(() => import('./pages/ProfileEditPage'))
 const StyleGuidePage = lazy(() => import('./pages/StyleGuidePage'))
+const CreateEventPage = lazy(() => import('./pages/CreateEventPage'))
 const ChatOverviewPage = lazy(() => import('./pages/ChatOverviewPage'))
 const PhotosOverviewPage = lazy(() => import('./pages/PhotosOverviewPage'))
 
@@ -33,7 +34,7 @@ function AppContent() {
   }
   
   return (
-    <div className="min-h-screen-dynamic bg-background text-foreground mobile-optimized">
+    <div className="min-h-screen-dynamic bg-background text-foreground mobile-optimized mobile-no-overflow">
       <SimpleErrorBoundary>
         <AppHeader />
       </SimpleErrorBoundary>
@@ -66,6 +67,13 @@ function AppContent() {
                 } />
 
             {/* Protected routes - require authentication */}
+            <Route path="/create-event" element={
+              <SimpleErrorBoundary>
+                <RequireAuth>
+                  <CreateEventPage />
+                </RequireAuth>
+              </SimpleErrorBoundary>
+            } />
             <Route path="/pods" element={
               <SimpleErrorBoundary>
                 <RequireAuth>

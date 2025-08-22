@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EventListItem } from '@/components/EventListItem'
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import CreateEventForm from '../components/CreateEventForm'
+
 import SearchBar from '../components/SearchBar'
 import SearchResults from '../components/SearchResults'
 import { createEventsSearchService } from '../lib/searchService'
@@ -33,6 +32,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+
   const [searchResults, setSearchResults] = useState<SearchResult<Event>[]>([])
   const [searchLoading, setSearchLoading] = useState(false)
 
@@ -144,7 +144,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen-dynamic flex flex-col safe-scroll-content">
+    <div className="min-h-screen-dynamic flex flex-col safe-scroll-content mobile-no-overflow">
       <Stack spacing="lg" className="flex-1">
         {/* Hero Section - Mobile-first with proper spacing */}
         <div className="page-padding-x page-padding-y">
@@ -190,27 +190,13 @@ export default function HomePage() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Upcoming Events</h2>
           {user && (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="touch-target rounded-xl font-semibold shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground">
-                  <span className="mr-2">➕</span>
-                  <span className="hidden sm:inline">Create Event</span>
-                  <span className="sm:hidden">Create</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>Create New Event</DialogTitle>
-                  <DialogDescription>
-                    Create a new event to gather your crew for concerts, festivals, or any music experience.
-                  </DialogDescription>
-                </DialogHeader>
-                <CreateEventForm onSuccess={() => {
-                  // Refresh events after creation
-                  fetchEvents()
-                }} />
-              </DialogContent>
-            </Dialog>
+            <Button asChild className="touch-target rounded-xl font-semibold shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Link to="/create-event">
+                <span className="mr-2">➕</span>
+                <span className="hidden sm:inline">Create Event</span>
+                <span className="sm:hidden">Create</span>
+              </Link>
+            </Button>
           )}
         </div>
 

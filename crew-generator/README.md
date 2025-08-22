@@ -18,6 +18,17 @@ npm run dev  # This starts Vite dev server on localhost:5173
 
 **Directory Context**: This project is located at `/crew-generator/` within a larger repository that also contains Alessandro's portfolio website.
 
+## 🎨 Design System
+
+This project uses a **design token-first architecture** for consistent, maintainable UI components:
+
+- **[📖 Complete Architecture Guide](./DESIGN_SYSTEM_ARCHITECTURE.md)** - Comprehensive system documentation
+- **[🚀 Quick Reference](./DESIGN_SYSTEM_QUICK_REFERENCE.md)** - TL;DR for developers  
+- **[🔄 Migration Guide](./MIGRATION_TO_DESIGN_TOKENS.md)** - How to migrate existing code
+- **[🧩 Component Docs](./src/components/design-system/README.md)** - Usage examples
+
+**Key Principle**: Never hardcode styles - always use design system components and tokens.
+
 ## 🚀 Quick Start
 
 1. **Install dependencies**

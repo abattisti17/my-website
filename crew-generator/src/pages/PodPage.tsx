@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import ReportMenu from '../components/ReportMenu'
 import { toast } from 'sonner'
+import { PageLayout } from '../components/design-system'
 
 interface Pod {
   id: string
@@ -292,16 +293,16 @@ export default function PodPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-4 max-w-4xl h-screen flex flex-col">
+    <PageLayout includeMaxWidth={false} includePaddingY={false} className="h-screen flex flex-col max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <Button variant="outline" asChild>
             <Link to={`/event/${slug}`}>← Back</Link>
           </Button>
           <div>
             <h1 className="text-xl font-bold">{pod.name || 'Unnamed Pod'}</h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               {pod.events.artist} • {members.length}/5 members
             </p>
           </div>
@@ -411,7 +412,7 @@ export default function PodPage() {
       </Card>
 
       {/* Fixed Mobile Message Input - Pinned above bottom navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border md:hidden z-40" 
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border md:hidden z-40 allow-overflow" 
            style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
         <div className="p-4">
           <form onSubmit={handleSendMessage} className="flex gap-2">
@@ -431,6 +432,6 @@ export default function PodPage() {
           </form>
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { Button } from "@/components/ui/button"
@@ -26,8 +26,14 @@ export default function ProfileEditPage() {
   const navigate = useNavigate()
   const { update } = useSupabaseMutation()
 
+  // Memoize options to prevent infinite re-renders
+  const queryOptions = useMemo(() => ({ 
+    select: '*',
+    enabled: !!user?.id 
+  }), [user?.id])
+
   // Fetch profile data with automatic loading state
-  const { data: profile, loading } = useSupabaseRecord<Profile>('profiles', user?.id || null)
+  const { data: profile, loading } = useSupabaseRecord<Profile>('profiles', user?.id || null, queryOptions)
 
   // Form management with automatic validation
   const form = useForm({
