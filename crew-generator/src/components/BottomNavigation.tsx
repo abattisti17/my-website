@@ -51,7 +51,7 @@ export default function BottomNavigation() {
       {/* Note: Safe scroll content handles spacing, no spacer needed */}
       
       {/* Bottom Navigation - Mobile Only */}
-      <nav className="bottom-nav-container bg-background/95 backdrop-blur-sm border-t border-border md:hidden z-50 safe-area-bottom">
+      <nav className="bottom-nav-container bg-background/95 backdrop-blur-sm border-t border-border md:hidden z-50 safe-area-bottom allow-overflow">
         {/* Safe area padding and full-width container */}
         <div className="w-full px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
           <div className="flex items-center justify-around w-full max-w-sm mx-auto">

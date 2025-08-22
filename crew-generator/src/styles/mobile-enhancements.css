@@ -97,6 +97,15 @@
     padding-right: env(safe-area-inset-right);
   }
 
+  /* Bottom navigation clearance utilities */
+  .pb-bottom-nav {
+    padding-bottom: var(--page-bottom-spacing);
+  }
+  
+  .mb-bottom-nav {
+    margin-bottom: var(--page-bottom-spacing);
+  }
+
   /* Thumb zones - easy reach areas */
   .thumb-zone {
     position: fixed;
@@ -299,12 +308,10 @@
     touch-action: manipulation;
   }
 
-  /* Force button padding - override any conflicting styles */
+  /* Button touch optimization - uses design tokens */
   button[data-slot="button"] {
-    padding: 1rem 2rem !important;
-    height: 3.5rem !important;
-    min-height: 3.5rem !important;
-    /* Removed width forcing - now controlled by fullWidth prop */
+    touch-action: manipulation;
+    /* All sizing now controlled by design tokens in button.tsx */
   }
 
   /* ==========================================================================
@@ -379,6 +386,30 @@
     .mobile-hidden {
       display: block;
     }
+  }
+
+  /* ==========================================================================
+     MOBILE OVERFLOW PREVENTION
+     ========================================================================== */
+
+  /* Prevent horizontal scroll on mobile - PWA best practice */
+  .mobile-no-overflow {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Constrain wide content to viewport */
+  .mobile-constrain {
+    max-width: 100vw;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* For tables and code blocks that need horizontal scroll */
+  .mobile-scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100vw;
   }
 
   /* ==========================================================================

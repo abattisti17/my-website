@@ -99,100 +99,95 @@ const CreateEventForm = memo(function CreateEventForm({ onSuccess }: CreateEvent
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Create New Event</CardTitle>
-        <CardDescription>
-          Set up a new concert event for your crew to join
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={form.handleSubmit} className="space-y-4">
-          {/* Artist/Band Name - Required */}
-          <div className="space-y-2">
-            <Label htmlFor="artist">Artist/Band Name *</Label>
-            <Input
-              id="artist"
-              name="artist"
-              value={form.values.artist}
-              onChange={form.handleInputChange}
-              placeholder="Taylor Swift"
-              required
-            />
-            {form.errors.artist && (
-              <p className="text-sm text-red-600">{form.errors.artist}</p>
-            )}
-          </div>
+    <form onSubmit={form.handleSubmit} className="space-y-6">
+      {/* Artist/Band Name - Required */}
+      <div className="space-y-3">
+        <Label htmlFor="artist" className="text-sm font-medium text-primary">Artist / Band Name*</Label>
+        <Input
+          id="artist"
+          name="artist"
+          value={form.values.artist}
+          onChange={form.handleInputChange}
+          placeholder="Taylor Swift"
+          required
+          className="h-12 text-base"
+        />
+        {form.errors.artist && (
+          <p className="text-sm text-red-600">{form.errors.artist}</p>
+        )}
+      </div>
 
-          {/* City - Required */}
-          <div className="space-y-2">
-            <Label htmlFor="city">City *</Label>
-            <Input
-              id="city"
-              name="city"
-              value={form.values.city}
-              onChange={form.handleInputChange}
-              placeholder="New York"
-              required
-            />
-            {form.errors.city && (
-              <p className="text-sm text-red-600">{form.errors.city}</p>
-            )}
-          </div>
+      {/* City - Required */}
+      <div className="space-y-3">
+        <Label htmlFor="city" className="text-sm font-medium text-primary">City*</Label>
+        <Input
+          id="city"
+          name="city"
+          value={form.values.city}
+          onChange={form.handleInputChange}
+          placeholder="New York"
+          required
+          className="h-12 text-base"
+        />
+        {form.errors.city && (
+          <p className="text-sm text-red-600">{form.errors.city}</p>
+        )}
+      </div>
 
-          {/* Venue - Optional */}
-          <div className="space-y-2">
-            <Label htmlFor="venue">Venue (Optional)</Label>
-            <Input
-              id="venue"
-              name="venue"
-              value={form.values.venue}
-              onChange={form.handleInputChange}
-              placeholder="Madison Square Garden"
-            />
-          </div>
+      {/* Venue - Optional */}
+      <div className="space-y-3">
+        <Label htmlFor="venue" className="text-sm font-medium">Venue (Optional)</Label>
+        <Input
+          id="venue"
+          name="venue"
+          value={form.values.venue}
+          onChange={form.handleInputChange}
+          placeholder="Madison Square Garden"
+          className="h-12 text-base"
+        />
+      </div>
 
-          {/* Date - Required */}
-          <div className="space-y-2">
-            <Label htmlFor="date">Date *</Label>
-            <Input
-              id="date"
-              name="date"
-              type="date"
-              value={form.values.date}
-              onChange={form.handleInputChange}
-              required
-            />
-            {form.errors.date && (
-              <p className="text-sm text-red-600">{form.errors.date}</p>
-            )}
-          </div>
+      {/* Date - Required */}
+      <div className="space-y-3">
+        <Label htmlFor="date" className="text-sm font-medium text-primary">Date*</Label>
+        <Input
+          id="date"
+          name="date"
+          type="date"
+          value={form.values.date}
+          onChange={form.handleInputChange}
+          required
+          className="h-12 text-base"
+        />
+        {form.errors.date && (
+          <p className="text-sm text-red-600">{form.errors.date}</p>
+        )}
+      </div>
 
-          {/* Time - Optional */}
-          <div className="space-y-2">
-            <Label htmlFor="time">Time (Optional)</Label>
-            <Input
-              id="time"
-              name="time"
-              type="time"
-              value={form.values.time}
-              onChange={form.handleInputChange}
-            />
-            <p className="text-sm text-gray-600">
-              Leave blank if time is TBD (defaults to 8:00 PM)
-            </p>
-          </div>
+      {/* Time - Optional */}
+      <div className="space-y-3">
+        <Label htmlFor="time" className="text-sm font-medium">Time (Optional)</Label>
+        <Input
+          id="time"
+          name="time"
+          type="time"
+          value={form.values.time}
+          onChange={form.handleInputChange}
+          className="h-12 text-base"
+        />
+        <p className="text-xs text-muted-foreground">
+          Leave blank if time is TBD (defaults to 8:00 PM)
+        </p>
+      </div>
 
-          <Button 
-            type="submit" 
-            disabled={form.isSubmitting}
-            className="w-full"
-          >
-            {form.isSubmitting ? '🎵 Creating Event...' : '🎉 Create Event'}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+      <Button 
+        type="submit" 
+        disabled={form.isSubmitting}
+        className="w-full mt-8 h-12 text-lg font-semibold rounded-xl"
+      >
+        {form.isSubmitting ? '🎵 Creating Event...' : '🎉 Create Event'}
+      </Button>
+    </form>
   )
 })
 

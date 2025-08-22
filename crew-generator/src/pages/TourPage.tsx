@@ -1,14 +1,30 @@
+// import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import { PageLayout, PageHeader, EmptyState } from '../components/design-system'
+import { Stack } from '../components/design-system'
+import { BookOpen } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
 export default function TourPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">📖 Your Tour Book</h1>
-      <div className="bg-card p-6 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">Your Concert Memories</h2>
-        <p className="text-muted-foreground">
-          Your personal collection of concert memorabilia and memories will appear here.
-          Attend events and capture your experiences to build your tour book!
-        </p>
-      </div>
-    </div>
+    <PageLayout>
+      <Stack spacing="lg">
+        <PageHeader
+          title="📖 Your Tour Book"
+          subtitle="Your personal collection of concert memories and experiences"
+        />
+        
+        <EmptyState
+          icon={<BookOpen className="h-12 w-12" />}
+          title="Your Tour Book is Empty"
+          description="Attend events and capture your experiences to build your personal tour book! Each concert will add memories, photos, and stories to your collection."
+          action={
+            <Button asChild>
+              <Link to="/">Browse Events</Link>
+            </Button>
+          }
+        />
+      </Stack>
+    </PageLayout>
   )
 }
