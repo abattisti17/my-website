@@ -257,34 +257,27 @@ export const MessageList: React.FC<MessageListProps> = ({
 }) => {
   const listRef = useRef<List>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
 
   // Group messages for efficient rendering
   const messageGroups = groupMessages(messages, currentUserId)
 
-  // Auto-scroll to bottom on new messages - more aggressive like current implementation
+  // Auto-scroll to bottom on new messages - simple and reliable
   useEffect(() => {
     if (listRef.current && messageGroups.length > 0) {
-      // Always scroll to bottom on new messages (matching current PodPage behavior)
+      // Scroll to the last item
       listRef.current.scrollToItem(messageGroups.length - 1, 'end')
     }
   }, [messageGroups.length])
 
-  // Handle scroll events for auto-scroll behavior
-  const handleScroll = useCallback(({ scrollOffset, scrollUpdateWasRequested }: any) => {
-    if (!scrollUpdateWasRequested && containerRef.current) {
-      const { scrollHeight, clientHeight } = containerRef.current
-      const isNearBottom = scrollHeight - scrollOffset - clientHeight < 100
-      setShouldAutoScroll(isNearBottom)
-    }
-
+  // Handle scroll for load more
+  const handleScroll = useCallback(({ scrollOffset }: { scrollOffset: number }) => {
     // Trigger load more when scrolling near top
-    if (scrollOffset < 100 && hasMore && onLoadMore) {
+    if (scrollOffset < 200 && hasMore && onLoadMore) {
       onLoadMore()
     }
   }, [hasMore, onLoadMore])
 
-  // Row renderer for react-window
+  // Row renderer for react-window - simplified and more reliable
   const rowRenderer = ({ index, style }: { index: number; style: React.CSSProperties }) => {
     const group = messageGroups[index]
     if (!group) return null
@@ -292,12 +285,9 @@ export const MessageList: React.FC<MessageListProps> = ({
     const prevGroup = index > 0 ? messageGroups[index - 1] : null
     const showDateDivider = !prevGroup || 
       new Date(group.timestamp).toDateString() !== new Date(prevGroup.timestamp).toDateString()
-    
-    // Add extra padding to the last message for breathing room
-    const isLastMessage = index === messageGroups.length - 1
 
     return (
-      <div style={style} className={cn("px-4", isLastMessage && "pb-6")}>
+      <div style={style} className="px-4">
         {showDateDivider && <DateDivider date={group.timestamp} />}
         <MessageGroupComponent 
           group={group} 
@@ -332,9 +322,6 @@ export const MessageList: React.FC<MessageListProps> = ({
     )
   }
 
-  // Ensure height is always a number for react-window
-  const listHeight = height > 0 ? height : 500
-
   return (
     <div 
       ref={containerRef}
@@ -354,29 +341,16 @@ export const MessageList: React.FC<MessageListProps> = ({
       
       <List
         ref={listRef}
-        height={listHeight}
+        height={height}
         width="100%"
         itemCount={messageGroups.length}
-        itemSize={120} // Approximate height per group
+        itemSize={100} // Smaller, more realistic item height
         onScroll={handleScroll}
         className="scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"
+        style={{ overflowX: 'hidden' }} // Prevent horizontal scroll
       >
         {rowRenderer}
       </List>
-
-      {/* New messages indicator */}
-      {!shouldAutoScroll && (
-        <button
-          onClick={() => {
-            setShouldAutoScroll(true)
-            listRef.current?.scrollToItem(messageGroups.length - 1, 'end')
-          }}
-          className="absolute bottom-4 right-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full shadow-lg hover:bg-primary/90 transition-colors"
-          aria-label="Scroll to newest messages"
-        >
-          New messages ↓
-        </button>
-      )}
     </div>
   )
 }
