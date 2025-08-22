@@ -15,20 +15,45 @@ A modern React rebuild of Alessandro Battisti's personal portfolio website, main
 
 ## Project Structure
 
+⚠️ **IMPORTANT FOR AI ASSISTANTS**: This repository contains TWO separate applications:
+
+1. **Main Portfolio** (`/`) - Alessandro's personal website
+2. **Crew Generator** (`/crew-generator/`) - Standalone PWA application
+
+### 🚨 Development Server Instructions
+
+**When working on the Crew Generator app**, ALWAYS run the dev server from the `/crew-generator` directory:
+
+```bash
+# ❌ WRONG - Don't run from root
+npm run dev  # This will fail - no dev script in root
+
+# ✅ CORRECT - Run from crew-generator directory
+cd crew-generator
+npm run dev  # This starts the Vite dev server on localhost:5173
 ```
-alessandro-website/
-├── public/
-│   ├── index.html
-│   └── icons/          # Original favicon and icons
-├── src/
-│   ├── components/     # Reusable React components
-│   ├── pages/         # Page components
-│   ├── data/          # Project data and types
-│   ├── assets/        # Images and static assets
-│   ├── App.tsx        # Main app component with routing
-│   └── index.tsx      # React entry point
-├── package.json       # Dependencies and scripts
-└── tsconfig.json     # TypeScript configuration
+
+### Full Directory Structure
+
+```
+my-website/
+├── alessandro-website/          # Legacy HTML version (archived)
+├── crew-generator/             # 🎯 MAIN DEV FOCUS - PWA Application
+│   ├── src/
+│   │   ├── components/         # React components + design system
+│   │   ├── pages/             # App pages/routes
+│   │   ├── lib/               # Utilities, Supabase, dev helpers
+│   │   ├── hooks/             # Custom React hooks
+│   │   └── types/             # TypeScript definitions
+│   ├── package.json           # Crew app dependencies & scripts
+│   ├── vite.config.ts         # Vite build configuration
+│   └── tailwind.config.js     # Tailwind CSS setup
+├── src/                       # Personal portfolio React app
+│   ├── components/            # Portfolio components
+│   ├── pages/                 # Portfolio pages
+│   └── assets/                # Images and static assets
+├── package.json               # Portfolio dependencies
+└── README.md                  # This file
 ```
 
 ## Pages

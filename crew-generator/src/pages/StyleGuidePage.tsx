@@ -13,9 +13,28 @@ import {
   LoadingSpinner, 
   StatusBadge,
   Stack,
-  HStack
+  HStack,
+  CodeBlock,
+  CardList,
+  ColorTokenCard,
+  SpacingTokenCard
 } from '../components/design-system'
-import { Copy, Check, Heart, Star, User, Calendar, MessageCircle, Camera, Download } from 'lucide-react'
+import { 
+  Copy, 
+  Check, 
+  Heart, 
+  Star, 
+  User, 
+  Calendar, 
+  MessageCircle, 
+  Camera, 
+  Download,
+  ChevronRight,
+  AlertTriangle,
+  RefreshCw,
+  CheckCircle,
+  XCircle
+} from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function StyleGuidePage() {
@@ -94,31 +113,20 @@ export default function StyleGuidePage() {
         {/* Color Tokens */}
         <section>
           <h2 className="text-2xl font-bold text-foreground mb-6">🎨 Color Tokens</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {colorTokens.map((token) => (
-              <Card key={token.name} className="group hover:shadow-lg transition-all duration-200">
-                <CardContent className="p-4">
-                  <div className={`w-full h-16 rounded-lg mb-3 ${token.css} flex items-center justify-center text-sm font-medium`}>
-                    {token.name}
-                  </div>
-                  <div className="space-y-2">
-                    <p className="font-medium text-sm">{token.name}</p>
-                    <button
-                      onClick={() => copyToClipboard(token.css, token.name)}
-                      className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors w-full text-left"
-                    >
-                      <code className="bg-muted px-2 py-1 rounded flex-1">{token.css}</code>
-                      {copiedToken === token.name ? (
-                        <Check className="h-3 w-3 text-green-600" />
-                      ) : (
-                        <Copy className="h-3 w-3" />
-                      )}
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <CardList
+            items={colorTokens}
+            renderCard={(token) => (
+              <ColorTokenCard
+                key={token.name}
+                token={token}
+                isCopied={copiedToken === token.name}
+                onCopy={copyToClipboard}
+              />
+            )}
+            layout="grid"
+            gridConfig={{ cols: 3, gap: "md" }}
+            spacing="sm"
+          />
         </section>
 
         {/* Typography */}
@@ -127,14 +135,17 @@ export default function StyleGuidePage() {
           <Card>
             <CardContent className="p-6 space-y-6">
               {typographyTokens.map((token) => (
-                <div key={token.name} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-muted-foreground">{token.name}</span>
+                <div key={token.name} className="space-y-3 py-4 border-b border-border last:border-b-0">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-2">
+                      <span className="text-sm font-medium text-muted-foreground">{token.name}</span>
+                      <div className={`${token.css} text-foreground`}>{token.example}</div>
+                    </div>
                     <button
                       onClick={() => copyToClipboard(token.css, token.name)}
-                      className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
                     >
-                      <code className="bg-muted px-2 py-1 rounded">{token.css}</code>
+                      <code className="bg-muted px-2 py-1 rounded text-xs">{token.css}</code>
                       {copiedToken === token.name ? (
                         <Check className="h-3 w-3 text-green-600" />
                       ) : (
@@ -142,7 +153,6 @@ export default function StyleGuidePage() {
                       )}
                     </button>
                   </div>
-                  <p className={token.css}>{token.example}</p>
                 </div>
               ))}
             </CardContent>
@@ -152,33 +162,20 @@ export default function StyleGuidePage() {
         {/* Spacing & Layout */}
         <section>
           <h2 className="text-2xl font-bold text-foreground mb-6">📐 Spacing & Layout</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {spacingTokens.map((token) => (
-              <Card key={token.name}>
-                <CardContent className="p-4">
-                  <div className="space-y-3">
-                    <h3 className="font-semibold">{token.name}</h3>
-                    <div className="bg-primary/10 border-2 border-dashed border-primary/30 rounded-lg p-4">
-                      <div className={`bg-primary rounded ${token.css} flex items-center justify-center text-primary-foreground text-xs font-medium`}>
-                        {token.value}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => copyToClipboard(token.css, token.name)}
-                      className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors w-full"
-                    >
-                      <code className="bg-muted px-2 py-1 rounded flex-1">{token.css}</code>
-                      {copiedToken === token.name ? (
-                        <Check className="h-3 w-3 text-green-600" />
-                      ) : (
-                        <Copy className="h-3 w-3" />
-                      )}
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <CardList
+            items={spacingTokens}
+            renderCard={(token) => (
+              <SpacingTokenCard
+                key={token.name}
+                token={token}
+                isCopied={copiedToken === token.name}
+                onCopy={copyToClipboard}
+              />
+            )}
+            layout="grid"
+            gridConfig={{ cols: 2, gap: "md" }}
+            spacing="sm"
+          />
         </section>
 
         {/* Design System Components */}
@@ -189,31 +186,47 @@ export default function StyleGuidePage() {
           <div className="space-y-8">
             <div>
               <h3 className="text-lg font-semibold mb-4">Feature Cards</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FeatureCard
-                  icon={<Heart className="h-6 w-6 text-red-500" />}
-                  title="Default Variant"
-                  description="Standard feature card with hover effects"
-                  actionText="Learn More"
-                  onClick={() => toast.info('Default card clicked')}
-                />
-                <FeatureCard
-                  icon={<Star className="h-6 w-6 text-yellow-500" />}
-                  title="Primary Variant"
-                  description="Enhanced card with gradient background"
-                  actionText="Get Started"
-                  variant="primary"
-                  onClick={() => toast.info('Primary card clicked')}
-                />
-                <FeatureCard
-                  icon={<User className="h-6 w-6 text-blue-500" />}
-                  title="Secondary Variant"
-                  description="Subtle gradient with soft colors"
-                  actionText="View Profile"
-                  variant="secondary"
-                  onClick={() => toast.info('Secondary card clicked')}
-                />
-              </div>
+              <CardList
+                items={[
+                  {
+                    icon: <Heart className="h-6 w-6 text-red-500" />,
+                    title: "Default Variant",
+                    description: "Standard feature card with hover effects",
+                    actionText: "Learn More",
+                    variant: "default" as const,
+                    onClick: () => toast.info('Default card clicked')
+                  },
+                  {
+                    icon: <Star className="h-6 w-6 text-yellow-500" />,
+                    title: "Primary Variant", 
+                    description: "Enhanced card with gradient background",
+                    actionText: "Get Started",
+                    variant: "primary" as const,
+                    onClick: () => toast.info('Primary card clicked')
+                  },
+                  {
+                    icon: <User className="h-6 w-6 text-blue-500" />,
+                    title: "Secondary Variant",
+                    description: "Subtle gradient with soft colors", 
+                    actionText: "View Profile",
+                    variant: "secondary" as const,
+                    onClick: () => toast.info('Secondary card clicked')
+                  }
+                ]}
+                renderCard={(card) => (
+                  <FeatureCard
+                    icon={card.icon}
+                    title={card.title}
+                    description={card.description}
+                    actionText={card.actionText}
+                    variant={card.variant}
+                    onClick={card.onClick}
+                  />
+                )}
+                layout="grid"
+                gridConfig={{ cols: 3, gap: "md" }}
+                spacing="md"
+              />
             </div>
 
             {/* Empty States */}
@@ -707,6 +720,335 @@ export default function StyleGuidePage() {
                 <p>• Forget accessibility attributes</p>
               </CardContent>
             </Card>
+          </div>
+        </section>
+
+        {/* Card System Catalog */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-bold text-foreground mb-6">🃏 Card System Catalog</h2>
+          
+          <div className="space-y-8">
+            {/* Base Card Component */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Base Card Component</h3>
+              <Card className="max-w-md">
+                <CardHeader>
+                  <CardTitle>Base Card</CardTitle>
+                  <CardDescription>
+                    Default card with standard styling: rounded-xl border, shadow-sm, gap-6 spacing
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Uses design tokens: bg-card, text-card-foreground, border, rounded-xl
+                  </p>
+                </CardContent>
+              </Card>
+              <CodeBlock>
+                {`<Card className="...">
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+  </CardHeader>
+  <CardContent>Content</CardContent>
+</Card>`}
+              </CodeBlock>
+            </div>
+
+            {/* Event List Item Cards */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Event List Item Cards</h3>
+              <div className="space-y-3 max-w-md">
+                <Card className="border border-border hover:bg-accent/50 transition-colors cursor-pointer">
+                  <CardContent className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-foreground mb-1">Taylor Swift</h3>
+                      <p className="text-sm text-muted-foreground mb-2">New York • Madison Square Garden</p>
+                      <p className="text-sm text-muted-foreground">Fri, Dec 15, 2024</p>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground ml-4 flex-shrink-0" />
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm font-medium mb-2">Usage Pattern:</p>
+                <code className="text-sm">
+                  {`<Card className="border border-border hover:bg-accent/50 transition-colors cursor-pointer">
+  <CardContent className="flex items-center justify-between">
+    <!-- Content with ChevronRight icon -->
+  </CardContent>
+</Card>`}
+                </code>
+              </div>
+            </div>
+
+            {/* Pod Cards */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Pod Cards</h3>
+              <div className="grid gap-4 md:grid-cols-2 max-w-2xl">
+                <Card className="hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      Concert Crew
+                      <Badge variant="secondary" className="text-xs">3/5</Badge>
+                    </CardTitle>
+                    <CardDescription>
+                      <span>3/5 members</span>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex -space-x-2 mb-3">
+                      <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-xs">A</div>
+                      <div className="w-8 h-8 bg-secondary/20 rounded-full flex items-center justify-center text-xs">B</div>
+                      <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-xs">C</div>
+                    </div>
+                    <Button size="sm" fullWidth>Join Pod</Button>
+                  </CardContent>
+                </Card>
+                
+                <Card className="hover:shadow-md transition-shadow opacity-75">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      Full Pod
+                      <Badge variant="secondary" className="text-xs">FULL</Badge>
+                    </CardTitle>
+                    <CardDescription>
+                      <span className="text-orange-600 font-medium">5/5 members</span>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex -space-x-2 mb-3">
+                      <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-xs">A</div>
+                      <div className="w-8 h-8 bg-secondary/20 rounded-full flex items-center justify-center text-xs">B</div>
+                      <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-xs">C</div>
+                      <div className="w-8 h-8 bg-muted/40 rounded-full flex items-center justify-center text-xs">D</div>
+                      <div className="w-8 h-8 bg-muted/40 rounded-full flex items-center justify-center text-xs">E</div>
+                    </div>
+                    <Button size="sm" fullWidth disabled>Pod Full</Button>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm font-medium mb-2">Usage Pattern:</p>
+                <code className="text-sm">
+                  {`<Card className="hover:shadow-md transition-shadow">
+  <CardHeader className="pb-3">
+    <CardTitle>Pod Name + Badge</CardTitle>
+    <CardDescription>Member count</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <!-- Avatar stack + Action button -->
+  </CardContent>
+</Card>`}
+                </code>
+              </div>
+            </div>
+
+            {/* Authentication Cards */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Authentication Cards</h3>
+              <Card className="w-full max-w-md">
+                <CardHeader className="text-center">
+                  <CardTitle>Sign In Required</CardTitle>
+                  <CardDescription>
+                    Please sign in to access this feature
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button fullWidth>Sign In</Button>
+                  <Button variant="outline" fullWidth>Create Account</Button>
+                </CardContent>
+              </Card>
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm font-medium mb-2">Usage Pattern:</p>
+                <code className="text-sm">
+                  {`<Card className="w-full max-w-md">
+  <CardHeader className="text-center">
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Message</CardDescription>
+  </CardHeader>
+  <CardContent className="space-y-4">
+    <!-- Action buttons -->
+  </CardContent>
+</Card>`}
+                </code>
+              </div>
+            </div>
+
+            {/* Welcome/CTA Cards */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Welcome/CTA Cards</h3>
+              <Card className="mx-auto max-w-md border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30 shadow-lg">
+                <CardHeader className="text-center space-y-4 pb-6">
+                  <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+                    <span className="text-2xl">🎤</span>
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl font-semibold">Join the Community</CardTitle>
+                    <CardDescription className="text-muted-foreground mt-2 leading-relaxed">
+                      Connect with fellow music fans and find your perfect concert crew!
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <Button fullWidth>Get Started</Button>
+                </CardContent>
+              </Card>
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm font-medium mb-2">Usage Pattern:</p>
+                <code className="text-sm">
+                  {`<Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30 shadow-lg">
+  <CardHeader className="text-center space-y-4">
+    <div className="icon-container">🎤</div>
+    <CardTitle>Welcome Title</CardTitle>
+    <CardDescription>Engaging description</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <Button fullWidth>CTA Button</Button>
+  </CardContent>
+</Card>`}
+                </code>
+              </div>
+            </div>
+
+            {/* Empty State Cards */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Empty State Cards</h3>
+              <Card className="text-center max-w-md">
+                <CardContent className="pt-2">
+                  <p className="text-gray-800 text-lg mb-4">No events yet. Check back soon!</p>
+                  <Badge variant="secondary">Sample events will appear here</Badge>
+                </CardContent>
+              </Card>
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm font-medium mb-2">Usage Pattern:</p>
+                <code className="text-sm">
+                  {`<Card className="text-center">
+  <CardContent className="pt-2">
+    <p>Empty state message</p>
+    <Badge variant="secondary">Helper text</Badge>
+  </CardContent>
+</Card>`}
+                </code>
+              </div>
+            </div>
+
+            {/* Error State Cards */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Error State Cards</h3>
+              <Card className="w-full max-w-md">
+                <CardHeader className="text-center">
+                  <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
+                    <AlertTriangle className="h-6 w-6 text-red-600" />
+                  </div>
+                  <CardTitle className="text-lg">Something went wrong</CardTitle>
+                  <CardDescription>An unexpected error occurred. Please try again.</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <Button variant="outline">
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Try Again
+                  </Button>
+                </CardContent>
+              </Card>
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm font-medium mb-2">Usage Pattern:</p>
+                <code className="text-sm">
+                  {`<Card className="w-full max-w-md">
+  <CardHeader className="text-center">
+    <div className="error-icon-container">
+      <AlertTriangle className="h-6 w-6 text-red-600" />
+    </div>
+    <CardTitle>Error Title</CardTitle>
+    <CardDescription>Error message</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <Button onClick={onRetry}>Try Again</Button>
+  </CardContent>
+</Card>`}
+                </code>
+              </div>
+            </div>
+
+            {/* Card Design Tokens */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Card Design Tokens</h3>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Available Design Tokens</CardTitle>
+                  <CardDescription>
+                    Consistent spacing and styling tokens for cards
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <h4 className="font-medium mb-2">Colors</h4>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li><code>bg-card</code> - Card background</li>
+                        <li><code>text-card-foreground</code> - Card text</li>
+                        <li><code>border</code> - Card border</li>
+                        <li><code>shadow-sm</code> - Card shadow</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Spacing</h4>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li><code>p-[var(--space-6)]</code> - Interior padding (24px)</li>
+                        <li><code>gap-[var(--space-6)]</code> - Internal spacing (24px)</li>
+                        <li><code>rounded-[var(--radius-xl)]</code> - Border radius (12px)</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="mt-4 p-3 bg-muted rounded-lg">
+                    <p className="text-sm font-medium mb-1">Base Card Classes:</p>
+                    <code className="text-xs">
+                      bg-card text-card-foreground flex flex-col border shadow-sm p-[var(--space-6)] gap-[var(--space-6)] rounded-[var(--radius-xl)]
+                    </code>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Card Usage Guidelines */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Card Usage Guidelines</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="border-green-200 bg-green-50">
+                  <CardHeader>
+                    <CardTitle className="text-green-800 flex items-center gap-2">
+                      <CheckCircle className="h-5 w-5" />
+                      Do
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-green-700">
+                    <p>• Base Card handles all interior padding automatically</p>
+                    <p>• Add hover states for interactive cards</p>
+                    <p>• Use CardHeader/CardContent structure</p>
+                    <p>• Apply appropriate transitions</p>
+                    <p>• Use design tokens for colors and spacing</p>
+                    <p>• Group related information logically</p>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-red-200 bg-red-50">
+                  <CardHeader>
+                    <CardTitle className="text-red-800 flex items-center gap-2">
+                      <XCircle className="h-5 w-5" />
+                      Don't
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-red-700">
+                    <p>• Add extra padding to Card or CardContent</p>
+                    <p>• Hardcode colors or spacing values</p>
+                    <p>• Make cards too wide (max-w-* recommended)</p>
+                    <p>• Skip CardHeader for titled content</p>
+                    <p>• Use inconsistent border radius</p>
+                    <p>• Forget hover states for clickable cards</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         </section>
 

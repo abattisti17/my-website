@@ -1,5 +1,11 @@
+import { useParams } from 'react-router-dom'
+import { PodChatView } from '../components/ui/pod-chat-view'
+import { isFeatureEnabled } from '../lib/featureFlags'
+import { PageLayout } from '../components/design-system'
+
+// Legacy imports for fallback
 import { useEffect, useState, useRef } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { usePodChat } from '../hooks/usePodChat'
@@ -9,7 +15,6 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import ReportMenu from '../components/ReportMenu'
 import { toast } from 'sonner'
-import { PageLayout } from '../components/design-system'
 
 interface Pod {
   id: string
@@ -35,6 +40,25 @@ interface PodMember {
 }
 
 export default function PodPage() {
+  const { slug, podId } = useParams<{ slug: string; podId: string }>()
+  
+  // Feature flag check - use v2 if enabled, otherwise fallback to v1
+  const useMessagesV2 = isFeatureEnabled('MESSAGES_UI')
+  
+  if (useMessagesV2 && podId && slug) {
+    return (
+      <PageLayout includeMaxWidth={false} includePaddingY={false}>
+        <PodChatView podId={podId} eventSlug={slug} />
+      </PageLayout>
+    )
+  }
+
+  // Fallback to original implementation when v2 is disabled
+  return <LegacyPodPage />
+}
+
+// Legacy implementation preserved for safe rollback
+function LegacyPodPage() {
   const { slug, podId } = useParams<{ slug: string; podId: string }>()
   const { user } = useAuth()
   const navigate = useNavigate()

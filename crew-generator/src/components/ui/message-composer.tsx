@@ -226,7 +226,9 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
           aria-label="Send message"
         >
           {sending ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+            <span className="text-lg">📤</span>
+          ) : canSend ? (
+            <span className="text-lg">🚀</span>
           ) : (
             <Send className="h-4 w-4" />
           )}

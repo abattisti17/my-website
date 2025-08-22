@@ -104,9 +104,9 @@
     --foreground-inverse: var(--color-neutral-0);
 
     /* Border Colors */
-    --border: var(--color-neutral-200);
-    --border-emphasis: var(--color-neutral-300);
-    --border-strong: var(--color-neutral-400);
+    --border: var(--color-neutral-300);  /* Made more prominent - was 200 */
+    --border-emphasis: var(--color-neutral-400);  /* Adjusted accordingly - was 300 */
+    --border-strong: var(--color-neutral-500);  /* Adjusted accordingly - was 400 */
 
     /* Component-Specific Colors */
     --card: var(--background);
@@ -131,10 +131,16 @@
        Type scale and font definitions
        ========================================================================== */
 
-    /* Font Families */
+    /* Font Families - SaaS Best Practice: All fonts as design tokens */
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    --font-mono: 'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    
+    /* Font Family Semantic Tokens - Easy to change globally */
+    --font-body: var(--font-sans);           /* Body text */
+    --font-ui: var(--font-sans);             /* UI elements */
+    --font-display: var(--font-heading);     /* Large headings */
+    --font-code: var(--font-mono);           /* Code blocks */
 
     /* Font Sizes - Type Scale */
     --text-xs: 0.75rem;    /* 12px */
@@ -359,6 +365,50 @@
     --input-padding-y: var(--space-3);       /* 12px - Vertical padding */
 
     /* ==========================================================================
+       COMPONENT TOKENS - CARDS
+       Design token-first card system
+       
+       Usage:
+       - Card component uses these tokens for consistent styling
+       - All card variants should reference these tokens
+       - Never hardcode card spacing - always use these tokens
+       
+       To change card styling globally:
+       1. Update the token values below
+       2. All cards across the app will automatically update
+       ========================================================================== */
+
+    /* Card Padding */
+    --card-padding-sm: var(--space-4);       /* 16px - Small cards */
+    --card-padding-md: var(--space-6);       /* 24px - Medium cards */
+    --card-padding-lg: var(--space-8);       /* 32px - Large cards */
+    --card-padding-default: var(--card-padding-md); /* Default to medium */
+
+    /* Card Internal Spacing */
+    --card-gap-sm: var(--space-3);           /* 12px - Tight spacing */
+    --card-gap-md: var(--space-4);           /* 16px - Standard spacing */
+    --card-gap-lg: var(--space-6);           /* 24px - Loose spacing */
+    --card-gap-default: var(--card-gap-lg);  /* Default to loose (current: gap-6) */
+
+    /* Card Border Radius */
+    --card-radius-sm: var(--radius-md);      /* 6px - Small cards */
+    --card-radius-md: var(--radius-lg);      /* 8px - Medium cards */
+    --card-radius-lg: var(--radius-xl);      /* 12px - Large cards */
+    --card-radius-default: var(--radius-xl); /* Default to large (current: rounded-xl) */
+
+    /* Card Shadows */
+    --card-shadow-sm: var(--shadow-xs);      /* Subtle shadow */
+    --card-shadow-md: var(--shadow-sm);      /* Standard shadow */
+    --card-shadow-lg: var(--shadow-md);      /* Prominent shadow */
+    --card-shadow-default: var(--shadow-sm); /* Default shadow (current: shadow-sm) */
+
+    /* Card Hover Shadows */
+    --card-shadow-hover-sm: var(--shadow-sm);  /* Hover for small cards */
+    --card-shadow-hover-md: var(--shadow-md);  /* Hover for medium cards */
+    --card-shadow-hover-lg: var(--shadow-lg);  /* Hover for large cards */
+    --card-shadow-hover-default: var(--shadow-md); /* Default hover shadow */
+
+    /* ==========================================================================
        ANIMATION TOKENS
        ========================================================================== */
 
@@ -403,9 +453,9 @@
     --foreground-subtle: var(--color-neutral-500);
     --foreground-inverse: var(--color-neutral-900);
 
-    --border: var(--color-neutral-700);
-    --border-emphasis: var(--color-neutral-600);
-    --border-strong: var(--color-neutral-500);
+    --border: var(--color-neutral-600);  /* Made more prominent - was 700 */
+    --border-emphasis: var(--color-neutral-500);  /* Adjusted accordingly - was 600 */
+    --border-strong: var(--color-neutral-400);  /* Adjusted accordingly - was 500 */
 
     --card: var(--color-neutral-900);
     --card-foreground: var(--color-neutral-50);
@@ -432,7 +482,7 @@
 
 @layer base {
   body {
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
     color: var(--foreground);
     background-color: var(--background);
     line-height: var(--leading-normal);
@@ -440,16 +490,35 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
     font-weight: var(--font-semibold);
     line-height: var(--leading-tight);
     color: var(--foreground);
   }
 
-  h1 { font-size: var(--text-4xl); }
-  h2 { font-size: var(--text-3xl); }
-  h3 { font-size: var(--text-2xl); }
-  h4 { font-size: var(--text-xl); }
-  h5 { font-size: var(--text-lg); }
-  h6 { font-size: var(--text-base); }
+  /* Note: Font sizes are controlled by Tailwind classes (text-4xl, text-2xl, etc.) 
+     to avoid conflicts with utility classes in components */
+
+  /* Card content typography - remove default margins for better control */
+  [data-slot="card-content"] p {
+    margin: 0;
+  }
+
+  [data-slot="card-content"] p + p {
+    margin-top: var(--space-3); /* 12px spacing between paragraphs */
+  }
+
+  /* Code typography - Use semantic font token */
+  code, pre, kbd, samp {
+    font-family: var(--font-code);
+  }
+
+  /* Inline code styling */
+  :not(pre) > code {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: 0.875em;
+  }
 }

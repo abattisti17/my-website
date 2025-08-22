@@ -260,12 +260,13 @@ export const MessageList: React.FC<MessageListProps> = ({
   // Group messages for efficient rendering
   const messageGroups = groupMessages(messages, currentUserId)
 
-  // Auto-scroll to bottom on new messages (if user is near bottom)
+  // Auto-scroll to bottom on new messages - more aggressive like current implementation
   useEffect(() => {
-    if (shouldAutoScroll && listRef.current) {
+    if (listRef.current && messageGroups.length > 0) {
+      // Always scroll to bottom on new messages (matching current PodPage behavior)
       listRef.current.scrollToItem(messageGroups.length - 1, 'end')
     }
-  }, [messageGroups.length, shouldAutoScroll])
+  }, [messageGroups.length])
 
   // Handle scroll events for auto-scroll behavior
   const handleScroll = useCallback(({ scrollOffset, scrollUpdateWasRequested }: any) => {

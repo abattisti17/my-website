@@ -3,6 +3,7 @@ import { useAuth } from '../components/AuthProvider'
 import { messagesAdapter, type Message } from '../lib/messages/MessagesAdapter'
 import { MessageList } from '../components/ui/message-list'
 import { MessageComposer } from '../components/ui/message-composer'
+import { PodChatView } from '../components/ui/pod-chat-view'
 import { PageHeader } from '../components/design-system/PageHeader'
 import { PageLayout } from '../components/design-system/PageLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -229,52 +230,84 @@ export default function MessagesExamplePage() {
         </CardContent>
       </Card>
 
-      {/* Chat Interface */}
-      <Card className="h-[600px] flex flex-col">
-        <CardHeader className="flex-shrink-0">
-          <CardTitle className="text-lg">Live Chat Demo</CardTitle>
-        </CardHeader>
-        
-        {/* Messages */}
-        <CardContent className="flex-1 p-0 overflow-hidden relative">
-          {messagesV2Enabled ? (
-            <MessageList
-              messages={messages.filter(msg => !hiddenMessages.has(msg.id || ''))}
-              currentUserId="current-user"
-              loading={loading}
-              hasMore={!!nextCursor}
-              onLoadMore={handleLoadMore}
-              onMessageHidden={handleMessageHidden}
-              height={400} // Reduced height to account for composer
-              className="pb-4" // Add padding bottom for breathing room
-            />
-          ) : (
-            <div className="h-[400px] flex items-center justify-center text-muted-foreground">
-              <div className="text-center">
-                <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Enable MESSAGES_UI flag to see new components</p>
-                <p className="text-xs mt-1">Currently showing placeholder</p>
+      {/* Chat Interface Options */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Option 1: Component Demo */}
+        <Card className="h-[600px] flex flex-col">
+          <CardHeader className="flex-shrink-0">
+            <CardTitle className="text-lg">Individual Components</CardTitle>
+            <p className="text-sm text-muted-foreground">MessageList + MessageComposer</p>
+          </CardHeader>
+          
+          {/* Messages */}
+          <CardContent className="flex-1 p-0 overflow-hidden relative">
+            {messagesV2Enabled ? (
+              <MessageList
+                messages={messages.filter(msg => !hiddenMessages.has(msg.id || ''))}
+                currentUserId="current-user"
+                loading={loading}
+                hasMore={!!nextCursor}
+                onLoadMore={handleLoadMore}
+                onMessageHidden={handleMessageHidden}
+                height={400} // Reduced height to account for composer
+                className="pb-4" // Add padding bottom for breathing room
+              />
+            ) : (
+              <div className="h-[400px] flex items-center justify-center text-muted-foreground">
+                <div className="text-center">
+                  <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Enable MESSAGES_UI flag to see new components</p>
+                  <p className="text-xs mt-1">Currently showing placeholder</p>
+                </div>
               </div>
-            </div>
-          )}
-        </CardContent>
+            )}
+          </CardContent>
 
-        {/* Composer */}
-        <div className="flex-shrink-0 border-t bg-background">
-          {messagesV2Enabled ? (
-            <MessageComposer
-              onSend={handleSendMessage}
-              disabled={sending || !user}
-              podId={MOCK_POD_ID}
-              placeholder={user ? "Type a message..." : "Sign in to send messages"}
-            />
-          ) : (
-            <div className="p-4 text-center text-muted-foreground">
-              <p className="text-sm">Enable MESSAGES_UI to test the composer</p>
-            </div>
-          )}
-        </div>
-      </Card>
+          {/* Composer */}
+          <div className="flex-shrink-0 border-t bg-background">
+            {messagesV2Enabled ? (
+              <MessageComposer
+                onSend={handleSendMessage}
+                disabled={sending || !user}
+                podId={MOCK_POD_ID}
+                placeholder={user ? "Type a message..." : "Sign in to send messages"}
+                maxLength={500}
+              />
+            ) : (
+              <div className="p-4 text-center text-muted-foreground">
+                <p className="text-sm">Enable MESSAGES_UI to test the composer</p>
+              </div>
+            )}
+          </div>
+        </Card>
+
+        {/* Option 2: PodChatView Demo */}
+        <Card className="h-[600px] flex flex-col">
+          <CardHeader className="flex-shrink-0">
+            <CardTitle className="text-lg">Production Pod Chat</CardTitle>
+            <p className="text-sm text-muted-foreground">PodChatView with full context</p>
+          </CardHeader>
+          
+          <CardContent className="flex-1 p-0 overflow-hidden">
+            {messagesV2Enabled ? (
+              <div className="h-full">
+                <div className="text-center p-4 text-muted-foreground">
+                  <p className="text-sm mb-2">🚧 PodChatView Integration</p>
+                  <p className="text-xs">Visit a real pod to see full experience:</p>
+                  <p className="text-xs font-mono mt-1">/event/[slug]/pod/[id]</p>
+                </div>
+              </div>
+            ) : (
+              <div className="h-full flex items-center justify-center text-muted-foreground">
+                <div className="text-center">
+                  <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Enable MESSAGES_UI flag to see PodChatView</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Testing Instructions */}
       <Card className="mt-6 border-amber-200 bg-amber-50">

@@ -1,32 +1,18 @@
+"use client"
+
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
 import { cn } from "@/lib/utils"
 
-// SSR-safe check for client-side rendering
-const isClient = typeof window !== "undefined"
-
 const Drawer = ({
   shouldScaleBackground = true,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) => {
-  // Ensure we only render on client to avoid SSR hydration mismatches
-  const [mounted, setMounted] = React.useState(false)
-  
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-  
-  if (!mounted || !isClient) {
-    return null
-  }
-  
-  return (
-    <DrawerPrimitive.Root
-      shouldScaleBackground={shouldScaleBackground}
-      {...props}
-    />
-  )
-}
+}: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
+  <DrawerPrimitive.Root
+    shouldScaleBackground={shouldScaleBackground}
+    {...props}
+  />
+)
 Drawer.displayName = "Drawer"
 
 const DrawerTrigger = DrawerPrimitive.Trigger

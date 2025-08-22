@@ -275,3 +275,4 @@ Migration is complete when:
 ---
 
 **Need Help?** Check the troubleshooting section in [`DESIGN_SYSTEM_ARCHITECTURE.md`](./DESIGN_SYSTEM_ARCHITECTURE.md#troubleshooting)
+

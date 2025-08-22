@@ -143,3 +143,4 @@ Use the same component everywhere:
 ---
 
 **Questions?** Check the troubleshooting section in the full architecture guide!
+

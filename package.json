@@ -1,5 +1,6 @@
 {
   "name": "alessandro-website",
+  "description": "Alessandro's portfolio website - NOTE: For Crew Generator development, use /crew-generator/ directory",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

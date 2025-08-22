@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { PageHeader } from '../components/design-system/PageHeader'
 import { PageLayout, PageSection } from '../components/design-system/PageLayout'
+import { CardList, PodCard } from '../components/design-system'
 import { EmptyState } from '../components/design-system/EmptyState'
 import { LoadingSpinner } from '../components/design-system/LoadingSpinner'
 import { MessageCircle, Users, Calendar } from 'lucide-react'
@@ -207,48 +208,24 @@ export default function ChatOverviewPage() {
       />
 
       <PageSection>
-        {pods.map((pod) => (
-          <Link
-            key={pod.id}
-            to={`/event/${pod.events.slug}/pod/${pod.id}`}
-            className="block"
-          >
-            <Card className="hover:bg-muted/50 transition-colors duration-200 touch-target">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <CardTitle className="text-lg truncate">
-                      {pod.name || `${pod.events.artist} Chat`}
-                    </CardTitle>
-                    <CardDescription className="flex items-center gap-2 mt-1">
-                      <Calendar className="h-4 w-4" />
-                      {pod.events.artist} • {pod.events.city}
-                    </CardDescription>
-                  </div>
-                  <div className="flex flex-col items-end gap-2 ml-4">
-                    <Badge variant="secondary" className="text-xs">
-                      <Users className="h-3 w-3 mr-1" />
-                      {pod.member_count}
-                    </Badge>
-                    {pod.latest_message_at && (
-                      <span className="text-xs text-muted-foreground">
-                        {formatRelativeTime(pod.latest_message_at)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Event: {formatDate(pod.events.date_utc)}</span>
-                  <span className="text-primary">
-                    {pod.latest_message_at ? 'Tap to continue' : 'Tap to start chatting'}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+        <CardList
+          items={pods}
+          renderCard={(pod) => (
+            <PodCard 
+              key={pod.id}
+              pod={pod} 
+              formatRelativeTime={formatRelativeTime}
+            />
+          )}
+          loading={loading}
+          spacing="sm"
+          emptyState={{
+            title: "No chats yet",
+            message: "Join some events to start chatting with your crew!",
+            icon: <MessageCircle className="h-12 w-12 text-muted-foreground" />
+          }}
+          testId="chat-list"
+        />
       </PageSection>
     </PageLayout>
   )
