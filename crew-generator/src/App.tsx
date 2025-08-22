@@ -14,6 +14,7 @@ const StyleGuidePage = lazy(() => import('./pages/StyleGuidePage'))
 const CreateEventPage = lazy(() => import('./pages/CreateEventPage'))
 const ChatOverviewPage = lazy(() => import('./pages/ChatOverviewPage'))
 const PhotosOverviewPage = lazy(() => import('./pages/PhotosOverviewPage'))
+const MessagesExamplePage = lazy(() => import('./pages/MessagesExamplePage'))
 
 import AuthProvider from './components/AuthProvider'
 import RequireAuth from './components/RequireAuth'
@@ -63,6 +64,11 @@ function AppContent() {
                 <Route path="/style-guide" element={
                   <SimpleErrorBoundary>
                     <StyleGuidePage />
+                  </SimpleErrorBoundary>
+                } />
+                <Route path="/examples/messages" element={
+                  <SimpleErrorBoundary>
+                    <MessagesExamplePage />
                   </SimpleErrorBoundary>
                 } />
 
