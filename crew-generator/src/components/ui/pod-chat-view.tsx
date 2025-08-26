@@ -338,7 +338,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
                 >
                   <UserAvatar
                     src={member.profiles?.avatar_url}
-                    alt={`${member.profiles.display_name} avatar`}
+                    alt={`${member.profiles?.display_name || 'Anonymous'} avatar`}
                     fallback={member.profiles?.display_name || 'Anonymous'}
                     userId={member.user_id}
                   />
