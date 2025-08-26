@@ -9,7 +9,6 @@ import { MessageList } from './message-list'
 import { MessageComposer } from './message-composer'
 import { UserAvatar } from './avatar'
 import { useMessagesV2 } from '@/hooks/useMessagesV2'
-import { isFeatureEnabled } from '@/lib/featureFlags'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 
@@ -58,8 +57,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
   const [isMember, setIsMember] = useState(false)
   const [hiddenMessages, setHiddenMessages] = useState<Set<string>>(new Set())
 
-  // Use Messages v2 hook when enabled and user is a member
-  const messagesV2Enabled = isFeatureEnabled('MESSAGES_UI')
+  // Use Messages v2 hook when user is a member
   const {
     messages,
     sendMessage: sendMessageV2,
@@ -69,8 +67,8 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
     hasMore,
     isConnected
   } = useMessagesV2({ 
-    podId: isMember && messagesV2Enabled ? podId : '',
-    enabled: isMember && messagesV2Enabled 
+    podId: isMember ? podId : '',
+    enabled: isMember 
   })
 
   // Fetch pod data and members
@@ -200,8 +198,6 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
   }
 
   const handleSendMessage = async (text: string) => {
-    if (!messagesV2Enabled) return
-    
     try {
       await sendMessageV2(text)
     } catch (error) {
@@ -355,42 +351,27 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
 
         {/* Messages - Full height, scrollable */}
         <div className="flex-1 overflow-hidden">
-          {messagesV2Enabled ? (
-            <MessageList
-              messages={messages.filter(msg => !hiddenMessages.has(msg.id || ''))}
-              currentUserId={user?.id}
-              loading={false}
-              hasMore={hasMore}
-              onLoadMore={loadMore}
-              onMessageHidden={handleMessageHidden}
-              height={500} // Fixed height for react-window
-              className="h-full"
-            />
-          ) : (
-            <div className="h-full flex items-center justify-center text-muted-foreground">
-              <div className="text-center">
-                <p>Enable Messages v2 to use new chat interface</p>
-                <p className="text-xs mt-1">Set VITE_MESSAGES_UI=v2</p>
-              </div>
-            </div>
-          )}
+          <MessageList
+            messages={messages.filter(msg => !hiddenMessages.has(msg.id || ''))}
+            currentUserId={user?.id}
+            loading={false}
+            hasMore={hasMore}
+            onLoadMore={loadMore}
+            onMessageHidden={handleMessageHidden}
+            height={500} // Fixed height for react-window
+            className="h-full"
+          />
         </div>
 
         {/* Desktop Composer - Full width */}
         <div className={`hidden ${mobileBreakpoint}:block border-t flex-shrink-0`}>
-          {messagesV2Enabled ? (
-            <MessageComposer
-              onSend={handleSendMessage}
-              disabled={sending || !user}
-              podId={podId}
-              placeholder={user ? "Type a message..." : "Sign in to send messages"}
-              maxLength={500} // Match current limit
-            />
-          ) : (
-            <div className="p-4 text-center text-muted-foreground">
-              <p className="text-sm">Enable Messages v2 to send messages</p>
-            </div>
-          )}
+          <MessageComposer
+            onSend={handleSendMessage}
+            disabled={sending || !user}
+            podId={podId}
+            placeholder={user ? "Type a message..." : "Sign in to send messages"}
+            maxLength={500} // Match current limit
+          />
         </div>
       </div>
 
@@ -400,20 +381,14 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
         "bg-background/95 backdrop-blur-sm border-t"
       )} 
       style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
-        {messagesV2Enabled ? (
-          <MessageComposer
-            onSend={handleSendMessage}
-            disabled={sending || !user}
-            podId={podId}
-            placeholder={user ? "Type a message..." : "Sign in to send messages"}
-            maxLength={500}
-            className="border-t-0" // Remove double border
-          />
-        ) : (
-          <div className="p-4 text-center text-muted-foreground">
-            <p className="text-sm">Enable Messages v2 to send messages</p>
-          </div>
-        )}
+        <MessageComposer
+          onSend={handleSendMessage}
+          disabled={sending || !user}
+          podId={podId}
+          placeholder={user ? "Type a message..." : "Sign in to send messages"}
+          maxLength={500}
+          className="border-t-0" // Remove double border
+        />
       </div>
     </div>
   )
