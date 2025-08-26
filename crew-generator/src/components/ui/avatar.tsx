@@ -17,7 +17,7 @@ function Avatar({
     <AvatarPrimitive.Root
       data-slot="avatar"
       className={cn(
-        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
+        "relative flex shrink-0 overflow-hidden rounded-full",
         className
       )}
       {...props}
@@ -54,12 +54,37 @@ function AvatarFallback({
   )
 }
 
+// Size variants for consistent avatar sizing
+export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl'
+
+const avatarSizeClasses: Record<AvatarSize, string> = {
+  sm: 'size-6', // 24px
+  md: 'size-8', // 32px - default
+  lg: 'size-12', // 48px
+  xl: 'size-16' // 64px
+}
+
+const avatarIconSizeClasses: Record<AvatarSize, string> = {
+  sm: 'size-2', // Loading spinner
+  md: 'size-3', 
+  lg: 'size-4',
+  xl: 'size-6'
+}
+
+const avatarTextSizeClasses: Record<AvatarSize, string> = {
+  sm: 'text-xs',
+  md: 'text-xs', 
+  lg: 'text-sm',
+  xl: 'text-lg'
+}
+
 // Enhanced UserAvatar component for our specific use cases
 interface UserAvatarProps {
   src?: string | null
   alt: string
   fallback: string
   userId?: string
+  size?: AvatarSize
   className?: string
   showLoadingState?: boolean
   onImageError?: () => void
@@ -70,6 +95,7 @@ function UserAvatar({
   alt, 
   fallback, 
   userId,
+  size = 'md',
   className,
   showLoadingState = true,
   onImageError,
@@ -116,7 +142,7 @@ function UserAvatar({
   }, [src, isOwnImage, onImageError])
 
   return (
-    <Avatar className={className} {...props}>
+    <Avatar className={cn(avatarSizeClasses[size], className)} {...props}>
       {shouldShowImage && (
         <AvatarImage
           src={src!}
@@ -126,9 +152,9 @@ function UserAvatar({
           }}
         />
       )}
-      <AvatarFallback>
+      <AvatarFallback className={avatarTextSizeClasses[size]}>
         {showLoadingState && imageState === 'loading' && shouldShowImage ? (
-          <Loader2 className="size-3 animate-spin text-primary/60" />
+          <Loader2 className={cn(avatarIconSizeClasses[size], "animate-spin text-primary/60")} />
         ) : (
           <span>{fallbackText}</span>
         )}
@@ -137,4 +163,4 @@ function UserAvatar({
   )
 }
 
-export { Avatar, AvatarImage, AvatarFallback, UserAvatar }
+export { Avatar, AvatarImage, AvatarFallback, UserAvatar, type AvatarSize }

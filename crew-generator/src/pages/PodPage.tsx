@@ -292,6 +292,7 @@ function LegacyPodPage() {
                       alt={member.profiles?.display_name || 'Anonymous'}
                       fallback={member.profiles?.display_name || 'Anonymous'}
                       userId={member.user_id}
+                      size="md"
                     />
                     <span className="text-sm">
                       {member.profiles?.display_name || 'Anonymous'}
@@ -357,6 +358,7 @@ function LegacyPodPage() {
                     alt={member.profiles?.display_name || 'Anonymous'}
                     fallback={member.profiles?.display_name || 'Anonymous'}
                     userId={member.user_id}
+                    size="md"
                   />
                 </div>
               ))}
@@ -389,6 +391,7 @@ function LegacyPodPage() {
                       alt={message.profiles?.display_name || 'Anonymous'}
                       fallback={message.profiles?.display_name || 'Anonymous'}
                       userId={message.user_id}
+                      size="md"
                     />
                   </div>
                   <div className={`max-w-[70%] ${message.user_id === user?.id ? 'text-right' : ''}`}>

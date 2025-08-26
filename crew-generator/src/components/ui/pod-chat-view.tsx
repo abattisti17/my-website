@@ -268,6 +268,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
                       alt={member.profiles?.display_name || 'Anonymous'}
                       fallback={member.profiles?.display_name || 'Anonymous'}
                       userId={member.user_id}
+                      size="md"
                     />
                     <span className="text-sm">
                       {member.profiles?.display_name || 'Anonymous'}
@@ -337,6 +338,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
                     alt={`${member.profiles?.display_name || 'Anonymous'} avatar`}
                     fallback={member.profiles?.display_name || 'Anonymous'}
                     userId={member.user_id}
+                    size="md"
                   />
                 </div>
               ))}

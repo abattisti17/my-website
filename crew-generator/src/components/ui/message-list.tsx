@@ -161,6 +161,7 @@ const MessageGroupComponent: React.FC<{
           alt={`${group.sender.display_name} avatar`}
           fallback={group.sender.display_name}
           userId={group.sender.user_id}
+          size="md"
         />
       </div>
 
