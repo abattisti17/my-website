@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { FixedSizeList as List } from 'react-window'
 import { cn } from '@/lib/utils'
 import type { Message } from '@/lib/messages/MessagesAdapter'
+import { UserAvatar } from './avatar'
 import ReportMenu from '../ReportMenu'
 
 interface MessageGroup {
@@ -155,22 +156,12 @@ const MessageGroupComponent: React.FC<{
     >
       {/* Avatar */}
       <div className="flex-shrink-0">
-        <div 
-          className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium overflow-hidden"
-          aria-hidden="true"
-        >
-          {group.sender.avatar_url ? (
-            <img 
-              src={group.sender.avatar_url} 
-              alt={`${group.sender.display_name} avatar`}
-              className="w-8 h-8 rounded-full object-cover"
-            />
-          ) : (
-            <span className="text-primary font-medium">
-              {group.sender.display_name.charAt(0).toUpperCase()}
-            </span>
-          )}
-        </div>
+        <UserAvatar
+          src={group.sender.avatar_url}
+          alt={`${group.sender.display_name} avatar`}
+          fallback={group.sender.display_name}
+          userId={group.sender.user_id}
+        />
       </div>
 
       {/* Messages */}

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MessageList } from './message-list'
 import { MessageComposer } from './message-composer'
+import { UserAvatar } from './avatar'
 import { useMessagesV2 } from '@/hooks/useMessagesV2'
 import { isFeatureEnabled } from '@/lib/featureFlags'
 import { cn } from '@/lib/utils'
@@ -266,9 +267,12 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
               <div className="space-y-2">
                 {members.map((member) => (
                   <div key={member.user_id} className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
-                      {member.profiles?.display_name?.[0] || '?'}
-                    </div>
+                    <UserAvatar
+                      src={member.profiles?.avatar_url}
+                      alt={member.profiles?.display_name || 'Anonymous'}
+                      fallback={member.profiles?.display_name || 'Anonymous'}
+                      userId={member.user_id}
+                    />
                     <span className="text-sm">
                       {member.profiles?.display_name || 'Anonymous'}
                       {member.role === 'creator' && (
@@ -329,18 +333,15 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
               {members.slice(0, 3).map((member) => (
                 <div 
                   key={member.user_id}
-                  className="w-8 h-8 bg-primary rounded-full border-2 border-background flex items-center justify-center text-primary-foreground text-sm font-medium"
+                  className="border-2 border-background rounded-full"
                   title={member.profiles?.display_name || 'Anonymous'}
                 >
-                  {member.profiles?.avatar_url ? (
-                    <img 
-                      src={member.profiles.avatar_url} 
-                      alt={`${member.profiles.display_name} avatar`}
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                  ) : (
-                    member.profiles?.display_name?.[0] || '?'
-                  )}
+                  <UserAvatar
+                    src={member.profiles?.avatar_url}
+                    alt={`${member.profiles.display_name} avatar`}
+                    fallback={member.profiles?.display_name || 'Anonymous'}
+                    userId={member.user_id}
+                  />
                 </div>
               ))}
               {members.length > 3 && (

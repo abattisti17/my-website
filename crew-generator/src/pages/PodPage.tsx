@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { UserAvatar } from "@/components/ui/avatar"
 import ReportMenu from '../components/ReportMenu'
 import { toast } from 'sonner'
 
@@ -286,9 +287,12 @@ function LegacyPodPage() {
               <div className="space-y-2">
                 {members.map((member) => (
                   <div key={member.user_id} className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium" aria-label={`Avatar for ${member.profiles?.display_name || 'Anonymous'}`}>
-                      {member.profiles?.display_name?.[0] || '?'}
-                    </div>
+                    <UserAvatar
+                      src={member.profiles?.avatar_url}
+                      alt={member.profiles?.display_name || 'Anonymous'}
+                      fallback={member.profiles?.display_name || 'Anonymous'}
+                      userId={member.user_id}
+                    />
                     <span className="text-sm">
                       {member.profiles?.display_name || 'Anonymous'}
                       {member.role === 'creator' && (
@@ -345,10 +349,15 @@ function LegacyPodPage() {
               {members.slice(0, 3).map((member) => (
                 <div 
                   key={member.user_id}
-                  className="w-8 h-8 bg-purple-600 rounded-full border-2 border-white flex items-center justify-center text-white text-sm font-medium"
+                  className="border-2 border-white rounded-full"
                   title={member.profiles?.display_name || 'Anonymous'}
                 >
-                  {member.profiles?.display_name?.[0] || '?'}
+                  <UserAvatar
+                    src={member.profiles?.avatar_url}
+                    alt={member.profiles?.display_name || 'Anonymous'}
+                    fallback={member.profiles?.display_name || 'Anonymous'}
+                    userId={member.user_id}
+                  />
                 </div>
               ))}
               {members.length > 3 && (
@@ -374,8 +383,13 @@ function LegacyPodPage() {
                   key={message.id}
                   className={`flex gap-3 group ${message.user_id === user?.id ? 'flex-row-reverse' : ''}`}
                 >
-                  <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0" aria-label={`Avatar for ${message.profiles?.display_name || 'Anonymous'}`}>
-                    {message.profiles?.display_name?.[0] || '?'}
+                  <div className="flex-shrink-0">
+                    <UserAvatar
+                      src={message.profiles?.avatar_url}
+                      alt={message.profiles?.display_name || 'Anonymous'}
+                      fallback={message.profiles?.display_name || 'Anonymous'}
+                      userId={message.user_id}
+                    />
                   </div>
                   <div className={`max-w-[70%] ${message.user_id === user?.id ? 'text-right' : ''}`}>
                     <div className="chat-timestamp mb-1">
