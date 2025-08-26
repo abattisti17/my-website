@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import ReportMenu from '../components/ReportMenu'
 import { toast } from 'sonner'
+import { PageLayout } from '../components/design-system'
 
 interface Pod {
   id: string
@@ -292,16 +293,16 @@ export default function PodPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-4 max-w-4xl h-screen flex flex-col">
+    <PageLayout includeMaxWidth={false} includePaddingY={false} className="h-screen flex flex-col max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <Button variant="outline" asChild>
             <Link to={`/event/${slug}`}>← Back</Link>
           </Button>
           <div>
             <h1 className="text-xl font-bold">{pod.name || 'Unnamed Pod'}</h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               {pod.events.artist} • {members.length}/5 members
             </p>
           </div>
@@ -336,7 +337,7 @@ export default function PodPage() {
         </CardHeader>
 
         {/* Messages */}
-        <CardContent className="flex-1 overflow-y-auto space-y-3 min-h-0">
+        <CardContent className="flex-1 overflow-y-auto space-y-3 min-h-0 pb-20 md:pb-4">
           {messages.filter(msg => !hiddenMessages.has(msg.id)).length === 0 ? (
             <div className="text-center py-8 text-gray-700">
               <p>No messages yet. Start the conversation! 👋</p>
@@ -390,8 +391,8 @@ export default function PodPage() {
           <div ref={messagesEndRef} />
         </CardContent>
 
-        {/* Message Input */}
-        <div className="p-4 border-t">
+        {/* Desktop Message Input - Remains in card for desktop */}
+        <div className="hidden md:block p-4 border-t">
           <form onSubmit={handleSendMessage} className="flex gap-2">
             <Input
               value={newMessage}
@@ -409,6 +410,28 @@ export default function PodPage() {
           </form>
         </div>
       </Card>
-    </div>
+
+      {/* Fixed Mobile Message Input - Pinned above bottom navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border md:hidden z-40 allow-overflow" 
+           style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
+        <div className="p-4">
+          <form onSubmit={handleSendMessage} className="flex gap-2">
+            <Input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message..."
+              disabled={chatSending}
+              className="flex-1"
+              maxLength={500}
+              aria-label="Message input"
+              autoComplete="off"
+            />
+            <Button type="submit" disabled={chatSending || !newMessage.trim()} aria-label={chatSending ? 'Sending message' : 'Send message'}>
+              {chatSending ? '📤' : '🚀'}
+            </Button>
+          </form>
+        </div>
+      </div>
+    </PageLayout>
   )
 }

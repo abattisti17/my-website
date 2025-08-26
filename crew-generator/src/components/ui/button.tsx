@@ -4,9 +4,28 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Button Component - Design Token Integration
+ * 
+ * This component uses design tokens from design-tokens.css for all sizing.
+ * Size variants (sm, md, lg, default) map to CSS custom properties:
+ * 
+ * - height: --button-height-{size}
+ * - padding-x: --button-padding-x-{size}  
+ * - padding-y: --button-padding-y-{size}
+ * - min-width: --button-min-width-{size}
+ * 
+ * To change button sizes globally, update the tokens in design-tokens.css.
+ * Never hardcode sizes in className - always use the size prop.
+ * 
+ * @example
+ * <Button size="lg">Large Button</Button>
+ * <Button size="default" fullWidth>Default Full Width</Button>
+ */
+
 const buttonVariants = cva(
-  // Touch-friendly default: 44px min height, full-width on mobile, rounded corners
-  "flex items-center justify-center gap-3 whitespace-nowrap rounded-xl text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive !h-14 !px-8 !py-4 w-auto min-w-[120px] max-w-full touch-manipulation",
+  // Base button styles using design tokens
+  "flex items-center justify-center gap-3 whitespace-nowrap rounded-xl text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive w-auto max-w-full touch-manipulation",
   {
     variants: {
       variant: {
@@ -19,6 +38,12 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
       },
+      size: {
+        sm: "h-[var(--button-height-sm)] px-[var(--button-padding-x-sm)] py-[var(--button-padding-y-sm)] min-w-[var(--button-min-width-sm)]",
+        md: "h-[var(--button-height-md)] px-[var(--button-padding-x-md)] py-[var(--button-padding-y-md)] min-w-[var(--button-min-width-md)]",
+        lg: "h-[var(--button-height-lg)] px-[var(--button-padding-x-lg)] py-[var(--button-padding-y-lg)] min-w-[var(--button-min-width-lg)]",
+        default: "h-[var(--button-height-default)] px-[var(--button-padding-x-default)] py-[var(--button-padding-y-default)] min-w-[var(--button-min-width-default)]",
+      },
       fullWidth: {
         true: "w-full",
         false: "",
@@ -26,6 +51,7 @@ const buttonVariants = cva(
     },
     defaultVariants: {
       variant: "default",
+      size: "default",
     },
   }
 )
@@ -33,11 +59,12 @@ const buttonVariants = cva(
 function Button({
   className,
   variant,
+  size,
   fullWidth,
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
-  Omit<VariantProps<typeof buttonVariants>, 'size'> & {
+  VariantProps<typeof buttonVariants> & {
     asChild?: boolean
   }) {
   const Comp = asChild ? Slot : "button"
@@ -45,7 +72,7 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, fullWidth, className }))}
+      className={cn(buttonVariants({ variant, size, fullWidth, className }))}
       {...props}
     />
   )

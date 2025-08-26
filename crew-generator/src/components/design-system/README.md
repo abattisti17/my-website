@@ -1,8 +1,21 @@
-# Design System Architecture
+# Design System Components
 
 ## 🏗️ **Architecture Philosophy**
 
-This design system uses a **hybrid approach** that combines the best of CSS-in-JS and Tailwind CSS for maximum reliability and maintainability.
+This design system uses a **design token-first approach** that combines the best of CSS-in-JS and Tailwind CSS for maximum reliability and maintainability.
+
+> 📖 **For comprehensive documentation**, see [`DESIGN_SYSTEM_ARCHITECTURE.md`](../../../DESIGN_SYSTEM_ARCHITECTURE.md)
+
+## 🎨 **Design Token Integration**
+
+All components now use design tokens from `src/styles/design-tokens.css` for consistent sizing and spacing:
+
+```css
+/* Component tokens control all sizing */
+--button-height-default: var(--space-14);    /* 56px */
+--input-height-default: var(--space-14);     /* 56px */
+--button-padding-x-default: var(--space-8);  /* 32px */
+```
 
 ### **Spacing Components** (Stack, HStack)
 - ✅ **Use CSS Flexbox `gap` + Design Tokens**
@@ -75,12 +88,52 @@ All spacing values come from `src/styles/design-tokens.css`:
 --space-16: 4rem;    /* 64px - 2xl */
 ```
 
+## 🧩 **Component Usage**
+
+### **Form Components**
+```tsx
+// ✅ Use design system components in forms
+import { FormField, ModernInput, ModernButton } from '@/components/design-system'
+
+<FormField label="Artist Name">
+  <ModernInput placeholder="Enter artist name" />
+</FormField>
+<ModernButton modernSize="large" fullWidth>Submit</ModernButton>
+```
+
+### **Button Components**
+```tsx
+// ✅ Design system button with proper sizing
+<ModernButton modernSize="large">Large Button</ModernButton>
+
+// ✅ Base button with size variants
+<Button size="lg">Large Button</Button>
+
+// ❌ Never hardcode sizes
+<Button className="h-14 px-8">Button</Button>
+```
+
+### **Input Components**
+```tsx
+// ✅ Use ModernInput for forms (uses design tokens)
+<ModernInput />
+
+// ❌ Avoid base Input in forms (has hardcoded h-9)
+<Input className="h-14" />
+```
+
 ## 🚀 **Future Maintainers**
 
 **For AI Agents & Developers:**
-1. **Always use Stack/HStack** for component spacing
-2. **Always use Tailwind utilities** for colors, layout, styling
-3. **Never use Tailwind spacing utilities** for design system components
-4. **All spacing changes** should be made in `design-tokens.css`
+1. **Always use design system components** (`ModernButton`, `ModernInput`) in forms
+2. **Always use Stack/HStack** for component spacing
+3. **Always use design tokens** - never hardcode values
+4. **Never use !important** in CSS - use component variants instead
+5. **All sizing changes** should be made in `design-tokens.css`
+
+**Key Files:**
+- [`DESIGN_SYSTEM_ARCHITECTURE.md`](../../../DESIGN_SYSTEM_ARCHITECTURE.md) - Complete system documentation
+- [`design-tokens.css`](../../styles/design-tokens.css) - All design tokens
+- [`design-system/index.ts`](./index.ts) - Component exports
 
 This architecture ensures your components work reliably across framework updates and provides enterprise-grade maintainability.
