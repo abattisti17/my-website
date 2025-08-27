@@ -41,8 +41,13 @@ export default function BottomNavigation() {
   const location = useLocation()
   const { user } = useAuth()
 
-  // Hide bottom nav on auth page
+  // Hide bottom nav on auth page and pod chat pages
   if (location.pathname === '/auth') {
+    return null
+  }
+
+  // Hide bottom nav on pod chat pages (pattern: /event/*/pod/*)
+  if (location.pathname.match(/^\/event\/[^/]+\/pod\/[^/]+/)) {
     return null
   }
 
