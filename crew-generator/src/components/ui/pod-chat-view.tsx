@@ -304,49 +304,34 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
     <div className={cn("h-screen flex flex-col w-full overflow-hidden", className)}>
       {/* Header */}
       <div className="flex items-center justify-between border-b bg-background/95 backdrop-blur-sm flex-shrink-0 page-padding-x" style={{ paddingTop: 'var(--chat-header-padding-y)', paddingBottom: 'var(--chat-header-padding-y)' }}>
-        <div className="flex items-center" style={{ gap: 'var(--chat-details-gap)' }}>
+        <div className="flex items-start flex-1 min-w-0" style={{ gap: 'var(--chat-details-gap)' }}>
           <IconButton variant="ghost" size="sm" asChild>
             <Link to={`/event/${eventSlug}`} aria-label="Back to event">
               <ChevronLeft className="h-4 w-4" />
             </Link>
           </IconButton>
-          <div>
-            <h1 className="text-xl font-bold">{pod.name || 'Unnamed Pod'}</h1>
-            <p className="text-sm text-muted-foreground">
-              {pod.events.artist} • {members.length}/5 members
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-bold truncate mb-1">{pod.name || 'Unnamed Pod'}</h1>
+            <p className="text-sm text-muted-foreground truncate mb-2">
+              {pod.events.artist} • {pod.events.city} • {members.length}/5 members
               {isConnected && <span className="ml-2 text-green-600">🟢</span>}
             </p>
-          </div>
-        </div>
-        <Button variant="outline" onClick={handleLeavePod}>
-          Leave Pod
-        </Button>
-      </div>
-
-      {/* Chat Area - Full width, no max-width constraint */}
-      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {/* Chat Header */}
-        <div className="border-b bg-background flex-shrink-0 page-padding-x" style={{ paddingTop: 'var(--chat-header-padding-y)', paddingBottom: 'var(--chat-header-padding-y)' }}>
-          <div 
-            className="flex items-center"
-            style={{ gap: 'var(--chat-header-gap)' }}
-          >
-            <h2 className="text-lg font-semibold flex-1">Pod Chat</h2>
-            {/* Member avatars */}
-            <div className="flex -space-x-2 flex-shrink-0">
+            
+            {/* Member avatars positioned under subtitle */}
+            <div className="flex -space-x-2 mt-2">
               {members.slice(0, 3).map((member) => (
                 <div 
                   key={member.user_id}
                   className="border-2 border-background rounded-full"
                   title={member.profiles?.display_name || 'Anonymous'}
                 >
-                          <UserAvatar
-          src={member.profiles?.avatar_url}
-          alt={`${member.profiles?.display_name || 'Anonymous'} avatar`}
-          fallback={member.profiles?.display_name || 'Anonymous'}
-          userId={member.user_id}
-          size="chat"
-        />
+                  <UserAvatar
+                    src={member.profiles?.avatar_url}
+                    alt={`${member.profiles?.display_name || 'Anonymous'} avatar`}
+                    fallback={member.profiles?.display_name || 'Anonymous'}
+                    userId={member.user_id}
+                    size="chat"
+                  />
                 </div>
               ))}
               {members.length > 3 && (
@@ -357,6 +342,15 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
             </div>
           </div>
         </div>
+        
+        <Button variant="outline" onClick={handleLeavePod}>
+          Leave Pod
+        </Button>
+      </div>
+
+      {/* Chat Area - Full width, no max-width constraint */}
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+
 
         {/* Messages - Full height, scrollable with dynamic composer clearance */}
         <div 

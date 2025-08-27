@@ -642,6 +642,11 @@
     font-weight: var(--font-semibold);
     line-height: var(--leading-tight);
     color: var(--foreground);
+    margin: 0; /* Reset browser defaults for consistent spacing control */
+  }
+
+  p {
+    margin: 0; /* Reset browser defaults for consistent spacing control */
   }
 
   /* Note: Font sizes are controlled by Tailwind classes (text-4xl, text-2xl, etc.) 
