@@ -9,11 +9,12 @@ import { PageLayout } from '../components/design-system/PageLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { MessageCircle, Settings, Users, Zap } from 'lucide-react'
+import { MessageCircle, Settings, Users, Zap, Monitor, Tablet, Smartphone, RefreshCw } from 'lucide-react'
 import { isFeatureEnabled, toggleFeatureFlag, getAllFeatureFlags } from '../lib/featureFlags'
 import { toast } from 'sonner'
+import { messageTestData, testScenarios, mockCurrentUser } from '../examples/messages'
 
-// Mock data for demonstration
+// Legacy mock data for demonstration (kept for compatibility)
 const MOCK_MESSAGES: Message[] = [
   {
     id: '1',
@@ -91,6 +92,13 @@ const MOCK_MESSAGES: Message[] = [
 
 const MOCK_POD_ID = 'example-pod'
 
+// Demo configuration using design system principles
+const DEMO_CONFIG = {
+  messageMaxLength: 500,    // Consistent with production limit
+  apiDelay: 500,           // Mock API response time
+  loadMoreDelay: 1000,     // Mock loading delay
+}
+
 export default function MessagesExamplePage() {
   const { user } = useAuth()
   const [messages, setMessages] = useState<Message[]>([])
@@ -99,23 +107,30 @@ export default function MessagesExamplePage() {
   const [nextCursor, setNextCursor] = useState<string>()
   const [featureFlags, setFeatureFlags] = useState(getAllFeatureFlags())
   const [hiddenMessages, setHiddenMessages] = useState<Set<string>>(new Set())
+  const [activeScenario, setActiveScenario] = useState<string>('basic')
+  const [viewMode, setViewMode] = useState<'mobile' | 'tablet' | 'desktop'>('mobile')
 
-  // Initialize with mock data
+  // Initialize with test data
   useEffect(() => {
-    setMessages(MOCK_MESSAGES)
+    setMessages(messageTestData.basic)
   }, [])
 
-  // Handle sending messages
+  // Switch test scenario
+  const handleScenarioChange = (scenario: string) => {
+    setActiveScenario(scenario)
+    setMessages(messageTestData[scenario as keyof typeof messageTestData] || messageTestData.basic)
+    toast.info(`Switched to ${scenario} test scenario`)
+  }
+
+  // Handle sending messages (mock implementation for example page)
   const handleSendMessage = async (text: string) => {
-    if (!user) {
-      toast.error('Please sign in to send messages')
-      return
-    }
+    // Use mock user for example page - no auth required
+    const mockUser = user || { id: 'current-user', display_name: 'You' }
 
     setSending(true)
     try {
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => setTimeout(resolve, DEMO_CONFIG.apiDelay))
       
       const newMessage: Message = {
         id: `msg-${Date.now()}`,
@@ -141,7 +156,7 @@ export default function MessagesExamplePage() {
     setLoading(true)
     try {
       // Simulate loading more messages
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, DEMO_CONFIG.loadMoreDelay))
       toast.info('No more messages to load (demo)')
     } catch (error) {
       console.error('Failed to load more messages:', error)
@@ -206,6 +221,74 @@ export default function MessagesExamplePage() {
         </Card>
       )}
 
+      {/* Test Scenario Controls */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5" />
+            Chat Layout Test Scenarios
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Scenario Selection */}
+            <div>
+              <h4 className="text-sm font-medium mb-2">Test Data</h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {Object.entries(messageTestData).map(([key, data]) => (
+                  <Button
+                    key={key}
+                    variant={activeScenario === key ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => handleScenarioChange(key)}
+                    className="justify-between"
+                  >
+                    {key}
+                    <Badge variant="secondary" className="ml-1">
+                      {data.length}
+                    </Badge>
+                  </Button>
+                ))}
+              </div>
+            </div>
+            
+            {/* View Mode Simulation */}
+            <div>
+              <h4 className="text-sm font-medium mb-2">Screen Size Simulation</h4>
+              <div className="grid grid-cols-3 gap-2">
+                {Object.entries(testScenarios).map(([key, scenario]) => (
+                  <Button
+                    key={key}
+                    variant={viewMode === key ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode(key as any)}
+                    className="flex items-center gap-2"
+                  >
+                    {key === 'mobile' && <Smartphone className="h-4 w-4" />}
+                    {key === 'tablet' && <Tablet className="h-4 w-4" />}
+                    {key === 'desktop' && <Monitor className="h-4 w-4" />}
+                    {scenario.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Quick Actions */}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleScenarioChange('comprehensive')}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Load All Tests
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Status Info */}
       <Card className="mb-6">
         <CardContent className="pt-6">
@@ -233,7 +316,7 @@ export default function MessagesExamplePage() {
       {/* Chat Interface Options */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Option 1: Component Demo */}
-        <Card className="h-[600px] flex flex-col">
+        <Card className="h-96 lg:h-[800px] flex flex-col">
           <CardHeader className="flex-shrink-0">
             <CardTitle className="text-lg">Individual Components</CardTitle>
             <p className="text-sm text-muted-foreground">MessageList + MessageComposer</p>
@@ -249,11 +332,11 @@ export default function MessagesExamplePage() {
                 hasMore={!!nextCursor}
                 onLoadMore={handleLoadMore}
                 onMessageHidden={handleMessageHidden}
-                height={400} // Reduced height to account for composer
-                className="pb-4" // Add padding bottom for breathing room
+                height={384} // h-96 equivalent (24rem = 384px) - responsive via container
+                className="h-full" // Remove extra padding - composer is in same card, no overlap risk
               />
             ) : (
-              <div className="h-[400px] flex items-center justify-center text-muted-foreground">
+              <div className="h-64 lg:h-96 flex items-center justify-center text-muted-foreground">
                 <div className="text-center">
                   <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>Enable MESSAGES_UI flag to see new components</p>
@@ -268,10 +351,10 @@ export default function MessagesExamplePage() {
             {messagesV2Enabled ? (
               <MessageComposer
                 onSend={handleSendMessage}
-                disabled={sending || !user}
+                disabled={sending}
                 podId={MOCK_POD_ID}
-                placeholder={user ? "Type a message..." : "Sign in to send messages"}
-                maxLength={500}
+                placeholder="Type a message... (example mode)"
+                maxLength={DEMO_CONFIG.messageMaxLength}
               />
             ) : (
               <div className="p-4 text-center text-muted-foreground">
@@ -282,7 +365,7 @@ export default function MessagesExamplePage() {
         </Card>
 
         {/* Option 2: PodChatView Demo */}
-        <Card className="h-[600px] flex flex-col">
+        <Card className="h-80 lg:h-96 flex flex-col">
           <CardHeader className="flex-shrink-0">
             <CardTitle className="text-lg">Production Pod Chat</CardTitle>
             <p className="text-sm text-muted-foreground">PodChatView with full context</p>

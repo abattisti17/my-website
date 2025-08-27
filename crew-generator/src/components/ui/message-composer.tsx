@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { IconButton } from '@/components/ui/icon-button'
 import { Send, Paperclip, Smile } from 'lucide-react'
 import { isFeatureEnabled } from '@/lib/featureFlags'
 
@@ -68,12 +69,14 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
     // Reset height to auto to get the correct scrollHeight
     textarea.style.height = 'auto'
     
-    // Calculate the number of lines
-    const lineHeight = 20 // Approximate line height in pixels
+    // Calculate the number of lines using consistent line height
+    const lineHeight = 20 // This matches the CSS line-height: 20px in the textarea
     const lines = Math.min(Math.ceil(textarea.scrollHeight / lineHeight), MAX_LINES)
     
-    // Set height based on content, with max limit
-    textarea.style.height = `${lines * lineHeight}px`
+    // Set height based on content, with max limit derived from design tokens
+    const minHeight = 40 // Minimum single line height
+    const maxHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--space-24') || '120px')
+    textarea.style.height = `${Math.min(Math.max(lines * lineHeight, minHeight), maxHeight)}px`
   }, [])
 
   // Handle text change
@@ -147,33 +150,41 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
   return (
     <div 
       className={cn(
-        "bg-background border-t border-border p-4",
-        "safe-area-inset-bottom", // Handle notch devices
-        "sticky bottom-0 z-20", // Ensure composer stays at bottom without overlapping
+        "bg-background border-t border-border",
+        "chat-composer-positioned", // Uses design system positioning with safe area
         className
       )}
+      style={{
+        padding: 'var(--composer-padding)'
+      }}
     >
-      <div className="flex items-end gap-2 w-full">
+      <div 
+        className="flex items-end w-full"
+        style={{ gap: 'var(--composer-element-gap)' }}
+      >
         {/* Action buttons - emoji/attachments */}
-        <div className="flex gap-1 pb-2">
-          <Button
+        <div 
+          className="flex pb-2"
+          style={{ gap: 'var(--composer-action-gap)' }}
+        >
+          <IconButton
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0 touch-target"
+            className="touch-target"
             disabled={disabled}
             aria-label="Add emoji"
           >
             <Smile className="h-4 w-4" />
-          </Button>
-          <Button
+          </IconButton>
+          <IconButton
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0 touch-target"
+            className="touch-target"
             disabled={disabled}
             aria-label="Attach file"
           >
             <Paperclip className="h-4 w-4" />
-          </Button>
+          </IconButton>
         </div>
 
         {/* Text input */}
@@ -186,13 +197,18 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
             placeholder={placeholder}
             disabled={disabled || sending}
             className={cn(
-              "w-full min-h-[40px] max-h-[120px] resize-none rounded-2xl border border-input bg-background px-4 py-2",
+              "w-full min-h-[40px] max-h-[120px] resize-none border border-input bg-background",
               "text-sm placeholder:text-muted-foreground",
               "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
               "disabled:cursor-not-allowed disabled:opacity-50",
               "scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"
             )}
-            style={{ 
+            style={{
+              borderRadius: 'var(--composer-border-radius)',
+              paddingLeft: 'var(--space-4)',
+              paddingRight: 'var(--space-4)',
+              paddingTop: 'var(--space-2)',
+              paddingBottom: 'var(--space-2)',
               lineHeight: '20px',
               overflow: text.split('\n').length > MAX_LINES ? 'auto' : 'hidden'
             }}
@@ -215,13 +231,14 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
         </div>
 
         {/* Send button */}
-        <Button
+        <IconButton
           onClick={handleSend}
           disabled={!canSend}
           size="sm"
+          variant={canSend ? "default" : "ghost"}
           className={cn(
-            "h-10 w-10 p-0 rounded-full touch-target-lg shrink-0",
-            canSend ? "bg-primary hover:bg-primary/90" : "bg-muted"
+            "touch-target",
+            !canSend && "bg-muted hover:bg-muted"
           )}
           aria-label="Send message"
         >
@@ -232,7 +249,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
           ) : (
             <Send className="h-4 w-4" />
           )}
-        </Button>
+        </IconButton>
       </div>
 
       {/* Keyboard hint */}

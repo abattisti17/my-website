@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
-import { FixedSizeList as List } from 'react-window'
+import { VariableSizeList as List } from 'react-window'
 import { cn } from '@/lib/utils'
 import type { Message } from '@/lib/messages/MessagesAdapter'
 import { UserAvatar } from './avatar'
@@ -88,12 +88,19 @@ const MessageBubble: React.FC<{
 
   if (isHidden) {
     return (
-      <div className={cn(
-        "max-w-[280px] px-3 py-2 rounded-2xl break-words",
+      <div       className={cn(
+        "message-bubble break-words",
         "bg-muted/50 text-muted-foreground italic border border-dashed",
         isOwn ? "ml-auto" : "",
-        !isGrouped && "mt-1"
-      )}>
+
+      )}
+      style={{
+        paddingLeft: 'var(--message-bubble-padding-x)',
+        paddingRight: 'var(--message-bubble-padding-x)',
+        paddingTop: 'var(--message-bubble-padding-y)',
+        paddingBottom: 'var(--message-bubble-padding-y)',
+        borderRadius: 'var(--message-bubble-radius)'
+      }}>
         <p className="text-xs">Message hidden</p>
       </div>
     )
@@ -102,14 +109,22 @@ const MessageBubble: React.FC<{
   return (
     <div
       className={cn(
-        "group relative max-w-[280px] px-3 py-2 rounded-2xl break-words",
+        "message-bubble group relative break-words break-anywhere", // Added break-anywhere for better text wrapping
         isOwn 
           ? "bg-primary text-primary-foreground ml-auto" 
           : "bg-muted text-foreground",
-        !isGrouped && "mt-1",
+
         showTail && isOwn && "rounded-br-sm",
         showTail && !isOwn && "rounded-bl-sm"
       )}
+      style={{
+        paddingLeft: 'var(--message-bubble-padding-x)',
+        paddingRight: 'var(--message-bubble-padding-x)',
+        paddingTop: 'var(--message-bubble-padding-y)',
+        paddingBottom: 'var(--message-bubble-padding-y)',
+        borderRadius: 'var(--message-bubble-radius)'
+        // Note: max-width is handled by CSS classes in design-tokens.css
+      }}
       role="article"
       aria-label={`Message from ${message.profiles?.display_name || 'user'}`}
     >
@@ -139,7 +154,8 @@ const MessageGroupComponent: React.FC<{
   showTimestamp: boolean
   currentUserId?: string
   onMessageHidden?: (messageId: string) => void
-}> = ({ group, showTimestamp, currentUserId, onMessageHidden }) => {
+  style?: React.CSSProperties
+}> = ({ group, showTimestamp, currentUserId, onMessageHidden, style }) => {
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString('en-US', {
       hour: 'numeric',
@@ -150,52 +166,78 @@ const MessageGroupComponent: React.FC<{
 
   return (
     <div 
-      className={cn("flex gap-2 mb-4", group.isOwn && "flex-row-reverse")}
+      className={cn("flex", group.isOwn && "flex-row-reverse")}
+      style={{
+        gap: 'var(--message-group-gap)',
+        ...style // Apply marginTop spacing from parent
+      }}
       role="group"
       aria-labelledby={`sender-${group.id}`}
     >
       {/* Avatar */}
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0" style={{ flex: 'none' }}>
         <UserAvatar
           src={group.sender.avatar_url}
           alt={`${group.sender.display_name} avatar`}
           fallback={group.sender.display_name}
           userId={group.sender.user_id}
-          size="md"
+          size="chat"
         />
       </div>
 
       {/* Messages */}
-      <div className={cn("flex flex-col gap-0.5", group.isOwn && "items-end")}>
+      <div className={cn("flex flex-col", group.isOwn && "items-end")}>
         {/* Sender name and timestamp */}
         {!group.isOwn && (
           <div 
             id={`sender-${group.id}`}
-            className="text-xs text-muted-foreground px-1 mb-1"
+            className="text-xs text-muted-foreground"
+            style={{ 
+              paddingLeft: 'var(--space-1)', 
+              paddingRight: 'var(--space-1)',
+              marginBottom: 'var(--space-1)' 
+            }}
           >
             {group.sender.display_name}
             {showTimestamp && (
-              <span className="ml-2">{formatTime(group.timestamp)}</span>
+              <span style={{ marginLeft: 'var(--space-3)' }}>{formatTime(group.timestamp)}</span>
             )}
           </div>
         )}
 
-        {/* Message bubbles */}
-        {group.messages.map((message, index) => (
-          <MessageBubble
-            key={message.id || index}
-            message={message}
-            isGrouped={index > 0}
-            isOwn={group.isOwn}
-            showTail={index === group.messages.length - 1}
-            currentUserId={currentUserId}
-            onMessageHidden={onMessageHidden}
-          />
-        ))}
+        {/* Message bubbles container with margin-based spacing */}
+        <div 
+          className={cn("flex flex-col", group.isOwn && "items-end")}
+        >
+          {group.messages.map((message, index) => (
+            <div
+              key={message.id || index}
+              style={{
+                marginTop: index > 0 ? 'var(--message-bubble-gap)' : '0'
+              }}
+            >
+              <MessageBubble
+                message={message}
+                isGrouped={index > 0}
+                isOwn={group.isOwn}
+                showTail={index === group.messages.length - 1}
+                currentUserId={currentUserId}
+                onMessageHidden={onMessageHidden}
+              />
+            </div>
+          ))}
+        </div>
 
         {/* Timestamp for own messages */}
         {group.isOwn && showTimestamp && (
-          <div className="text-xs text-muted-foreground px-1 mt-1">
+          <div 
+            className="text-xs text-muted-foreground"
+            style={{ 
+              paddingLeft: 'var(--space-1)', 
+              paddingRight: 'var(--space-1)',
+              marginTop: 'var(--space-1)' 
+            }}
+          >
             {formatTime(group.timestamp)}
           </div>
         )}
@@ -226,9 +268,17 @@ const DateDivider: React.FC<{ date: string }> = ({ date }) => {
   }
 
   return (
-    <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b py-2 mb-4">
+    <div 
+      className="sticky top-0 bg-background/80 backdrop-blur-sm border-b"
+      style={{
+        zIndex: 'var(--z-content)',
+        paddingTop: 'var(--divider-spacing-y)',
+        paddingBottom: 'var(--divider-spacing-y)',
+        marginBottom: 'var(--divider-margin-bottom)'
+      }}
+    >
       <div className="text-center">
-        <span className="text-xs text-muted-foreground bg-background px-3 py-1 rounded-full border">
+        <span className="text-xs text-muted-foreground bg-background px-3 py-1 rounded-full">
           {formatDate(date)}
         </span>
       </div>
@@ -253,11 +303,55 @@ export const MessageList: React.FC<MessageListProps> = ({
   // Group messages for efficient rendering
   const messageGroups = groupMessages(messages, currentUserId)
 
-  // Auto-scroll to bottom on new messages - simple and reliable
+  // Calculate height for each message group (for VariableSizeList)
+  const getItemSize = useCallback((index: number) => {
+    const group = messageGroups[index]
+    if (!group) return 100 // fallback
+
+    // Check if this group has a date divider
+    const prevGroup = index > 0 ? messageGroups[index - 1] : null
+    const showDateDivider = !prevGroup || 
+      new Date(group.timestamp).toDateString() !== new Date(prevGroup.timestamp).toDateString()
+
+    // Base heights
+    const avatarHeight = 32 // --avatar-md size
+    const nameHeight = !group.isOwn ? 20 : 0 // sender name height
+    const timestampHeight = group.isOwn ? 20 : 0 // timestamp for own messages
+    const messageGroupGap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--message-group-gap').replace('px', '')) || 8 // Use design token
+    const marginTop = index === 0 ? 0 : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--message-group-margin-bottom').replace('px', '')) || 12 // Use design token
+    
+    // Date divider height (if present) - reduced estimate
+    const dateDividerHeight = showDateDivider ? (8 + 8 + 16 + 20) : 0 // padding + margin + smaller text estimate
+
+    // Calculate message bubble heights (estimate - more conservative)
+    let bubblesHeight = 0
+    group.messages.forEach((message, msgIndex) => {
+      // Estimate bubble height based on text length - tighter estimation
+      const textLength = message.text.length
+      const estimatedLines = Math.max(1, Math.ceil(textLength / 50)) // ~50 chars per line
+      const bubbleHeight = Math.max(40, estimatedLines * 20 + 16) // min 40px, ~20px per line + padding
+      const bubbleGap = msgIndex > 0 ? 8 : 0 // --message-bubble-gap
+      bubblesHeight += bubbleHeight + bubbleGap
+    })
+
+    const totalHeight = marginTop + dateDividerHeight + avatarHeight + nameHeight + timestampHeight + bubblesHeight + messageGroupGap
+    
+    // Minimal buffer - let content determine height more naturally
+    return Math.max(60, totalHeight + 5)
+  }, [messageGroups])
+
+  // Auto-scroll to bottom on new messages - works with VariableSizeList
   useEffect(() => {
     if (listRef.current && messageGroups.length > 0) {
-      // Scroll to the last item
-      listRef.current.scrollToItem(messageGroups.length - 1, 'end')
+      // Use setTimeout to ensure DOM has updated after new message
+      setTimeout(() => {
+        if (listRef.current) {
+          // Reset cached sizes to ensure accurate calculations
+          listRef.current.resetAfterIndex(0)
+          // Scroll to last item with 'end' alignment
+          listRef.current.scrollToItem(messageGroups.length - 1, 'end')
+        }
+      }, 0)
     }
   }, [messageGroups.length])
 
@@ -278,15 +372,29 @@ export const MessageList: React.FC<MessageListProps> = ({
     const showDateDivider = !prevGroup || 
       new Date(group.timestamp).toDateString() !== new Date(prevGroup.timestamp).toDateString()
 
+    // Add top spacing if this is NOT the first group
+    const isFirstGroup = index === 0
+    
     return (
-      <div style={style} className="px-4">
-        {showDateDivider && <DateDivider date={group.timestamp} />}
-        <MessageGroupComponent 
-          group={group} 
-          showTimestamp={true}
-          currentUserId={currentUserId}
-          onMessageHidden={onMessageHidden}
-        />
+      <div 
+        style={{
+          ...style,
+          paddingLeft: 'var(--content-padding-sm)',
+          paddingRight: 'var(--content-padding-sm)'
+        }}
+      >
+        <div>
+          {showDateDivider && <DateDivider date={group.timestamp} />}
+          <MessageGroupComponent 
+            group={group} 
+            showTimestamp={true}
+            currentUserId={currentUserId}
+            onMessageHidden={onMessageHidden}
+            style={{
+              marginTop: isFirstGroup ? '0' : 'var(--message-group-margin-bottom)'
+            }}
+          />
+        </div>
       </div>
     )
   }
@@ -317,13 +425,16 @@ export const MessageList: React.FC<MessageListProps> = ({
   return (
     <div 
       ref={containerRef}
-      className={cn("relative w-full h-full", className)}
+      className={cn("relative w-full h-full chat-list-container", className)}
       role="log"
       aria-label="Message list"
       aria-live="polite"
     >
       {loading && hasMore && (
-        <div className="absolute top-0 left-0 right-0 z-10 p-2 text-center">
+        <div 
+          className="absolute top-0 left-0 right-0 p-2 text-center"
+          style={{ zIndex: 'var(--z-content)' }}
+        >
           <div className="inline-flex items-center gap-2 bg-background/80 backdrop-blur-sm rounded-full px-3 py-1 border text-xs">
             <div className="animate-spin rounded-full h-3 w-3 border-b border-primary" />
             Loading more...
@@ -336,7 +447,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         height={height}
         width="100%"
         itemCount={messageGroups.length}
-        itemSize={100} // Smaller, more realistic item height
+        itemSize={getItemSize} // Dynamic height calculation
         onScroll={handleScroll}
         className="scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"
         style={{ overflowX: 'hidden' }} // Prevent horizontal scroll

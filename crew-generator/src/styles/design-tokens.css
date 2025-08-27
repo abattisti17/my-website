@@ -435,6 +435,133 @@
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ==========================================================================
+       Z-INDEX TOKENS
+       Layered stacking context for consistent z-index management
+       ========================================================================== */
+
+    --z-base: 0;                  /* Base content layer */
+    --z-content: 10;              /* Standard content overlays (date dividers, loading) */
+    --z-sticky: 20;               /* Sticky elements (headers) */
+    --z-composer: 30;             /* Message composer */
+    --z-floating: 40;             /* Floating UI (mobile composer, nav) */
+    --z-header: 50;               /* Main app header, navigation */
+    --z-drawer: 100;              /* Drawers and overlays */
+    --z-modal: 110;               /* Modal dialogs */
+    --z-toast: 1000;              /* Toast notifications (highest) */
+
+    /* ==========================================================================
+       AVATAR TOKENS
+       Consistent avatar sizing system
+       ========================================================================== */
+
+    --avatar-sm: var(--space-6);   /* 24px - Small avatars in lists */
+    --avatar-md: var(--space-8);   /* 32px - Standard message avatars */
+    --avatar-lg: var(--space-12);  /* 48px - Profile headers */
+    --avatar-xl: var(--space-16);  /* 64px - Large profile displays */
+    --avatar-chat: var(--space-6); /* 24px - Optimized for chat bubbles */
+
+    /* ==========================================================================
+       CHAT/MESSAGING TOKENS
+       Message UI spacing and sizing system
+       ========================================================================== */
+
+    /* Message Bubble Sizing */
+    --message-bubble-max-width-sm: 280px;   /* Mobile bubble max width */
+    --message-bubble-max-width-md: 320px;   /* Tablet bubble max width */
+    --message-bubble-max-width-lg: 400px;   /* Desktop bubble max width */
+    --message-bubble-padding-x: var(--space-3);  /* 12px horizontal */
+    --message-bubble-padding-y: var(--space-2);  /* 8px vertical */
+    --message-bubble-radius: var(--radius-2xl);  /* 16px rounded bubbles */
+
+    /* Message Group Spacing */
+    --message-group-gap: var(--space-2);         /* 8px gap between avatar and messages */
+    --message-group-margin-bottom: var(--space-3); /* 12px space between groups */
+    --message-bubble-gap: var(--space-2);        /* 8px gap between grouped bubbles */
+
+    /* Date Divider Spacing */
+    --divider-spacing-y: var(--space-2);         /* 8px top/bottom padding */
+    --divider-margin-bottom: var(--space-4);     /* 16px margin below divider */
+    --divider-margin-top: var(--space-4);        /* 16px margin above divider (for spacing) */
+
+    /* Composer Sizing */
+    --composer-height-collapsed: 72px;           /* Base composer height */
+    --composer-height-expanded: 120px;           /* Max composer height with multiline */
+    --composer-padding: var(--space-4);          /* 16px internal padding */
+    --composer-border-radius: var(--radius-2xl); /* 16px input border radius */
+
+    /* Composer Element Spacing */
+    --composer-element-gap: var(--space-3);      /* 12px gap between main composer elements (emoji/file, input, send) */
+    --composer-action-gap: var(--space-2);       /* 8px gap between action buttons (emoji, file) */
+
+    /* Chat Layout Heights - for proper scroll calculations */
+    --chat-header-height: 60px;                  /* Chat header height */
+    --chat-list-padding-bottom: calc(var(--composer-height-expanded) + var(--space-4)); /* Space for composer */
+
+    /* Chat Header Spacing */
+    --chat-header-gap: var(--space-3);           /* 12px gap between header title and avatar group */
+    
+    /* Safe Area Insets - iOS compatibility */
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-inset-left: env(safe-area-inset-left, 0px);
+    --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* ==========================================================================
+     RESPONSIVE MESSAGE BUBBLE WIDTHS
+     ========================================================================== */
+  
+  /* Mobile-first approach: default is mobile */
+  .message-bubble {
+    max-width: var(--message-bubble-max-width-sm);
+  }
+  
+  /* Tablet breakpoint */
+  @media (min-width: 768px) {
+    .message-bubble {
+      max-width: var(--message-bubble-max-width-md);
+    }
+  }
+  
+  /* Desktop breakpoint */
+  @media (min-width: 1024px) {
+    .message-bubble {
+      max-width: var(--message-bubble-max-width-lg);
+    }
+  }
+
+  /* ==========================================================================
+     CHAT LAYOUT UTILITIES
+     Safe area and scroll height calculations
+     ========================================================================== */
+
+  /* Safe area utilities */
+  .safe-area-inset-bottom {
+    padding-bottom: var(--safe-area-inset-bottom);
+  }
+
+  .safe-area-inset-top {
+    padding-top: var(--safe-area-inset-top);
+  }
+
+  /* Chat height calculations */
+  .chat-container-height {
+    height: calc(100vh - var(--chat-header-height) - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+  }
+
+  .chat-list-container {
+    height: calc(100% - var(--composer-height-expanded));
+    padding-bottom: var(--chat-list-padding-bottom);
+  }
+
+  /* Composer positioning with safe area */
+  .chat-composer-positioned {
+    position: sticky;
+    bottom: 0;
+    z-index: var(--z-composer);
+    padding-bottom: var(--safe-area-inset-bottom);
   }
 
   /* ==========================================================================

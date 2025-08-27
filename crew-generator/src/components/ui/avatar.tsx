@@ -54,28 +54,31 @@ function AvatarFallback({
   )
 }
 
-// Size variants for consistent avatar sizing
-export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl'
+// Size variants for consistent avatar sizing - using design tokens
+export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl' | 'chat'
 
-const avatarSizeClasses: Record<AvatarSize, string> = {
-  sm: 'size-6', // 24px
-  md: 'size-8', // 32px - default
-  lg: 'size-12', // 48px
-  xl: 'size-16' // 64px
+const avatarSizeStyles: Record<AvatarSize, React.CSSProperties> = {
+  sm: { width: 'var(--avatar-sm)', height: 'var(--avatar-sm)' }, // 24px
+  md: { width: 'var(--avatar-md)', height: 'var(--avatar-md)' }, // 32px - default
+  lg: { width: 'var(--avatar-lg)', height: 'var(--avatar-lg)' }, // 48px
+  xl: { width: 'var(--avatar-xl)', height: 'var(--avatar-xl)' }, // 64px
+  chat: { width: 'var(--avatar-chat)', height: 'var(--avatar-chat)' } // 24px - optimized for chat
 }
 
 const avatarIconSizeClasses: Record<AvatarSize, string> = {
   sm: 'size-2', // Loading spinner
   md: 'size-3', 
   lg: 'size-4',
-  xl: 'size-6'
+  xl: 'size-6',
+  chat: 'size-2' // Same as sm for chat context
 }
 
 const avatarTextSizeClasses: Record<AvatarSize, string> = {
   sm: 'text-xs',
   md: 'text-xs', 
   lg: 'text-sm',
-  xl: 'text-lg'
+  xl: 'text-lg',
+  chat: 'text-xs' // Same as sm for chat context
 }
 
 // Enhanced UserAvatar component for our specific use cases
@@ -142,7 +145,11 @@ function UserAvatar({
   }, [src, isOwnImage, onImageError])
 
   return (
-    <Avatar className={cn(avatarSizeClasses[size], className)} {...props}>
+    <Avatar 
+      className={cn("shrink-0", className)} 
+      style={avatarSizeStyles[size]}
+      {...props}
+    >
       {shouldShowImage && (
         <AvatarImage
           src={src!}

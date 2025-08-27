@@ -344,9 +344,12 @@ function LegacyPodPage() {
       {/* Chat Area */}
       <Card className="flex-1 flex flex-col">
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Pod Chat</CardTitle>
-            <div className="flex -space-x-2">
+          <div 
+            className="flex items-center"
+            style={{ gap: 'var(--chat-header-gap)' }}
+          >
+            <CardTitle className="text-lg flex-1">Pod Chat</CardTitle>
+            <div className="flex -space-x-2 flex-shrink-0">
               {members.slice(0, 3).map((member) => (
                 <div 
                   key={member.user_id}
@@ -453,8 +456,11 @@ function LegacyPodPage() {
       </Card>
 
       {/* Fixed Mobile Message Input - Pinned above bottom navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border md:hidden z-40 allow-overflow" 
-           style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border md:hidden allow-overflow" 
+           style={{ 
+             bottom: 'calc(80px + env(safe-area-inset-bottom))',
+             zIndex: 'var(--z-floating)'
+           }}>
         <div className="p-4">
           <form onSubmit={handleSendMessage} className="flex gap-2">
             <Input

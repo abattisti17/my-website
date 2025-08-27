@@ -323,23 +323,26 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Chat Header */}
         <div className="px-4 py-3 border-b bg-background flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Pod Chat</h2>
+          <div 
+            className="flex items-center"
+            style={{ gap: 'var(--chat-header-gap)' }}
+          >
+            <h2 className="text-lg font-semibold flex-1">Pod Chat</h2>
             {/* Member avatars */}
-            <div className="flex -space-x-2">
+            <div className="flex -space-x-2 flex-shrink-0">
               {members.slice(0, 3).map((member) => (
                 <div 
                   key={member.user_id}
                   className="border-2 border-background rounded-full"
                   title={member.profiles?.display_name || 'Anonymous'}
                 >
-                  <UserAvatar
-                    src={member.profiles?.avatar_url}
-                    alt={`${member.profiles?.display_name || 'Anonymous'} avatar`}
-                    fallback={member.profiles?.display_name || 'Anonymous'}
-                    userId={member.user_id}
-                    size="md"
-                  />
+                          <UserAvatar
+          src={member.profiles?.avatar_url}
+          alt={`${member.profiles?.display_name || 'Anonymous'} avatar`}
+          fallback={member.profiles?.display_name || 'Anonymous'}
+          userId={member.user_id}
+          size="chat"
+        />
                 </div>
               ))}
               {members.length > 3 && (
@@ -351,8 +354,14 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
           </div>
         </div>
 
-        {/* Messages - Full height, scrollable */}
-        <div className="flex-1 overflow-hidden">
+        {/* Messages - Full height, scrollable with composer clearance */}
+        <div 
+          className="flex-1 overflow-hidden"
+          style={{
+            height: 'calc(100vh - var(--chat-header-height) - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))',
+            paddingBottom: 'var(--chat-list-padding-bottom)'
+          }}
+        >
           <MessageList
             messages={messages.filter(msg => !hiddenMessages.has(msg.id || ''))}
             currentUserId={user?.id}
@@ -360,7 +369,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
             hasMore={hasMore}
             onLoadMore={loadMore}
             onMessageHidden={handleMessageHidden}
-            height={500} // Fixed height for react-window
+            height={500} // Reasonable height for virtualization - container handles overall sizing
             className="h-full"
           />
         </div>
@@ -379,10 +388,13 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
 
       {/* Mobile Composer - Fixed bottom */}
       <div className={cn(
-        `${mobileBreakpoint}:hidden fixed bottom-0 left-0 right-0 z-40`,
+        `${mobileBreakpoint}:hidden fixed bottom-0 left-0 right-0`,
         "bg-background/95 backdrop-blur-sm border-t"
       )} 
-      style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
+      style={{ 
+        bottom: 'calc(80px + env(safe-area-inset-bottom))',
+        zIndex: 'var(--z-floating)'
+      }}>
         <MessageComposer
           onSend={handleSendMessage}
           disabled={sending || !user}
