@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card" // Unused
+// import { Badge } from "@/components/ui/badge" // Unused
 import { PageHeader } from '../components/design-system/PageHeader'
 import { PageLayout, PageSection } from '../components/design-system/PageLayout'
 import { EmptyState } from '../components/design-system/EmptyState'
 import { LoadingSpinner } from '../components/design-system/LoadingSpinner'
-import { Camera, Download, Calendar, MapPin, ExternalLink } from 'lucide-react'
+import { CardList, PhotoCard } from '../components/design-system'
+import { Camera, Download } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface MediaItemWithEvent {
@@ -203,64 +204,26 @@ export default function PhotosOverviewPage() {
 
       {/* Photos Grid */}
       <PageSection>
-        {media.map((item) => (
-          <Card key={item.id} className="overflow-hidden">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    {item.events.artist}
-                  </CardTitle>
-                  <CardDescription className="flex items-center gap-2 mt-1">
-                    <MapPin className="h-4 w-4" />
-                    {item.events.city} • {formatDate(item.events.date_utc)}
-                  </CardDescription>
-                </div>
-                <Badge variant="outline" className="text-xs">
-                  {item.kind}
-                </Badge>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-4">
-              {/* Image */}
-              <div 
-                className="relative group cursor-pointer rounded-lg overflow-hidden bg-muted"
-                onClick={() => openFullSize(item.url)}
-              >
-                <img
-                  src={item.url}
-                  alt={`Photo from ${item.events.artist} in ${item.events.city}`}
-                  className="w-full h-48 object-cover transition-transform duration-200 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
-                  <ExternalLink className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                </div>
-              </div>
-
-              {/* Actions and Info */}
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
-                  Uploaded {formatDateTime(item.created_at)}
-                </span>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const timestamp = new Date(item.created_at).getTime()
-                    const filename = `${item.events.artist}-${item.events.city}-${timestamp}.webp`
-                    downloadImage(item.url, filename)
-                  }}
-                  className="touch-target-sm"
-                >
-                  <Download className="h-3 w-3 mr-1" />
-                  Download
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <CardList
+          items={media}
+          renderCard={(item) => (
+            <PhotoCard
+              key={item.id}
+              item={item}
+              formatDate={formatDate}
+              formatDateTime={formatDateTime}
+              downloadImage={downloadImage}
+              openFullSize={openFullSize}
+            />
+          )}
+          spacing="sm"
+          emptyState={{
+            title: "No photos yet",
+            message: "Start uploading photos at events to build your collection!",
+            icon: <Camera className="h-12 w-12 text-muted-foreground" />
+          }}
+          testId="photos-list"
+        />
       </PageSection>
     </PageLayout>
   )

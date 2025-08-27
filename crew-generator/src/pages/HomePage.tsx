@@ -216,8 +216,8 @@ export default function HomePage() {
           
           {/* Events Display */}
         {events.length === 0 ? (
-          <Card className="text-center p-8">
-            <CardContent className="pt-6">
+          <Card className="text-center">
+            <CardContent className="pt-2">
               <p className="text-gray-800 text-lg mb-4">No events yet. Check back soon!</p>
               <Badge variant="secondary">Sample events will appear here</Badge>
             </CardContent>

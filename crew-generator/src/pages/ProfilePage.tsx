@@ -255,11 +255,11 @@ export default function ProfilePage() {
 
   return (
     <PageLayout className="max-w-2xl">
-      <Stack spacing="lg">
+      <Stack spacing="md">
         {/* Profile Card */}
         <Card>
           {/* Custom content bypassing CardHeader grid constraints */}
-          <div className="p-6 space-y-6">
+          <div className="p-[var(--space-6)] space-y-[var(--space-4)]">
             {/* Edit Profile Button - Top Right */}
             <div className="flex justify-end">
               <Button asChild>
@@ -271,7 +271,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Avatar and Profile Info */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-[var(--space-4)]">
             {/* Hidden file input */}
             <input
               ref={fileInputRef}
@@ -414,14 +414,14 @@ export default function ProfilePage() {
 
         {/* Tour Book CTA - Moved from HomePage */}
         <Card className="border border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
-        <CardContent className="p-6 text-center">
-          <div className="space-y-4">
-            <div className="mx-auto w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-              <span className="text-xl">📚</span>
+        <CardContent className="p-[var(--space-6)] text-center">
+          <div className="space-y-[var(--space-4)]">
+            <div className="mx-auto w-[var(--space-12)] h-[var(--space-12)] bg-primary/10 rounded-xl flex items-center justify-center">
+              <span className="text-[var(--text-xl)]">📚</span>
             </div>
             <div>
-              <h3 className="font-semibold text-foreground mb-2">Your Tour Book</h3>
-              <p className="text-sm text-muted-foreground mb-4">Relive your concert memories and experiences</p>
+              <h3 className="font-semibold text-foreground mb-[var(--space-2)]">Your Tour Book</h3>
+              <p className="text-[var(--text-sm)] text-muted-foreground mb-[var(--space-4)]">Relive your concert memories and experiences</p>
             </div>
             <Button asChild variant="outline">
               <Link to="/tour">View Tour Book</Link>

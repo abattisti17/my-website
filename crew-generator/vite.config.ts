@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
+/// <reference types="vitest" />
 
 // https://vite.dev/config/
 export default defineConfig(() => {
@@ -107,6 +108,24 @@ export default defineConfig(() => {
       },
       // Increase chunk size warning limit since we're optimizing chunks
       chunkSizeWarningLimit: 1000
+    },
+    // Vitest configuration
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: ['./src/tests/setupTests.ts'],
+      css: true,
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json', 'html'],
+        exclude: [
+          'node_modules/',
+          'dist/',
+          '**/*.d.ts',
+          '**/*.config.*',
+          'src/vite-env.d.ts'
+        ]
+      }
     }
   }
 })

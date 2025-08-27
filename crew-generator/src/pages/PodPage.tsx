@@ -1,5 +1,11 @@
+import { useParams } from 'react-router-dom'
+import { PodChatView } from '../components/ui/pod-chat-view'
+import { isFeatureEnabled } from '../lib/featureFlags'
+import { PageLayout } from '../components/design-system'
+
+// Legacy imports for fallback
 import { useEffect, useState, useRef } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { usePodChat } from '../hooks/usePodChat'
@@ -7,9 +13,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { UserAvatar } from "@/components/ui/avatar"
 import ReportMenu from '../components/ReportMenu'
 import { toast } from 'sonner'
-import { PageLayout } from '../components/design-system'
 
 interface Pod {
   id: string
@@ -35,6 +41,25 @@ interface PodMember {
 }
 
 export default function PodPage() {
+  const { slug, podId } = useParams<{ slug: string; podId: string }>()
+  
+  // Feature flag check - use v2 if enabled, otherwise fallback to v1
+  const useMessagesV2 = isFeatureEnabled('MESSAGES_UI')
+  
+  if (useMessagesV2 && podId && slug) {
+    return (
+      <div className="h-screen overflow-hidden">
+        <PodChatView podId={podId} eventSlug={slug} />
+      </div>
+    )
+  }
+
+  // Fallback to original implementation when v2 is disabled
+  return <LegacyPodPage />
+}
+
+// Legacy implementation preserved for safe rollback
+function LegacyPodPage() {
   const { slug, podId } = useParams<{ slug: string; podId: string }>()
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -262,9 +287,13 @@ export default function PodPage() {
               <div className="space-y-2">
                 {members.map((member) => (
                   <div key={member.user_id} className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium" aria-label={`Avatar for ${member.profiles?.display_name || 'Anonymous'}`}>
-                      {member.profiles?.display_name?.[0] || '?'}
-                    </div>
+                    <UserAvatar
+                      src={member.profiles?.avatar_url}
+                      alt={member.profiles?.display_name || 'Anonymous'}
+                      fallback={member.profiles?.display_name || 'Anonymous'}
+                      userId={member.user_id}
+                      size="md"
+                    />
                     <span className="text-sm">
                       {member.profiles?.display_name || 'Anonymous'}
                       {member.role === 'creator' && (
@@ -315,16 +344,25 @@ export default function PodPage() {
       {/* Chat Area */}
       <Card className="flex-1 flex flex-col">
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Pod Chat</CardTitle>
-            <div className="flex -space-x-2">
+          <div 
+            className="flex items-center"
+            style={{ gap: 'var(--chat-header-gap)' }}
+          >
+            <CardTitle className="text-lg flex-1">Pod Chat</CardTitle>
+            <div className="flex -space-x-2 flex-shrink-0">
               {members.slice(0, 3).map((member) => (
                 <div 
                   key={member.user_id}
-                  className="w-8 h-8 bg-purple-600 rounded-full border-2 border-white flex items-center justify-center text-white text-sm font-medium"
+                  className="border-2 border-white rounded-full"
                   title={member.profiles?.display_name || 'Anonymous'}
                 >
-                  {member.profiles?.display_name?.[0] || '?'}
+                  <UserAvatar
+                    src={member.profiles?.avatar_url}
+                    alt={member.profiles?.display_name || 'Anonymous'}
+                    fallback={member.profiles?.display_name || 'Anonymous'}
+                    userId={member.user_id}
+                    size="md"
+                  />
                 </div>
               ))}
               {members.length > 3 && (
@@ -350,8 +388,14 @@ export default function PodPage() {
                   key={message.id}
                   className={`flex gap-3 group ${message.user_id === user?.id ? 'flex-row-reverse' : ''}`}
                 >
-                  <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0" aria-label={`Avatar for ${message.profiles?.display_name || 'Anonymous'}`}>
-                    {message.profiles?.display_name?.[0] || '?'}
+                  <div className="flex-shrink-0">
+                    <UserAvatar
+                      src={message.profiles?.avatar_url}
+                      alt={message.profiles?.display_name || 'Anonymous'}
+                      fallback={message.profiles?.display_name || 'Anonymous'}
+                      userId={message.user_id}
+                      size="md"
+                    />
                   </div>
                   <div className={`max-w-[70%] ${message.user_id === user?.id ? 'text-right' : ''}`}>
                     <div className="chat-timestamp mb-1">
@@ -412,8 +456,11 @@ export default function PodPage() {
       </Card>
 
       {/* Fixed Mobile Message Input - Pinned above bottom navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border md:hidden z-40 allow-overflow" 
-           style={{ bottom: 'calc(80px + env(safe-area-inset-bottom))' }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border md:hidden allow-overflow" 
+           style={{ 
+             bottom: 'calc(80px + env(safe-area-inset-bottom))',
+             zIndex: 'var(--z-floating)'
+           }}>
         <div className="p-4">
           <form onSubmit={handleSendMessage} className="flex gap-2">
             <Input
