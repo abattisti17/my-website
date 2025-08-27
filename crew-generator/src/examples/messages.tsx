@@ -3,7 +3,7 @@
  * Seeded states for manual verification of chat layout fixes
  */
 
-import React from 'react'
+// import React from 'react' // Unused in this file
 import type { Message } from '@/lib/messages/MessagesAdapter'
 
 // Avatar size from design tokens (--avatar-lg = 48px)

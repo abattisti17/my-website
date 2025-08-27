@@ -234,7 +234,7 @@ describe('Messages Smoke Tests', () => {
 
       // Both should be valid
       expect(messageWithProfile.profiles).toBeDefined()
-      expect(messageWithoutProfile.profiles).toBeUndefined()
+      expect((messageWithoutProfile as any).profiles).toBeUndefined()
     })
   })
 })

@@ -34,7 +34,7 @@ export { PodChatView } from './pod-chat-view'
 // Modal Components
 export { BasicModal } from './basic-modal'
 export { ResponsiveModal } from './responsive-modal'
-export { EnhancedResponsiveModal } from './enhanced-responsive-modal'
+export { useResponsiveModal } from './enhanced-responsive-modal'
 export { SimpleDrawer } from './simple-drawer'
 export { ProfileEditDrawer } from './profile-edit-drawer'
 

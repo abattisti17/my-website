@@ -170,4 +170,4 @@ function UserAvatar({
   )
 }
 
-export { Avatar, AvatarImage, AvatarFallback, UserAvatar, type AvatarSize }
+export { Avatar, AvatarImage, AvatarFallback, UserAvatar }

@@ -3,7 +3,7 @@
  * Tests for chat UI layout, sizing, and positioning fixes
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MessageList } from '../message-list'
 import { MessageComposer } from '../message-composer'
@@ -53,7 +53,7 @@ describe('Message Layout Tests', () => {
       removeListener: () => {},
       addEventListener: () => {},
       removeEventListener: () => {},
-      dispatchEvent: () => {},
+      dispatchEvent: () => false,
     })
   })
 
@@ -91,8 +91,8 @@ describe('Message Layout Tests', () => {
         const avatar = container.querySelector('[data-slot="avatar"]')
         
         // Should use inline styles with design tokens, not hardcoded classes
-        expect(avatar?.style.width).toBeTruthy()
-        expect(avatar?.style.height).toBeTruthy()
+        expect((avatar as HTMLElement)?.style.width).toBeTruthy()
+        expect((avatar as HTMLElement)?.style.height).toBeTruthy()
       })
     })
 
@@ -109,8 +109,8 @@ describe('Message Layout Tests', () => {
       const avatar = container.querySelector('[data-slot="avatar"]')
       
       // Chat size should be 24px (--avatar-chat token)
-      expect(avatar?.style.width).toBe('var(--avatar-chat)')
-      expect(avatar?.style.height).toBe('var(--avatar-chat)')
+      expect((avatar as HTMLElement)?.style.width).toBe('var(--avatar-chat)')
+      expect((avatar as HTMLElement)?.style.height).toBe('var(--avatar-chat)')
       expect(avatar).toHaveClass('shrink-0')
     })
   })
@@ -150,12 +150,12 @@ describe('Message Layout Tests', () => {
 
       const bubbles = document.querySelectorAll('.message-bubble')
       bubbles.forEach(bubble => {
-        const styles = window.getComputedStyle(bubble)
+        // const _styles = window.getComputedStyle(bubble) // For potential future use
         // Should use design tokens for padding (not hardcoded values)
-        expect(bubble.style.paddingLeft).toBeTruthy()
-        expect(bubble.style.paddingRight).toBeTruthy()
-        expect(bubble.style.paddingTop).toBeTruthy()
-        expect(bubble.style.paddingBottom).toBeTruthy()
+        expect((bubble as HTMLElement).style.paddingLeft).toBeTruthy()
+        expect((bubble as HTMLElement).style.paddingRight).toBeTruthy()
+        expect((bubble as HTMLElement).style.paddingTop).toBeTruthy()
+        expect((bubble as HTMLElement).style.paddingBottom).toBeTruthy()
       })
     })
 
@@ -210,7 +210,7 @@ describe('Message Layout Tests', () => {
       
       messageGroups.forEach(group => {
         // Should use design token spacing - gap is set via style attribute
-        expect(group.style.gap).toBeTruthy()
+        expect((group as HTMLElement).style.gap).toBeTruthy()
         // Note: marginBottom might be set via CSS class rather than inline style
       })
     })
@@ -231,21 +231,21 @@ describe('Message Layout Tests', () => {
       
       dividers.forEach(divider => {
         // Should use design token z-index and spacing
-        expect(divider.style.zIndex).toBeTruthy()
-        expect(divider.style.paddingTop).toBeTruthy()
-        expect(divider.style.paddingBottom).toBeTruthy()
-        expect(divider.style.marginBottom).toBeTruthy()
+        expect((divider as HTMLElement).style.zIndex).toBeTruthy()
+        expect((divider as HTMLElement).style.paddingTop).toBeTruthy()
+        expect((divider as HTMLElement).style.paddingBottom).toBeTruthy()
+        expect((divider as HTMLElement).style.marginBottom).toBeTruthy()
       })
     })
   })
 
   describe('Message Composer', () => {
-    const mockOnSend = async (text: string) => {
+    const mockOnSend = async (_text: string) => {
       // Mock send function
     }
 
     it('should render composer with proper z-index layering', () => {
-      const mockOnSend = async (text: string) => {
+      const mockOnSend = async (_text: string) => {
         // Mock send function
       }
       
@@ -261,7 +261,7 @@ describe('Message Layout Tests', () => {
     it('should use design tokens for padding and border radius', () => {
       render(<MessageComposer onSend={mockOnSend} />)
 
-      const textarea = screen.getByRole('textbox')
+      const textarea = screen.getByRole('textbox') as HTMLElement
       expect(textarea.style.borderRadius).toBeTruthy()
       expect(textarea.style.paddingLeft).toBeTruthy()
       expect(textarea.style.paddingRight).toBeTruthy()
@@ -344,7 +344,7 @@ describe('Message Layout Tests', () => {
 
   describe('Z-Index Layering', () => {
     it('should maintain proper stacking context', () => {
-      const mockOnSend = async (text: string) => {
+      const mockOnSend = async (_text: string) => {
         // Mock send function
       }
       
@@ -364,8 +364,8 @@ describe('Message Layout Tests', () => {
       const composer = document.querySelector('.sticky.bottom-0')
       
       if (dateDividers.length > 0 && composer) {
-        const dividerZ = parseInt(dateDividers[0].style.zIndex || '0')
-        const composerZ = parseInt(composer.style.zIndex || '0')
+        const dividerZ = parseInt((dateDividers[0] as HTMLElement).style.zIndex || '0')
+        const composerZ = parseInt((composer as HTMLElement).style.zIndex || '0')
         
         // Composer should be above content dividers
         expect(composerZ).toBeGreaterThan(dividerZ)
@@ -414,7 +414,7 @@ describe('Message Layout Tests', () => {
     it('should use design tokens for header spacing', () => {
       // This would be tested in the pod-chat-view component test
       // Check that header elements use design token gaps instead of justify-between
-      const headerWithGap = document.querySelector('[style*="var(--chat-header-gap)"]')
+      // const _headerWithGap = document.querySelector('[style*="var(--chat-header-gap)"]') // For potential future use
       
       // Since we can't easily test the pod-chat-view here, we'll verify the pattern exists
       // This is more of a structural test to ensure the pattern is applied

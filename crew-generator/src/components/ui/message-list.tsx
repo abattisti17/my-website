@@ -61,9 +61,9 @@ function groupMessages(messages: Message[], currentUserId?: string): MessageGrou
       groups.push(currentGroup)
     } else {
       // Add to existing group
-      currentGroup.messages.push(message)
+      currentGroup!.messages.push(message)
       // Update timestamp to latest message
-      currentGroup.timestamp = message.created_at
+      currentGroup!.timestamp = message.created_at
     }
   }
 
@@ -78,7 +78,7 @@ const MessageBubble: React.FC<{
   showTail: boolean
   currentUserId?: string
   onMessageHidden?: (messageId: string) => void
-}> = ({ message, isGrouped, isOwn, showTail, currentUserId, onMessageHidden }) => {
+}> = ({ message, isGrouped: _isGrouped, isOwn, showTail, currentUserId, onMessageHidden }) => {
   const [isHidden, setIsHidden] = useState(false)
 
   const handleMessageHidden = () => {

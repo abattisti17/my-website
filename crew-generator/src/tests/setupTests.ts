@@ -2,6 +2,10 @@ import '@testing-library/jest-dom'
 
 // Mock IntersectionObserver for tests
 global.IntersectionObserver = class IntersectionObserver {
+  root = null
+  rootMargin = ''
+  thresholds = [0]
+  
   observe() {
     return null
   }
@@ -12,6 +16,10 @@ global.IntersectionObserver = class IntersectionObserver {
   
   unobserve() {
     return null
+  }
+  
+  takeRecords() {
+    return []
   }
 }
 
@@ -50,7 +58,7 @@ const originalGetComputedStyle = window.getComputedStyle
 window.getComputedStyle = (element, pseudoElement) => {
   const styles = originalGetComputedStyle(element, pseudoElement)
   // Mock safe area insets for testing
-  if (element.style && element.style.paddingBottom === 'env(safe-area-inset-bottom)') {
+  if ((element as HTMLElement).style && (element as HTMLElement).style.paddingBottom === 'env(safe-area-inset-bottom)') {
     ;(styles as any).paddingBottom = '34px' // Mock iPhone bottom safe area
   }
   return styles

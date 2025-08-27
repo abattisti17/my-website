@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button' // Unused import
 import { IconButton } from '@/components/ui/icon-button'
 import { Send, Paperclip, Smile } from 'lucide-react'
 import { isFeatureEnabled } from '@/lib/featureFlags'

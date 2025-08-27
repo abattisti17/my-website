@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom' // Unused
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card" // Unused
+// import { Badge } from "@/components/ui/badge" // Unused
 import { PageHeader } from '../components/design-system/PageHeader'
 import { PageLayout, PageSection } from '../components/design-system/PageLayout'
 import { CardList, PodCard } from '../components/design-system'
 import { EmptyState } from '../components/design-system/EmptyState'
 import { LoadingSpinner } from '../components/design-system/LoadingSpinner'
-import { MessageCircle, Users, Calendar } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface PodWithEvent {

@@ -22,7 +22,7 @@ interface CodeBlockProps {
  * </Card>`}
  * </CodeBlock>
  */
-export function CodeBlock({ children, language, className }: CodeBlockProps) {
+export function CodeBlock({ children, language: _language, className }: CodeBlockProps) {
   return (
     <Card className={cn("bg-muted/50", className)}>
       <CardContent>

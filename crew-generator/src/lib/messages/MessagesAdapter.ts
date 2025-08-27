@@ -123,7 +123,7 @@ export class SupabaseMessagesAdapter implements MessagesAdapter {
         throw new Error('Failed to send message')
       }
 
-      return data as Message
+      return data as unknown as Message
     } catch (error) {
       console.error('MessagesAdapter.send error:', error)
       throw error

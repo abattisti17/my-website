@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card" // Unused
+// import { Badge } from "@/components/ui/badge" // Unused
 import { PageHeader } from '../components/design-system/PageHeader'
 import { PageLayout, PageSection } from '../components/design-system/PageLayout'
 import { EmptyState } from '../components/design-system/EmptyState'
 import { LoadingSpinner } from '../components/design-system/LoadingSpinner'
 import { CardList, PhotoCard } from '../components/design-system'
-import { Camera, Download, Calendar, MapPin, ExternalLink } from 'lucide-react'
+import { Camera, Download } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface MediaItemWithEvent {

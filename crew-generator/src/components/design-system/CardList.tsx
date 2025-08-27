@@ -91,7 +91,7 @@ export function CardList<T>({
       return (
         <EmptyState
           title={emptyState.title || "No items"}
-          message={emptyState.message || "No items to display"}
+          description={emptyState.message || "No items to display"}
           icon={emptyState.icon}
           action={emptyState.action}
         />

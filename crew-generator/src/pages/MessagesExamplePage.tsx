@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../components/AuthProvider'
-import { messagesAdapter, type Message } from '../lib/messages/MessagesAdapter'
+import { type Message } from '../lib/messages/MessagesAdapter'
 import { MessageList } from '../components/ui/message-list'
 import { MessageComposer } from '../components/ui/message-composer'
-import { PodChatView } from '../components/ui/pod-chat-view'
+// import { PodChatView } from '../components/ui/pod-chat-view' // Unused
 import { PageHeader } from '../components/design-system/PageHeader'
 import { PageLayout } from '../components/design-system/PageLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,10 +12,10 @@ import { Badge } from '@/components/ui/badge'
 import { MessageCircle, Settings, Users, Zap, Monitor, Tablet, Smartphone, RefreshCw } from 'lucide-react'
 import { isFeatureEnabled, toggleFeatureFlag, getAllFeatureFlags } from '../lib/featureFlags'
 import { toast } from 'sonner'
-import { messageTestData, testScenarios, mockCurrentUser } from '../examples/messages'
+import { messageTestData, testScenarios } from '../examples/messages'
 
 // Legacy mock data for demonstration (kept for compatibility)
-const MOCK_MESSAGES: Message[] = [
+/* const _MOCK_MESSAGES: Message[] = [ // Unused mock data
   {
     id: '1',
     pod_id: 'example-pod',
@@ -88,7 +88,7 @@ const MOCK_MESSAGES: Message[] = [
     created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
     profiles: { display_name: 'You', avatar_url: undefined }
   }
-]
+] */
 
 const MOCK_POD_ID = 'example-pod'
 
@@ -100,11 +100,11 @@ const DEMO_CONFIG = {
 }
 
 export default function MessagesExamplePage() {
-  const { user } = useAuth()
+  const { user: _user } = useAuth()
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [sending, setSending] = useState(false)
-  const [nextCursor, setNextCursor] = useState<string>()
+  const [nextCursor, _setNextCursor] = useState<string>()
   const [featureFlags, setFeatureFlags] = useState(getAllFeatureFlags())
   const [hiddenMessages, setHiddenMessages] = useState<Set<string>>(new Set())
   const [activeScenario, setActiveScenario] = useState<string>('basic')
@@ -125,7 +125,7 @@ export default function MessagesExamplePage() {
   // Handle sending messages (mock implementation for example page)
   const handleSendMessage = async (text: string) => {
     // Use mock user for example page - no auth required
-    const mockUser = user || { id: 'current-user', display_name: 'You' }
+    // const _mockUser = user || { id: 'current-user', display_name: 'You' } // Unused
 
     setSending(true)
     try {
