@@ -4,6 +4,7 @@ import { useAuth } from '../AuthProvider'
 import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { IconButton } from '@/components/ui/icon-button'
 import { Badge } from '@/components/ui/badge'
 import { MessageList } from './message-list'
 import { MessageComposer } from './message-composer'
@@ -11,6 +12,7 @@ import { UserAvatar } from './avatar'
 import { useMessagesV2 } from '@/hooks/useMessagesV2'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
+import { ChevronLeft } from 'lucide-react'
 
 export interface PodMember {
   user_id: string
@@ -301,11 +303,13 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
   return (
     <div className={cn("h-screen flex flex-col w-full overflow-hidden", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur-sm flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <Button variant="outline" asChild>
-            <Link to={`/event/${eventSlug}`}>← Back</Link>
-          </Button>
+      <div className="flex items-center justify-between border-b bg-background/95 backdrop-blur-sm flex-shrink-0 page-padding-x" style={{ paddingTop: 'var(--chat-header-padding-y)', paddingBottom: 'var(--chat-header-padding-y)' }}>
+        <div className="flex items-center" style={{ gap: 'var(--chat-details-gap)' }}>
+          <IconButton variant="ghost" size="sm" asChild>
+            <Link to={`/event/${eventSlug}`} aria-label="Back to event">
+              <ChevronLeft className="h-4 w-4" />
+            </Link>
+          </IconButton>
           <div>
             <h1 className="text-xl font-bold">{pod.name || 'Unnamed Pod'}</h1>
             <p className="text-sm text-muted-foreground">
@@ -322,7 +326,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
       {/* Chat Area - Full width, no max-width constraint */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Chat Header */}
-        <div className="px-4 py-3 border-b bg-background flex-shrink-0">
+        <div className="border-b bg-background flex-shrink-0 page-padding-x" style={{ paddingTop: 'var(--chat-header-padding-y)', paddingBottom: 'var(--chat-header-padding-y)' }}>
           <div 
             className="flex items-center"
             style={{ gap: 'var(--chat-header-gap)' }}
@@ -354,12 +358,12 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
           </div>
         </div>
 
-        {/* Messages - Full height, scrollable with composer clearance */}
+        {/* Messages - Full height, scrollable with dynamic composer clearance */}
         <div 
           className="flex-1 overflow-hidden"
           style={{
             height: 'calc(100vh - var(--chat-header-height) - var(--safe-area-inset-top) - var(--safe-area-inset-bottom))',
-            paddingBottom: 'var(--chat-list-padding-bottom)'
+            paddingBottom: 'var(--chat-scroll-bottom-clearance)' // Dynamic clearance using design tokens
           }}
         >
           <MessageList
@@ -374,7 +378,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
           />
         </div>
 
-        {/* Desktop Composer - Full width */}
+        {/* Desktop Composer - Full width edge-to-edge */}
         <div className={`hidden ${mobileBreakpoint}:block border-t flex-shrink-0`}>
           <MessageComposer
             onSend={handleSendMessage}
@@ -386,13 +390,13 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
         </div>
       </div>
 
-      {/* Mobile Composer - Fixed bottom */}
+      {/* Mobile Composer - Fixed bottom, full width */}
       <div className={cn(
         `${mobileBreakpoint}:hidden fixed bottom-0 left-0 right-0`,
         "bg-background/95 backdrop-blur-sm border-t"
       )} 
       style={{ 
-        bottom: 'calc(80px + env(safe-area-inset-bottom))',
+        bottom: 'calc(var(--bottom-nav-height) + env(safe-area-inset-bottom))',
         zIndex: 'var(--z-floating)'
       }}>
         <MessageComposer
