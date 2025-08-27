@@ -472,35 +472,44 @@
     --message-bubble-max-width-md: 320px;   /* Tablet bubble max width */
     --message-bubble-max-width-lg: 400px;   /* Desktop bubble max width */
     --message-bubble-padding-x: var(--space-3);  /* 12px horizontal */
-    --message-bubble-padding-y: var(--space-2);  /* 8px vertical */
+    --message-bubble-padding-y: var(--space-3);  /* 12px vertical - FIXED: now symmetric */
     --message-bubble-radius: var(--radius-2xl);  /* 16px rounded bubbles */
 
     /* Message Group Spacing */
     --message-group-gap: var(--space-2);         /* 8px gap between avatar and messages */
-    --message-group-margin-bottom: var(--space-3); /* 12px space between groups */
-    --message-bubble-gap: var(--space-2);        /* 8px gap between grouped bubbles */
+    --message-group-margin-bottom: var(--space-4); /* 16px space between groups - increased */
+    --message-bubble-gap: var(--space-3);        /* 12px gap between grouped bubbles - increased */
 
     /* Date Divider Spacing */
     --divider-spacing-y: var(--space-2);         /* 8px top/bottom padding */
     --divider-margin-bottom: var(--space-4);     /* 16px margin below divider */
     --divider-margin-top: var(--space-4);        /* 16px margin above divider (for spacing) */
+    --divider-z-index: var(--z-content);         /* 10 - Above messages but below floating elements */
+    
+    /* Chat Layout - Dynamic Sizing */
+    --chat-composer-height-dynamic: max(var(--composer-height-collapsed), env(keyboard-inset-height, 0px));
+    --chat-scroll-bottom-clearance: calc(var(--composer-height-expanded) + var(--space-6)); /* More generous clearance for expanded composer */
 
     /* Composer Sizing */
     --composer-height-collapsed: 72px;           /* Base composer height */
     --composer-height-expanded: 120px;           /* Max composer height with multiline */
     --composer-padding: var(--space-4);          /* 16px internal padding */
     --composer-border-radius: var(--radius-2xl); /* 16px input border radius */
+    --composer-bottom-spacing: var(--space-2);   /* 8px spacing from bottom tab bar */
 
     /* Composer Element Spacing */
     --composer-element-gap: var(--space-3);      /* 12px gap between main composer elements (emoji/file, input, send) */
     --composer-action-gap: var(--space-2);       /* 8px gap between action buttons (emoji, file) */
 
     /* Chat Layout Heights - for proper scroll calculations */
-    --chat-header-height: 60px;                  /* Chat header height */
+    --chat-header-height: 44px;                  /* Chat header height - reduced from 60px */
     --chat-list-padding-bottom: calc(var(--composer-height-expanded) + var(--space-4)); /* Space for composer */
+    --bottom-nav-height: 80px;                   /* Bottom navigation height for mobile positioning */
 
     /* Chat Header Spacing */
     --chat-header-gap: var(--space-3);           /* 12px gap between header title and avatar group */
+    --chat-header-padding-y: var(--space-2);     /* 8px vertical padding - reduced from 16px */
+    --chat-details-gap: var(--space-1);          /* 4px gap between title and details */
     
     /* Safe Area Insets - iOS compatibility */
     --safe-area-inset-top: env(safe-area-inset-top, 0px);
@@ -556,12 +565,24 @@
     padding-bottom: var(--chat-list-padding-bottom);
   }
 
-  /* Composer positioning with safe area */
+  /* Composer positioning with safe area - Full width edge-to-edge */
   .chat-composer-positioned {
     position: sticky;
     bottom: 0;
+    left: 0;
+    right: 0;
     z-index: var(--z-composer);
     padding-bottom: var(--safe-area-inset-bottom);
+    /* Full width - no horizontal padding at this level */
+    width: 100vw;
+    max-width: 100vw;
+  }
+  
+  /* Chat composer inner content container */
+  .chat-composer-content {
+    padding-left: var(--content-padding-sm);
+    padding-right: var(--content-padding-sm);
+    max-width: 100%;
   }
 
   /* ==========================================================================
@@ -621,6 +642,11 @@
     font-weight: var(--font-semibold);
     line-height: var(--leading-tight);
     color: var(--foreground);
+    margin: 0; /* Reset browser defaults for consistent spacing control */
+  }
+
+  p {
+    margin: 0; /* Reset browser defaults for consistent spacing control */
   }
 
   /* Note: Font sizes are controlled by Tailwind classes (text-4xl, text-2xl, etc.) 

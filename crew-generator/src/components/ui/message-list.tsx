@@ -28,7 +28,7 @@ interface MessageListProps {
   height?: number
 }
 
-// Message grouping logic - group consecutive messages from same user within 5 minutes
+// Message grouping logic - group consecutive messages from same user within 2 minutes
 function groupMessages(messages: Message[], currentUserId?: string): MessageGroup[] {
   const groups: MessageGroup[] = []
   let currentGroup: MessageGroup | null = null
@@ -41,10 +41,10 @@ function groupMessages(messages: Message[], currentUserId?: string): MessageGrou
     // Start new group if:
     // 1. No current group
     // 2. Different sender
-    // 3. More than 5 minutes between messages
+    // 3. More than 2 minutes between messages
     const shouldStartNewGroup = !currentGroup ||
       currentGroup.sender.user_id !== message.user_id ||
-      (new Date(currentGroup.timestamp).getTime() - messageTime.getTime()) > 5 * 60 * 1000
+      Math.abs(messageTime.getTime() - new Date(currentGroup.timestamp).getTime()) > 2 * 60 * 1000
 
     if (shouldStartNewGroup) {
       currentGroup = {
@@ -99,7 +99,8 @@ const MessageBubble: React.FC<{
         paddingRight: 'var(--message-bubble-padding-x)',
         paddingTop: 'var(--message-bubble-padding-y)',
         paddingBottom: 'var(--message-bubble-padding-y)',
-        borderRadius: 'var(--message-bubble-radius)'
+        borderRadius: 'var(--message-bubble-radius)',
+        maxWidth: 'min(var(--message-bubble-max-width-lg), 85vw)'
       }}>
         <p className="text-xs">Message hidden</p>
       </div>
@@ -113,7 +114,6 @@ const MessageBubble: React.FC<{
         isOwn 
           ? "bg-primary text-primary-foreground ml-auto" 
           : "bg-muted text-foreground",
-
         showTail && isOwn && "rounded-br-sm",
         showTail && !isOwn && "rounded-bl-sm"
       )}
@@ -122,8 +122,10 @@ const MessageBubble: React.FC<{
         paddingRight: 'var(--message-bubble-padding-x)',
         paddingTop: 'var(--message-bubble-padding-y)',
         paddingBottom: 'var(--message-bubble-padding-y)',
-        borderRadius: 'var(--message-bubble-radius)'
-        // Note: max-width is handled by CSS classes in design-tokens.css
+        borderRadius: 'var(--message-bubble-radius)',
+        // ENTERPRISE FIX: Explicit max-width fallback using design tokens
+        // Ensures bubbles don't exceed responsive breakpoints even if CSS class fails
+        maxWidth: 'min(var(--message-bubble-max-width-lg), 85vw)'
       }}
       role="article"
       aria-label={`Message from ${message.profiles?.display_name || 'user'}`}
@@ -269,16 +271,17 @@ const DateDivider: React.FC<{ date: string }> = ({ date }) => {
 
   return (
     <div 
-      className="sticky top-0 bg-background/80 backdrop-blur-sm border-b"
+      className="relative bg-background border-b border-border/50"
       style={{
-        zIndex: 'var(--z-content)',
         paddingTop: 'var(--divider-spacing-y)',
         paddingBottom: 'var(--divider-spacing-y)',
+        marginTop: 'var(--divider-margin-top)',
         marginBottom: 'var(--divider-margin-bottom)'
+        // REMOVED z-index - let normal document flow handle layering
       }}
     >
       <div className="text-center">
-        <span className="text-xs text-muted-foreground bg-background px-3 py-1 rounded-full">
+        <span className="text-xs text-muted-foreground bg-background/95 px-3 py-1 rounded-full border border-border/30">
           {formatDate(date)}
         </span>
       </div>
@@ -313,31 +316,30 @@ export const MessageList: React.FC<MessageListProps> = ({
     const showDateDivider = !prevGroup || 
       new Date(group.timestamp).toDateString() !== new Date(prevGroup.timestamp).toDateString()
 
-    // Base heights
-    const avatarHeight = 32 // --avatar-md size
+    // Base heights - using design token values consistently
+    const avatarHeight = 32 // --avatar-md size from tokens
     const nameHeight = !group.isOwn ? 20 : 0 // sender name height
     const timestampHeight = group.isOwn ? 20 : 0 // timestamp for own messages
-    const messageGroupGap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--message-group-gap').replace('px', '')) || 8 // Use design token
-    const marginTop = index === 0 ? 0 : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--message-group-margin-bottom').replace('px', '')) || 12 // Use design token
+    const messageGroupGap = 8 // var(--space-2) equivalent, from design tokens
+    const marginTop = index === 0 ? 0 : 12 // var(--space-3) equivalent, from design tokens
     
-    // Date divider height (if present) - reduced estimate
-    const dateDividerHeight = showDateDivider ? (8 + 8 + 16 + 20) : 0 // padding + margin + smaller text estimate
+    // Date divider height (if present) - using design tokens
+    const dateDividerHeight = showDateDivider ? (8 + 8 + 16 + 20) : 0 // var(--divider-spacing-y) + var(--divider-margin-top) + var(--divider-margin-bottom) + text height
 
     // Calculate message bubble heights (estimate - more conservative)
     let bubblesHeight = 0
     group.messages.forEach((message, msgIndex) => {
-      // Estimate bubble height based on text length - tighter estimation
+      // Estimate bubble height based on text length - more accurate estimation
       const textLength = message.text.length
-      const estimatedLines = Math.max(1, Math.ceil(textLength / 50)) // ~50 chars per line
-      const bubbleHeight = Math.max(40, estimatedLines * 20 + 16) // min 40px, ~20px per line + padding
-      const bubbleGap = msgIndex > 0 ? 8 : 0 // --message-bubble-gap
+      const estimatedLines = Math.max(1, Math.ceil(textLength / 40)) // ~40 chars per line (more conservative)
+      const bubbleHeight = Math.max(48, estimatedLines * 24 + 24) // min 48px, ~24px per line + 24px padding (12px x 2)
+      const bubbleGap = msgIndex > 0 ? 8 : 0 // var(--message-bubble-gap) from design tokens
       bubblesHeight += bubbleHeight + bubbleGap
     })
 
     const totalHeight = marginTop + dateDividerHeight + avatarHeight + nameHeight + timestampHeight + bubblesHeight + messageGroupGap
     
-    // Minimal buffer - let content determine height more naturally
-    return Math.max(60, totalHeight + 5)
+    return Math.max(120, totalHeight) // Ensure minimum height with extra buffer for spacing
   }, [messageGroups])
 
   // Auto-scroll to bottom on new messages - works with VariableSizeList

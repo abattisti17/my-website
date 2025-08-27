@@ -1,6 +1,21 @@
 # Changelog
 
-## [Unreleased] - Messages UI v2
+## [Unreleased] - Messages UI v2 (Now Default)
+
+### 🎉 Migration Complete
+Messages UI v2 is now the default experience! The new components provide better performance, improved UX, and full design system integration.
+
+**Breaking Changes:**
+- Messages UI v2 is now default (`MESSAGES_UI: defaultValue: true`)
+- Legacy implementation still available as fallback when flag disabled
+- All new pod chats use the modern MessageList and MessageComposer components
+
+**For Developers:**
+- Override with `VITE_MESSAGES_UI=false` or `localStorage.setItem('feature_flag_MESSAGES_UI', 'false')` to test legacy
+- See `docs/messages-migration-checklist.md` for complete verification steps
+- All 22 layout tests continue to pass with v2 as default
+
+## [Previous] - Messages UI v2 Development
 
 ### Added
 

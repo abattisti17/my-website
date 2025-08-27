@@ -150,18 +150,21 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
   return (
     <div 
       className={cn(
-        "bg-background border-t border-border",
+        "bg-background",
         "chat-composer-positioned", // Uses design system positioning with safe area
         className
       )}
       style={{
-        padding: 'var(--composer-padding)'
+        paddingTop: 'var(--composer-padding)',
+        paddingBottom: 'var(--composer-padding)'
       }}
     >
-      <div 
-        className="flex items-end w-full"
-        style={{ gap: 'var(--composer-element-gap)' }}
-      >
+      {/* Inner content container with proper padding */}
+      <div className="chat-composer-content">
+        <div 
+          className="flex items-end w-full"
+          style={{ gap: 'var(--composer-element-gap)' }}
+        >
         {/* Action buttons - emoji/attachments */}
         <div 
           className="flex pb-2"
@@ -198,7 +201,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
             disabled={disabled || sending}
             className={cn(
               "w-full min-h-[40px] max-h-[120px] resize-none border border-input bg-background",
-              "text-sm placeholder:text-muted-foreground",
+              "text-sm placeholder:text-muted-foreground font-sans", // FIXED: Explicit font-family
               "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
               "disabled:cursor-not-allowed disabled:opacity-50",
               "scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"
@@ -250,13 +253,14 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
             <Send className="h-4 w-4" />
           )}
         </IconButton>
-      </div>
+        </div>
 
-      {/* Keyboard hint */}
-      <div className="mt-2 text-center">
-        <p className="text-xs text-muted-foreground">
-          Press Enter to send, Shift+Enter for new line
-        </p>
+        {/* Keyboard hint - reduced spacing */}
+        <div className="text-center" style={{ marginTop: 'var(--composer-bottom-spacing)' }}>
+          <p className="text-xs text-muted-foreground">
+            Press Enter to send, Shift+Enter for new line
+          </p>
+        </div>
       </div>
     </div>
   )

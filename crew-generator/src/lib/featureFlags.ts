@@ -18,7 +18,7 @@ type FeatureFlagConfig = {
 
 const FEATURE_FLAGS: FeatureFlagConfig = {
   MESSAGES_UI: {
-    defaultValue: false,
+    defaultValue: true,
     description: 'New message UI components (v2)'
   },
   VIRTUALIZED_CHAT: {
