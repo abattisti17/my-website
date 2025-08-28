@@ -56,9 +56,14 @@ This document defines the canonical plan for incrementally integrating **Ionic R
   - Pages live in `src/pages/*`
 
 - **Styling**
+  - **CSS Import Order (CRITICAL):**
+    1. Ionic Core CSS (`@ionic/react/css/*`)
+    2. Theme overrides (`./theme/ionic-overrides.css`)
+    3. Tailwind CSS (`./index.css`)
   - Use Tailwind on Ionic components via `className`.
   - Keep shadcn/Radix for complex widgets; Ionic for mobile primitives (nav, lists, sheets, refreshers).
   - Prefer **one overlay system per screen** (Ionic overlays OR Radix) to avoid focus/gesture conflicts.
+  - Design tokens automatically map to Ionic CSS variables via `ionic-overrides.css`.
 
 - **Testing**
   - Continue Vitest + Testing Library.  

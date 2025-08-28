@@ -1,0 +1,288 @@
+/* ==========================================================================
+   IONIC THEME OVERRIDES - DESIGN TOKEN INTEGRATION
+   Maps our design system tokens to Ionic CSS variables
+   
+   Import Order (CRITICAL):
+   1. Ionic Core CSS (@ionic/react/css/*)
+   2. This file (ionic-overrides.css) 
+   3. Tailwind CSS (index.css)
+   
+   This ensures Ionic gets our design tokens while Tailwind utilities
+   can still override when needed.
+   ========================================================================== */
+
+:root {
+  /* ==========================================================================
+     IONIC COLOR SYSTEM - MAPPED TO OUR DESIGN TOKENS
+     ========================================================================== */
+
+  /* Primary Color - Maps to our brand primary */
+  --ion-color-primary: var(--brand-primary-500);
+  --ion-color-primary-rgb: 168, 85, 247; /* #a855f7 in RGB */
+  --ion-color-primary-contrast: var(--color-neutral-0);
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: var(--brand-primary-600);
+  --ion-color-primary-tint: var(--brand-primary-400);
+
+  /* Secondary Color - Maps to our brand secondary */
+  --ion-color-secondary: var(--brand-secondary-400);
+  --ion-color-secondary-rgb: 245, 158, 11; /* #f59e0b in RGB */
+  --ion-color-secondary-contrast: var(--color-neutral-900);
+  --ion-color-secondary-contrast-rgb: 17, 24, 39;
+  --ion-color-secondary-shade: var(--brand-secondary-500);
+  --ion-color-secondary-tint: var(--brand-secondary-300);
+
+  /* Success Color */
+  --ion-color-success: var(--color-success-500);
+  --ion-color-success-rgb: 34, 197, 94; /* #22c55e in RGB */
+  --ion-color-success-contrast: var(--color-neutral-0);
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: var(--color-success-600);
+  --ion-color-success-tint: var(--color-success-400);
+
+  /* Warning Color */
+  --ion-color-warning: var(--color-warning-500);
+  --ion-color-warning-rgb: 245, 158, 11; /* #f59e0b in RGB */
+  --ion-color-warning-contrast: var(--color-neutral-900);
+  --ion-color-warning-contrast-rgb: 17, 24, 39;
+  --ion-color-warning-shade: var(--color-warning-600);
+  --ion-color-warning-tint: var(--color-warning-400);
+
+  /* Danger/Error Color */
+  --ion-color-danger: var(--color-error-500);
+  --ion-color-danger-rgb: 239, 68, 68; /* #ef4444 in RGB */
+  --ion-color-danger-contrast: var(--color-neutral-0);
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: var(--color-error-600);
+  --ion-color-danger-tint: var(--color-error-400);
+
+  /* Light Color */
+  --ion-color-light: var(--color-neutral-100);
+  --ion-color-light-rgb: 243, 244, 246; /* #f3f4f6 in RGB */
+  --ion-color-light-contrast: var(--color-neutral-900);
+  --ion-color-light-contrast-rgb: 17, 24, 39;
+  --ion-color-light-shade: var(--color-neutral-200);
+  --ion-color-light-tint: var(--color-neutral-50);
+
+  /* Medium Color */
+  --ion-color-medium: var(--color-neutral-500);
+  --ion-color-medium-rgb: 107, 114, 128; /* #6b7280 in RGB */
+  --ion-color-medium-contrast: var(--color-neutral-0);
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: var(--color-neutral-600);
+  --ion-color-medium-tint: var(--color-neutral-400);
+
+  /* Dark Color */
+  --ion-color-dark: var(--color-neutral-900);
+  --ion-color-dark-rgb: 17, 24, 39; /* #111827 in RGB */
+  --ion-color-dark-contrast: var(--color-neutral-0);
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: var(--color-neutral-950);
+  --ion-color-dark-tint: var(--color-neutral-800);
+
+  /* ==========================================================================
+     IONIC BACKGROUND COLORS - MAPPED TO OUR DESIGN TOKENS
+     ========================================================================== */
+
+  --ion-background-color: var(--background);
+  --ion-background-color-rgb: 255, 255, 255; /* Default light mode */
+
+  --ion-text-color: var(--foreground);
+  --ion-text-color-rgb: 17, 24, 39; /* Default light mode */
+
+  /* Card/Item backgrounds */
+  --ion-item-background: var(--card);
+  --ion-card-background: var(--card);
+
+  /* ==========================================================================
+     IONIC BORDER AND SEPARATOR COLORS
+     ========================================================================== */
+
+  --ion-border-color: var(--border);
+  --ion-item-border-color: var(--border);
+
+  /* ==========================================================================
+     IONIC TYPOGRAPHY - MAPPED TO OUR FONT TOKENS
+     ========================================================================== */
+
+  --ion-font-family: var(--font-body);
+
+  /* ==========================================================================
+     IONIC SPACING - MAPPED TO OUR SPACING TOKENS
+     ========================================================================== */
+
+  /* Use our design system spacing for consistent layouts */
+  --ion-padding: var(--space-4); /* 16px - matches our content padding */
+  --ion-margin: var(--space-4);  /* 16px - matches our content margin */
+
+  /* ==========================================================================
+     IONIC BORDER RADIUS - MAPPED TO OUR RADIUS TOKENS
+     ========================================================================== */
+
+  --ion-border-radius: var(--radius-lg); /* 8px - matches our card radius */
+
+  /* ==========================================================================
+     IONIC SAFE AREA SUPPORT
+     Ensure Ionic respects our safe area handling
+     ========================================================================== */
+
+  --ion-safe-area-top: var(--safe-area-inset-top);
+  --ion-safe-area-bottom: var(--safe-area-inset-bottom);
+  --ion-safe-area-left: var(--safe-area-inset-left);
+  --ion-safe-area-right: var(--safe-area-inset-right);
+}
+
+/* ==========================================================================
+   DARK MODE IONIC OVERRIDES
+   ========================================================================== */
+
+.dark {
+  /* Update Ionic colors for dark mode */
+  --ion-background-color: var(--background);
+  --ion-background-color-rgb: 3, 7, 18; /* Dark mode background */
+
+  --ion-text-color: var(--foreground);
+  --ion-text-color-rgb: 249, 250, 251; /* Dark mode text */
+
+  /* Card/Item backgrounds in dark mode */
+  --ion-item-background: var(--card);
+  --ion-card-background: var(--card);
+
+  /* Border colors in dark mode */
+  --ion-border-color: var(--border);
+  --ion-item-border-color: var(--border);
+
+  /* Primary color adjustments for dark mode */
+  --ion-color-primary: var(--brand-primary-400);
+  --ion-color-primary-rgb: 192, 132, 252; /* Lighter primary for dark mode */
+}
+
+/* ==========================================================================
+   IONIC COMPONENT SPECIFIC OVERRIDES
+   Fine-tune specific Ionic components to match our design system
+   ========================================================================== */
+
+/* IonContent - Ensure proper background */
+ion-content {
+  --background: var(--background);
+  --color: var(--foreground);
+}
+
+/* IonPage - Ensure proper background */
+ion-page {
+  --background: var(--background);
+  --color: var(--foreground);
+}
+
+/* IonHeader - Match our header styling */
+ion-header {
+  --background: var(--background);
+  --color: var(--foreground);
+  --border-color: var(--border);
+}
+
+/* IonToolbar - Consistent with our design */
+ion-toolbar {
+  --background: var(--background);
+  --color: var(--foreground);
+  --border-color: var(--border);
+  --padding-start: var(--content-padding-sm);
+  --padding-end: var(--content-padding-sm);
+}
+
+/* IonButton - Ensure consistent with our button tokens */
+ion-button {
+  --border-radius: var(--radius-lg);
+  font-family: var(--font-ui);
+  font-weight: var(--font-medium);
+}
+
+/* IonCard - Match our card design tokens */
+ion-card {
+  --background: var(--card);
+  --color: var(--card-foreground);
+  --border-radius: var(--card-radius-default);
+  box-shadow: var(--card-shadow-default);
+}
+
+/* IonItem - Consistent item styling */
+ion-item {
+  --background: var(--card);
+  --color: var(--card-foreground);
+  --border-color: var(--border);
+  --padding-start: var(--card-padding-default);
+  --padding-end: var(--card-padding-default);
+}
+
+/* IonInput - Match our input design tokens */
+ion-input {
+  --background: var(--background);
+  --color: var(--foreground);
+  --border-radius: var(--radius-lg);
+  --padding-start: var(--input-padding-x);
+  --padding-end: var(--input-padding-x);
+  font-family: var(--font-ui);
+}
+
+/* IonTabs - Bottom navigation styling */
+ion-tabs {
+  --background: var(--background);
+}
+
+ion-tab-bar {
+  --background: var(--card);
+  --color: var(--foreground-muted);
+  --border: 1px solid var(--border);
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
+ion-tab-button {
+  --color: var(--foreground-muted);
+  --color-selected: var(--primary);
+}
+
+/* IonModal - Match our modal/overlay styling */
+ion-modal {
+  --background: var(--background);
+  --color: var(--foreground);
+  --border-radius: var(--radius-2xl);
+}
+
+/* IonActionSheet - Match our design system */
+ion-action-sheet {
+  --background: var(--card);
+  --color: var(--card-foreground);
+  --border-radius: var(--radius-2xl);
+}
+
+/* IonToast - Match our notification styling */
+ion-toast {
+  --background: var(--card);
+  --color: var(--card-foreground);
+  --border-radius: var(--radius-lg);
+}
+
+/* ==========================================================================
+   IONIC + TAILWIND COMPATIBILITY
+   Ensure Ionic components work well with Tailwind utilities
+   ========================================================================== */
+
+/* Allow Tailwind classes on Ionic components */
+ion-button.tailwind-override,
+ion-card.tailwind-override,
+ion-item.tailwind-override {
+  /* Reset Ionic CSS custom properties when Tailwind classes are used */
+  --background: initial;
+  --color: initial;
+  --border-radius: initial;
+  --padding-start: initial;
+  --padding-end: initial;
+}
+
+/* Ensure proper text rendering in Ionic components */
+ion-content *,
+ion-page *,
+ion-item *,
+ion-card * {
+  font-family: inherit;
+}
