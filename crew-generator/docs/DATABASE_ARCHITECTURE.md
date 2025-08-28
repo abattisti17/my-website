@@ -305,3 +305,4 @@ idx_events_date_utc, idx_events_city, idx_events_artist
 
 
 
+
