@@ -167,7 +167,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
         >
         {/* Action buttons - emoji/attachments */}
         <div 
-          className="flex pb-2"
+          className="flex pb-2 hidden"
           style={{ gap: 'var(--composer-action-gap)' }}
         >
           <IconButton
