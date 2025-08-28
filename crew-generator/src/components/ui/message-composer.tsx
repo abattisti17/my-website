@@ -255,12 +255,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
         </IconButton>
         </div>
 
-        {/* Keyboard hint - reduced spacing */}
-        <div className="text-center" style={{ marginTop: 'var(--composer-bottom-spacing)' }}>
-          <p className="text-xs text-muted-foreground">
-            Press Enter to send, Shift+Enter for new line
-          </p>
-        </div>
+
       </div>
     </div>
   )
