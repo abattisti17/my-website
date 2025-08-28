@@ -390,7 +390,7 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
         "bg-background/95 backdrop-blur-sm border-t"
       )} 
       style={{ 
-        bottom: 'calc(var(--bottom-nav-height) + env(safe-area-inset-bottom))',
+        bottom: 'env(safe-area-inset-bottom)', // No bottom nav on chat pages
         zIndex: 'var(--z-floating)'
       }}>
         <MessageComposer

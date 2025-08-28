@@ -28,7 +28,7 @@ export const EventListItem = memo(function EventListItem({ event }: EventListIte
 
   return (
     <Card className="border border-border hover:bg-accent/50 transition-colors cursor-pointer">
-      <Link to={`/event/${event.slug}`} className="block">
+      <Link to={`/event/${event.slug}`} className="block no-underline">
         <CardContent className="flex items-center justify-between">
           <div className="flex-1">
             {/* Artist name - bold and prominent */}

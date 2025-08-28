@@ -35,7 +35,7 @@ export function PodCard({ pod, formatRelativeTime }: PodCardProps) {
   return (
     <Link
       to={`/event/${pod.events.slug}/pod/${pod.id}`}
-      className="block"
+      className="block no-underline"
     >
       <Card className="hover:bg-muted/50 transition-colors duration-200 touch-target">
         <CardHeader className="pb-3">

@@ -285,7 +285,7 @@ export default function EventPage() {
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-3xl mb-2">{event.artist}</CardTitle>
+              <h1 className="text-[var(--text-5xl)] font-bold mb-2">{event.artist}</h1>
               <CardDescription className="text-lg">
                 {event.city}
                 {event.venue && ` • ${event.venue}`}
