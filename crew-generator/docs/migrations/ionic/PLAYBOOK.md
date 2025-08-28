@@ -99,6 +99,11 @@ Each milestone must:
 - Include a short demo recording (gif/mp4) if UX-affecting.
 - Add notes to CHANGELOG with “Ionic Migration – Mx”.
 
+Testing requirement (per milestone)
+- Every milestone must include at least one new automated test (Vitest + Testing Library) that verifies the new Ionic integration works as intended.
+- Visual/manual smoke checks are required but insufficient.
+- Add tests in `tests/migrations/ionic/` with filenames matching the milestone (e.g., `M1-core-css.test.tsx`).
+
 ## 7) References
 
 - Ionic React docs and component API

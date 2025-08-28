@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
+import { IonApp } from '@ionic/react'
 
 // Lazy load all pages for better performance and smaller initial bundle
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -35,21 +36,22 @@ function AppContent() {
   }
   
   return (
-    <div className="min-h-screen-dynamic bg-background text-foreground mobile-optimized mobile-no-overflow">
-      <SimpleErrorBoundary>
-        <AppHeader />
-      </SimpleErrorBoundary>
-      <main className="pb-20 md:pb-0 px-content-sm md:px-content-md lg:px-content-lg max-w-7xl mx-auto">
-        <Suspense fallback={
-          <div className="flex items-center justify-center min-h-[50vh]">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading...</p>
+    <IonApp>
+      <div className="min-h-screen-dynamic bg-background text-foreground mobile-optimized mobile-no-overflow">
+        <SimpleErrorBoundary>
+          <AppHeader />
+        </SimpleErrorBoundary>
+        <main className="pb-20 md:pb-0 px-content-sm md:px-content-md lg:px-content-lg max-w-7xl mx-auto">
+          <Suspense fallback={
+            <div className="flex items-center justify-center min-h-[50vh]">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading...</p>
+              </div>
             </div>
-          </div>
-        }>
-          <SimpleErrorBoundary>
-              <Routes>
+          }>
+            <SimpleErrorBoundary>
+                <Routes>
                                              {/* Public routes */}
                 <Route path="/" element={
                   <SimpleErrorBoundary>
@@ -140,10 +142,11 @@ function AppContent() {
           </SimpleErrorBoundary>
         </Suspense>
       </main>
-      <BottomNavigation />
-      <PWAInstallPrompt />
-      <Toaster />
-    </div>
+              <BottomNavigation />
+        <PWAInstallPrompt />
+        <Toaster />
+      </div>
+    </IonApp>
   )
 }
 
