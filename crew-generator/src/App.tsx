@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
+import { IonApp } from '@ionic/react'
 
 // Lazy load all pages for better performance and smaller initial bundle
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -151,9 +152,11 @@ function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="crew-generator-theme">
       <AuthProvider>
-        <Router basename={basePath === '/' ? undefined : basePath}>
-          <AppContent />
-        </Router>
+        <IonApp>
+          <Router basename={basePath === '/' ? undefined : basePath}>
+            <AppContent />
+          </Router>
+        </IonApp>
       </AuthProvider>
     </ThemeProvider>
   )
