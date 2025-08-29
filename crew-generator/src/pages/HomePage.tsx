@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../components/AuthProvider'
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EventListItem } from '@/components/EventListItem'
 import { Badge } from "@/components/ui/badge"
+import { IonPage, IonContent } from '@ionic/react'
 
 import SearchBar from '../components/SearchBar'
 import SearchResults from '../components/SearchResults'
@@ -144,8 +146,10 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen-dynamic flex flex-col safe-scroll-content mobile-no-overflow">
-      <Stack spacing="lg" className="flex-1">
+    <IonPage>
+      <IonContent fullscreen>
+        <div className="min-h-screen-dynamic flex flex-col safe-scroll-content mobile-no-overflow">
+          <Stack spacing="lg" className="flex-1">
         {/* Hero Section - Mobile-first with proper spacing */}
         <div className="page-padding-x page-padding-y">
           <div className="text-center space-y-6">
@@ -267,7 +271,9 @@ export default function HomePage() {
         </section>
 
 
-      </Stack>
-    </div>
+          </Stack>
+        </div>
+      </IonContent>
+    </IonPage>
   )
 }

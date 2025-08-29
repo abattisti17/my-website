@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase, devAutoLogin } from '../lib/supabase'
 import { useAuth } from '../components/AuthProvider'
 import { PageLayout } from '../components/design-system/PageLayout'
+import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonIcon } from '@ionic/react'
+import { checkmarkCircle } from 'ionicons/icons'
 
 export default function AuthPage() {
   const [email, setEmail] = useState('')
@@ -104,6 +106,36 @@ export default function AuthPage() {
   return (
     <PageLayout className="flex items-center justify-center">
       <div className="w-full max-w-md space-y-8">
+        {/* IONIC TEST COMPONENT - Orange and Obvious */}
+        <IonCard style={{ 
+          '--background': '#ff6b35', 
+          '--color': 'white',
+          border: '3px solid #ff8c42',
+          boxShadow: '0 8px 32px rgba(255, 107, 53, 0.3)'
+        }}>
+          <IonCardHeader>
+            <IonCardTitle style={{ color: 'white', fontSize: '1.5rem', textAlign: 'center' }}>
+              🧪 IONIC TEST COMPONENT
+            </IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent style={{ textAlign: 'center', padding: '20px' }}>
+            <p style={{ color: 'white', marginBottom: '16px', fontSize: '1.1rem' }}>
+              ✅ Ionic React is working perfectly!
+            </p>
+            <IonButton 
+              fill="outline" 
+              style={{ 
+                '--color': 'white',
+                '--border-color': 'white',
+                '--background-hover': 'rgba(255, 255, 255, 0.1)'
+              }}
+            >
+              <IonIcon icon={checkmarkCircle} slot="start" />
+              Ionic Button Works!
+            </IonButton>
+          </IonCardContent>
+        </IonCard>
+
         {/* Hero Section */}
         <div className="text-center space-y-4">
           <div className="mx-auto w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center">
