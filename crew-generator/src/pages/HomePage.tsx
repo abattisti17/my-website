@@ -13,6 +13,9 @@ import SearchResults from '../components/SearchResults'
 import { createEventsSearchService } from '../lib/searchService'
 import type { SearchResult } from '../lib/searchService'
 import { Stack } from '../components/design-system'
+import { IonButton, IonIcon } from '@ionic/react'
+import { add } from 'ionicons/icons'
+import './HomePage.css'
 
 
 
@@ -187,9 +190,9 @@ export default function HomePage() {
 
         {/* Events Section - Modern layout */}
         <section className="page-padding-x pb-safe">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Upcoming Events</h2>
-          {user && (
+        {/* Create Event Button - Above header */}
+        {user && (
+          <div className="flex justify-end mb-4">
             <Button asChild className="touch-target rounded-xl font-semibold shadow-sm bg-primary hover:bg-primary/90 text-primary-foreground">
               <Link to="/create-event">
                 <span className="mr-2">➕</span>
@@ -197,6 +200,20 @@ export default function HomePage() {
                 <span className="sm:hidden">Create</span>
               </Link>
             </Button>
+          </div>
+        )}
+        
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Upcoming Events</h2>
+          {user && (
+            <IonButton 
+              fill="solid" 
+              className="ionic-add-button"
+              onClick={() => window.location.href = '/create-event'}
+            >
+              <IonIcon icon={add} slot="start" />
+              Add
+            </IonButton>
           )}
         </div>
 

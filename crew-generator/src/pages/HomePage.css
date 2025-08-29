@@ -1,0 +1,17 @@
+/* Custom styling for Ionic Add button */
+.ionic-add-button {
+  --background: #166534;
+  --background-activated: #14532d;
+  --background-hover: #15803d;
+  --color: white;
+  --border-radius: 8px;
+  font-weight: 500;
+}
+
+.ionic-add-button:hover {
+  --background: #15803d;
+}
+
+.ionic-add-button:active {
+  --background: #14532d;
+}
