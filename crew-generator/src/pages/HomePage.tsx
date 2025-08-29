@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { IonPage, IonContent } from '@ionic/react'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { supabaseWithRetry, devLog, devError, devSuccess } from '../lib/devAccelerators'
@@ -145,9 +144,7 @@ export default function HomePage() {
   }
 
   return (
-    <IonPage>
-      <IonContent>
-        <div className="min-h-screen-dynamic flex flex-col safe-scroll-content mobile-no-overflow">
+    <div className="min-h-screen-dynamic flex flex-col safe-scroll-content mobile-no-overflow">
       <Stack spacing="lg" className="flex-1">
         {/* Hero Section - Mobile-first with proper spacing */}
         <div className="page-padding-x page-padding-y">
@@ -271,8 +268,6 @@ export default function HomePage() {
 
 
       </Stack>
-        </div>
-      </IonContent>
-    </IonPage>
+    </div>
   )
 }

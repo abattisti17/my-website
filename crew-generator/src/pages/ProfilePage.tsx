@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { IonPage, IonContent } from '@ionic/react'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { Button } from "@/components/ui/button"
@@ -255,9 +254,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <IonPage>
-      <IonContent>
-        <PageLayout className="max-w-2xl">
+    <PageLayout className="max-w-2xl">
       <Stack spacing="md">
         {/* Profile Card */}
         <Card>
@@ -433,8 +430,6 @@ export default function ProfilePage() {
         </CardContent>
         </Card>
       </Stack>
-        </PageLayout>
-      </IonContent>
-    </IonPage>
+    </PageLayout>
   )
 }
