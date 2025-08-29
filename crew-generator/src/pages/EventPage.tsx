@@ -13,6 +13,7 @@ import MediaGallery from '../components/MediaGallery'
 import { PageLayout } from '../components/design-system/PageLayout'
 import { Stack } from '../components/design-system/Stack'
 // import { PageSection } from '../components/design-system/PageLayout' // Temporarily disabled
+import IonicSuccessBanner from '../components/IonicSuccessBanner'
 
 interface Event {
   id: string
@@ -275,6 +276,9 @@ export default function EventPage() {
   return (
     <PageLayout className="max-w-4xl">
       <Stack spacing="lg">
+        {/* Ionic Success Banner */}
+        <IonicSuccessBanner />
+
         {/* Back Button */}
         <Button variant="outline" asChild className="self-start">
           <Link to="/">← Back to Events</Link>

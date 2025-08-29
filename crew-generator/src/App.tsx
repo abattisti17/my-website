@@ -24,7 +24,8 @@ import { ThemeProvider } from './components/ThemeProvider'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
 import { SimpleErrorBoundary } from './components/SimpleErrorBoundary'
 import { Toaster } from "@/components/ui/sonner"
-
+import '@ionic/react/css/core.css';
+import { setupIonicReact } from '@ionic/react';
 
 const basePath = import.meta.env.VITE_PUBLIC_BASE_PATH || '/'
 
@@ -148,6 +149,9 @@ function AppContent() {
 }
 
 function App() {
+  // Initialize Ionic React
+  setupIonicReact();
+
   return (
     <ThemeProvider defaultTheme="system" storageKey="crew-generator-theme">
       <AuthProvider>
