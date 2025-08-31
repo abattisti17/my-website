@@ -13,8 +13,7 @@ import SearchResults from '../components/SearchResults'
 import { createEventsSearchService } from '../lib/searchService'
 import type { SearchResult } from '../lib/searchService'
 import { Stack } from '../components/design-system'
-import { refresh, logIn } from 'ionicons/icons'
-// import { add } from 'ionicons/icons' // Commented out - no longer using create buttons
+import { refresh, logIn, add } from 'ionicons/icons'
 import { IonicButton } from '@/components/ui/ionic-button'
 import './HomePage.css'
 // import { IonButton, IonIcon } from '@ionic/react' // Commented out - using IonicButton wrapper instead
@@ -203,8 +202,19 @@ export default function HomePage() {
         <section className="page-padding-x pb-safe">
 
         
-        <div className="mb-6">
+        <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Upcoming Events</h2>
+          {user && (
+            <IonicButton 
+              variant="default" 
+              size="default"
+              icon={add}
+              onClick={() => window.location.href = '/create-event'}
+            >
+              <span className="hidden sm:inline">Create Event</span>
+              <span className="sm:hidden">Create</span>
+            </IonicButton>
+          )}
         </div>
 
         {/* Search Bar and Events with proper spacing */}
