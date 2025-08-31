@@ -1,0 +1,139 @@
+/**
+ * IonicButton CSS - Design System Integration
+ * 
+ * This CSS maps Ionic button styling to our design tokens from design-tokens.css.
+ * All sizing uses CSS custom properties to maintain consistency with the existing
+ * design system while providing Ionic's mobile-optimized behavior.
+ */
+
+/* Base Ionic Button Styling */
+.ionic-button-base {
+  /* Use design system border radius */
+  --border-radius: 12px;
+  
+  /* Typography from design system */
+  font-weight: 500;
+  font-size: 0.875rem; /* text-sm */
+  
+  /* Smooth transitions */
+  transition: all 0.2s ease;
+  
+  /* Remove Ionic's default text transform */
+  text-transform: none;
+  letter-spacing: 0;
+  
+  /* Ensure proper touch targets */
+  touch-action: manipulation;
+  
+  /* Focus styles matching design system */
+  --color-focused: var(--color);
+  --background-focused: var(--background);
+}
+
+/* Variant Styles - Map to Design System Colors */
+.ionic-button-default {
+  --background: hsl(var(--primary));
+  --background-activated: hsl(var(--primary) / 0.9);
+  --background-hover: hsl(var(--primary) / 0.9);
+  --color: hsl(var(--primary-foreground));
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.ionic-button-destructive {
+  --background: hsl(var(--destructive));
+  --background-activated: hsl(var(--destructive) / 0.9);
+  --background-hover: hsl(var(--destructive) / 0.9);
+  --color: white;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.ionic-button-outline {
+  --background: hsl(var(--background));
+  --background-activated: hsl(var(--primary));
+  --background-hover: hsl(var(--primary));
+  --color: hsl(var(--primary));
+  --color-activated: hsl(var(--primary-foreground));
+  --color-hover: hsl(var(--primary-foreground));
+  --border-color: hsl(var(--primary));
+  --border-width: 1px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.ionic-button-ghost {
+  --background: transparent;
+  --background-activated: hsl(var(--accent));
+  --background-hover: hsl(var(--accent));
+  --color: hsl(var(--foreground));
+  --color-activated: hsl(var(--accent-foreground));
+  --color-hover: hsl(var(--accent-foreground));
+}
+
+/* Size Styles - Use Design Tokens */
+.ionic-button-sm {
+  height: var(--button-height-sm);
+  --padding-start: var(--button-padding-x-sm);
+  --padding-end: var(--button-padding-x-sm);
+  min-width: var(--button-min-width-sm);
+  font-size: 0.75rem; /* text-xs */
+}
+
+.ionic-button-md {
+  height: var(--button-height-md);
+  --padding-start: var(--button-padding-x-md);
+  --padding-end: var(--button-padding-x-md);
+  min-width: var(--button-min-width-md);
+}
+
+.ionic-button-lg {
+  height: var(--button-height-lg);
+  --padding-start: var(--button-padding-x-lg);
+  --padding-end: var(--button-padding-x-lg);
+  min-width: var(--button-min-width-lg);
+  font-size: 1rem; /* text-base */
+  font-weight: 600;
+}
+
+.ionic-button-default-size {
+  height: var(--button-height-default);
+  --padding-start: var(--button-padding-x-default);
+  --padding-end: var(--button-padding-x-default);
+  min-width: var(--button-min-width-default);
+}
+
+/* Full Width */
+.ionic-button-full-width {
+  width: 100%;
+}
+
+/* Custom Green Button for Photo Upload */
+.ionic-green-button {
+  --background: #16a34a;
+  --background-activated: #15803d;
+  --background-hover: #22c55e;
+  --color: white;
+}
+
+/* Enhanced Focus Styles for Accessibility */
+.ionic-button-base:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Disabled State */
+.ionic-button-base.button-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Icon Spacing */
+.ionic-button-base ion-icon {
+  font-size: 1rem;
+}
+
+.ionic-button-sm ion-icon {
+  font-size: 0.875rem;
+}
+
+.ionic-button-lg ion-icon {
+  font-size: 1.125rem;
+}

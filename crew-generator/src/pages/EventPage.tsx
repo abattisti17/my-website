@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+// import { Link } from 'react-router-dom' // Commented out - using IonicButton with onClick instead
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { uploadAndSaveMedia } from '../lib/uploadMedia'
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -13,7 +14,9 @@ import MediaGallery from '../components/MediaGallery'
 import { PageLayout } from '../components/design-system/PageLayout'
 import { Stack } from '../components/design-system/Stack'
 // import { PageSection } from '../components/design-system/PageLayout' // Temporarily disabled
-import IonicSuccessBanner from '../components/IonicSuccessBanner'
+import { IonicButton } from '@/components/ui/ionic-button'
+import { camera, images, add, chatbubble, rocket } from 'ionicons/icons'
+// import IonicSuccessBanner from '../components/IonicSuccessBanner' // Removed test banner
 
 interface Event {
   id: string
@@ -263,9 +266,12 @@ export default function EventPage() {
       <div className="container mx-auto px-4 py-8 text-center">
         <h1 className="text-3xl font-bold mb-4">Event Not Found</h1>
         <p className="text-gray-600 mb-4">The event you're looking for doesn't exist.</p>
-        <Button asChild>
-          <Link to="/">← Back to Events</Link>
-        </Button>
+        <IonicButton 
+          variant="default"
+          onClick={() => window.location.href = '/'}
+        >
+          ← Back to Events
+        </IonicButton>
       </div>
     )
   }
@@ -276,13 +282,15 @@ export default function EventPage() {
   return (
     <PageLayout className="max-w-4xl">
       <Stack spacing="lg">
-        {/* Ionic Success Banner */}
-        <IonicSuccessBanner />
-
         {/* Back Button */}
-        <Button variant="outline" asChild className="self-start">
-          <Link to="/">← Back to Events</Link>
-        </Button>
+        <IonicButton 
+          variant="outline" 
+          size="default"
+          onClick={() => window.location.href = '/'}
+          className="self-start"
+        >
+          ← Back to Events
+        </IonicButton>
 
         {/* Event Header */}
         <Card>
@@ -319,25 +327,29 @@ export default function EventPage() {
           <CardContent>
             {isJoined ? (
               <div className="flex gap-3 flex-wrap">
-                <Button 
+                <IonicButton 
                   onClick={handleLeaveEvent} 
                   disabled={joinLoading}
                   variant="outline"
                 >
                   Leave Event
-                </Button>
-                <Button 
+                </IonicButton>
+                <IonicButton 
                   onClick={triggerFileInput}
                   disabled={uploading}
-                  className="bg-green-600 hover:bg-green-700 text-white font-medium"
+                  variant="default"
+                  icon={camera}
+                  className="ionic-green-button"
                 >
-                  {uploading ? '📤 Uploading...' : '📷 Add Photo'}
-                </Button>
-                <Button asChild>
-                  <Link to={`/event/${slug}/memorabilia`}>
-                    📸 Add Memorabilia
-                  </Link>
-                </Button>
+                  {uploading ? 'Uploading...' : 'Add Photo'}
+                </IonicButton>
+                <IonicButton 
+                  variant="default"
+                  icon={images}
+                  onClick={() => window.location.href = `/event/${slug}/memorabilia`}
+                >
+                  Add Memorabilia
+                </IonicButton>
                 {/* Hidden file input */}
                 <input
                   ref={fileInputRef}
@@ -349,12 +361,13 @@ export default function EventPage() {
                 />
               </div>
             ) : (
-              <Button 
+              <IonicButton 
                 onClick={handleJoinEvent} 
                 disabled={joinLoading}
+                variant="default"
               >
                 {joinLoading ? 'Joining...' : '🎟️ Join Event'}
-              </Button>
+              </IonicButton>
             )}
           </CardContent>
         )}
@@ -377,9 +390,9 @@ export default function EventPage() {
               {pods.length > 0 && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline">
-                      ➕ New Pod
-                    </Button>
+                    <IonicButton variant="outline" icon={add}>
+                      New Pod
+                    </IonicButton>
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
                     <DialogHeader>
@@ -403,9 +416,9 @@ export default function EventPage() {
                 <p className="text-gray-800 mb-4">No pods created yet. Be the first!</p>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button>
+                    <IonicButton variant="default" icon={add}>
                       Create First Pod
-                    </Button>
+                    </IonicButton>
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
                     <DialogHeader>
@@ -445,26 +458,31 @@ export default function EventPage() {
                       </CardHeader>
                       <CardContent>
                         {isUserMember ? (
-                          <Button asChild className="w-full">
-                            <Link to={`/event/${slug}/pod/${pod.id}`}>
-                              💬 Open Chat
-                            </Link>
-                          </Button>
+                          <IonicButton 
+                            variant="default" 
+                            fullWidth
+                            icon={chatbubble}
+                            onClick={() => window.location.href = `/event/${slug}/pod/${pod.id}`}
+                          >
+                            Open Chat
+                          </IonicButton>
                         ) : isFull ? (
-                          <Button 
-                            
-                            className="w-full" 
+                          <IonicButton 
                             variant="outline" 
+                            fullWidth
                             disabled
                           >
                             Pod Full
-                          </Button>
+                          </IonicButton>
                         ) : (
-                          <Button asChild className="w-full">
-                            <Link to={`/event/${slug}/pod/${pod.id}`}>
-                              🚀 Join Pod
-                            </Link>
-                          </Button>
+                          <IonicButton 
+                            variant="default" 
+                            fullWidth
+                            icon={rocket}
+                            onClick={() => window.location.href = `/event/${slug}/pod/${pod.id}`}
+                          >
+                            Join Pod
+                          </IonicButton>
                         )}
                       </CardContent>
                     </Card>

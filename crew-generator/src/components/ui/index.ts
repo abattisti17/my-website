@@ -7,6 +7,7 @@
 // Base Components
 export { Button, buttonVariants } from './button'
 export { IconButton } from './icon-button'
+export { IonicButton } from './ionic-button'
 
 // Layout & Container Components  
 export { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter } from './card'
