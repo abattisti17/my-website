@@ -14,6 +14,7 @@ App.tsx
 
 import '@ionic/react/css/core.css';
 
+
 Add the setupIonicReact function to your app:
 App.tsx
 
