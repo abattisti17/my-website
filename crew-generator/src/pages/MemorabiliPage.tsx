@@ -4,7 +4,9 @@ import { Input } from '../components/ui/input'
 import { Textarea } from '../components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select'
 import { Label } from '../components/ui/label'
-import { Button } from '../components/ui/button'
+import { IonicButton } from '../components/ui/ionic-button'
+import { save } from 'ionicons/icons'
+// import { Button } from '../components/ui/button' // Commented out - using IonicButton instead
 import { PageLayout, PageHeader } from '../components/design-system'
 import { Stack } from '../components/design-system'
 
@@ -65,9 +67,14 @@ export default function MemorabiliPage() {
                 </Select>
               </div>
               
-              <Button className="w-full mt-4">
+              <IonicButton 
+                variant="default"
+                fullWidth
+                icon={save}
+                className="mt-4"
+              >
                 Save Memories
-              </Button>
+              </IonicButton>
             </Stack>
           </CardContent>
         </Card>

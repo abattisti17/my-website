@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+import { IonicButton } from '@/components/ui/ionic-button'
+import { send, close } from 'ionicons/icons'
+// import { Button } from '@/components/ui/button' // Commented out - using IonicButton instead
 import { Textarea } from '@/components/ui/textarea'
 import { submitReport, type ReportTargetType } from '../lib/reports'
 
@@ -82,21 +84,23 @@ export default function ReportDialog({
           />
           
           <div className="flex gap-3 justify-end">
-            <Button 
+            <IonicButton 
               type="button" 
               variant="outline" 
               onClick={handleClose}
               disabled={submitting}
+              icon={close}
             >
               Cancel
-            </Button>
-            <Button 
+            </IonicButton>
+            <IonicButton 
               type="submit" 
               disabled={submitting}
-              className="bg-red-600 hover:bg-red-700 text-white font-medium"
+              variant="destructive"
+              icon={send}
             >
               {submitting ? 'Reporting...' : 'Report'}
-            </Button>
+            </IonicButton>
           </div>
         </form>
       </DialogContent>

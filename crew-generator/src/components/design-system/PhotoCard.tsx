@@ -1,7 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Calendar, MapPin, ExternalLink, Download } from 'lucide-react'
+import { IonicButton } from "@/components/ui/ionic-button"
+import { download } from 'ionicons/icons'
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
+import { Calendar, MapPin, ExternalLink } from 'lucide-react'
+// import { Download } from 'lucide-react' // Commented out - using Ionic download icon instead
 
 interface PhotoCardProps {
   item: {
@@ -89,18 +92,19 @@ export function PhotoCard({
           <span className="text-muted-foreground">
             Uploaded {formatDateTime(item.created_at)}
           </span>
-          <Button
+          <IonicButton
             variant="outline"
+            size="sm"
             onClick={() => {
               const timestamp = new Date(item.created_at).getTime()
               const filename = `${item.events.artist}-${item.events.city}-${timestamp}.webp`
               downloadImage(item.url, filename)
             }}
+            icon={download}
             className="touch-target-sm"
           >
-            <Download className="h-3 w-3 mr-1" />
             Download
-          </Button>
+          </IonicButton>
         </div>
       </CardContent>
     </Card>

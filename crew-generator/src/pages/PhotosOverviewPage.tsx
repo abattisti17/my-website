@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
-import { Button } from "@/components/ui/button"
+import { IonicButton } from "@/components/ui/ionic-button"
+import { download } from 'ionicons/icons'
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 // import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card" // Unused
 // import { Badge } from "@/components/ui/badge" // Unused
 import { PageHeader } from '../components/design-system/PageHeader'
@@ -9,7 +11,8 @@ import { PageLayout, PageSection } from '../components/design-system/PageLayout'
 import { EmptyState } from '../components/design-system/EmptyState'
 import { LoadingSpinner } from '../components/design-system/LoadingSpinner'
 import { CardList, PhotoCard } from '../components/design-system'
-import { Camera, Download } from 'lucide-react'
+import { Camera } from 'lucide-react'
+// import { Download } from 'lucide-react' // Commented out - using Ionic download icon instead
 import { toast } from 'sonner'
 
 interface MediaItemWithEvent {
@@ -192,14 +195,16 @@ export default function PhotosOverviewPage() {
 
       {/* Download All Button */}
       <PageSection spacing="sm">
-        <Button 
+        <IonicButton 
           onClick={downloadAllPhotos}
           disabled={downloading}
-          className="w-full touch-target"
+          variant="default"
+          fullWidth
+          icon={download}
+          className="touch-target"
         >
-          <Download className="h-4 w-4 mr-2" />
           {downloading ? 'Downloading...' : `Download All ${media.length} Photos`}
-        </Button>
+        </IonicButton>
       </PageSection>
 
       {/* Photos Grid */}

@@ -7,9 +7,13 @@ import { MessageComposer } from '../components/ui/message-composer'
 import { PageHeader } from '../components/design-system/PageHeader'
 import { PageLayout } from '../components/design-system/PageLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { IonicButton } from '@/components/ui/ionic-button'
+import { refresh, checkmark, close } from 'ionicons/icons'
+// import { settings } from 'ionicons/icons' // Commented out - not used
+// import { Button } from '@/components/ui/button' // Commented out - using IonicButton instead
 import { Badge } from '@/components/ui/badge'
-import { MessageCircle, Settings, Users, Zap, Monitor, Tablet, Smartphone, RefreshCw } from 'lucide-react'
+import { MessageCircle, Settings, Users, Zap, Monitor, Tablet, Smartphone } from 'lucide-react'
+// import { RefreshCw } from 'lucide-react' // Commented out - using Ionic refresh icon instead
 import { isFeatureEnabled, toggleFeatureFlag, getAllFeatureFlags } from '../lib/featureFlags'
 import { toast } from 'sonner'
 import { messageTestData, testScenarios } from '../examples/messages'
@@ -203,18 +207,19 @@ export default function MessagesExamplePage() {
           <CardContent>
             <div className="grid grid-cols-2 gap-2">
               {Object.entries(featureFlags).map(([flag, enabled]) => (
-                <Button
+                <IonicButton
                   key={flag}
                   variant="outline"
                   size="sm"
                   onClick={() => handleToggleFlag(flag)}
+                  icon={enabled ? checkmark : close}
                   className="justify-between"
                 >
                   {flag}
                   <Badge variant={enabled ? 'default' : 'secondary'}>
                     {enabled ? 'ON' : 'OFF'}
                   </Badge>
-                </Button>
+                </IonicButton>
               ))}
             </div>
           </CardContent>
@@ -236,7 +241,7 @@ export default function MessagesExamplePage() {
               <h4 className="text-sm font-medium mb-2">Test Data</h4>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {Object.entries(messageTestData).map(([key, data]) => (
-                  <Button
+                  <IonicButton
                     key={key}
                     variant={activeScenario === key ? 'default' : 'outline'}
                     size="sm"
@@ -247,7 +252,7 @@ export default function MessagesExamplePage() {
                     <Badge variant="secondary" className="ml-1">
                       {data.length}
                     </Badge>
-                  </Button>
+                  </IonicButton>
                 ))}
               </div>
             </div>
@@ -257,7 +262,7 @@ export default function MessagesExamplePage() {
               <h4 className="text-sm font-medium mb-2">Screen Size Simulation</h4>
               <div className="grid grid-cols-3 gap-2">
                 {Object.entries(testScenarios).map(([key, scenario]) => (
-                  <Button
+                  <IonicButton
                     key={key}
                     variant={viewMode === key ? 'default' : 'outline'}
                     size="sm"
@@ -268,22 +273,22 @@ export default function MessagesExamplePage() {
                     {key === 'tablet' && <Tablet className="h-4 w-4" />}
                     {key === 'desktop' && <Monitor className="h-4 w-4" />}
                     {scenario.name}
-                  </Button>
+                  </IonicButton>
                 ))}
               </div>
             </div>
             
             {/* Quick Actions */}
             <div className="flex gap-2">
-              <Button
+              <IonicButton
                 variant="outline"
                 size="sm"
                 onClick={() => handleScenarioChange('comprehensive')}
+                icon={refresh}
                 className="flex items-center gap-2"
               >
-                <RefreshCw className="h-4 w-4" />
                 Load All Tests
-              </Button>
+              </IonicButton>
             </div>
           </div>
         </CardContent>

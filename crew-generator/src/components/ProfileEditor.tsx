@@ -1,8 +1,11 @@
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom' // Commented out - using onClick navigation instead
 import { useAuth } from './AuthProvider'
-import { Button } from '@/components/ui/button'
+import { IonicButton } from '@/components/ui/ionic-button'
+import { person, create } from 'ionicons/icons'
+// import { Button } from '@/components/ui/button' // Commented out - using IonicButton instead
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { User, Edit } from 'lucide-react'
+import { User } from 'lucide-react'
+// import { Edit } from 'lucide-react' // Commented out - using Ionic create icon instead
 
 export default function ProfileEditor() {
   const { user } = useAuth()
@@ -26,18 +29,22 @@ export default function ProfileEditor() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <Button asChild variant="outline" className="w-full">
-          <Link to="/profile" className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            View Profile
-          </Link>
-        </Button>
-        <Button asChild className="w-full">
-          <Link to="/profile/edit" className="flex items-center gap-2">
-            <Edit className="h-4 w-4" />
-            Edit Profile
-          </Link>
-        </Button>
+        <IonicButton 
+          variant="outline" 
+          fullWidth
+          icon={person}
+          onClick={() => window.location.href = '/profile'}
+        >
+          View Profile
+        </IonicButton>
+        <IonicButton 
+          variant="default"
+          fullWidth
+          icon={create}
+          onClick={() => window.location.href = '/profile/edit'}
+        >
+          Edit Profile
+        </IonicButton>
       </CardContent>
     </Card>
   )

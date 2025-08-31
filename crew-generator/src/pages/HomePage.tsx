@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom' // Commented out - using onClick navigation instead
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { supabaseWithRetry, devLog, devError, devSuccess } from '../lib/devAccelerators'
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { EventListItem } from '@/components/EventListItem'
 import { Badge } from "@/components/ui/badge"
@@ -13,7 +13,7 @@ import SearchResults from '../components/SearchResults'
 import { createEventsSearchService } from '../lib/searchService'
 import type { SearchResult } from '../lib/searchService'
 import { Stack } from '../components/design-system'
-import { add } from 'ionicons/icons'
+import { add, refresh, logIn } from 'ionicons/icons'
 import { IonicButton } from '@/components/ui/ionic-button'
 import './HomePage.css'
 // import { IonButton, IonIcon } from '@ionic/react' // Commented out - using IonicButton wrapper instead
@@ -137,9 +137,13 @@ export default function HomePage() {
             {error}
           </div>
           <div className="flex gap-4 justify-center">
-            <Button onClick={fetchEvents}>
-              🔄 Try Again
-            </Button>
+            <IonicButton 
+              onClick={fetchEvents}
+              variant="default"
+              icon={refresh}
+            >
+              Try Again
+            </IonicButton>
             
           </div>
         </div>
@@ -178,9 +182,14 @@ export default function HomePage() {
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <Button asChild fullWidth={true}>
-                  <Link to="/auth">Sign In / Sign Up</Link>
-                </Button>
+                <IonicButton 
+                  variant="default"
+                  fullWidth
+                  icon={logIn}
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  Sign In / Sign Up
+                </IonicButton>
               </CardContent>
             </Card>
           ) : (

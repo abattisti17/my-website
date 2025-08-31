@@ -1,12 +1,16 @@
 import { useEffect, useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom' // Commented out - using onClick navigation instead
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
-import { Button } from "@/components/ui/button"
+import { IonicButton } from "@/components/ui/ionic-button"
+import { logIn, create, book } from 'ionicons/icons'
+// import { arrowBack } from 'ionicons/icons' // Commented out - not used
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 import { Card, CardContent } from "@/components/ui/card"
 // import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card" // Temporarily disabled
 // import { Badge } from "@/components/ui/badge" // Temporarily disabled
-import { Mail, Calendar, Edit, Camera, Upload } from 'lucide-react'
+import { Mail, Calendar, Camera, Upload } from 'lucide-react'
+// import { Edit } from 'lucide-react' // Commented out - using Ionic create icon instead
 import { toast } from 'sonner'
 import { PageLayout } from '../components/design-system/PageLayout'
 import { Stack, HStack } from '../components/design-system/Stack'
@@ -234,9 +238,13 @@ export default function ProfilePage() {
         <Card className="text-center">
           <CardContent className="pt-6">
             <p className="text-gray-600 mb-4">Please sign in to view your profile.</p>
-            <Button asChild>
-              <Link to="/auth">Sign In</Link>
-            </Button>
+            <IonicButton 
+              variant="default"
+              icon={logIn}
+              onClick={() => window.location.href = '/auth'}
+            >
+              Sign In
+            </IonicButton>
           </CardContent>
         </Card>
       </div>
@@ -262,12 +270,13 @@ export default function ProfilePage() {
           <div className="p-[var(--space-6)] space-y-[var(--space-4)]">
             {/* Edit Profile Button - Top Right */}
             <div className="flex justify-end">
-              <Button asChild>
-                <Link to="/profile/edit" className="flex items-center gap-2">
-                  <Edit className="h-4 w-4" />
-                  Edit Profile
-                </Link>
-              </Button>
+              <IonicButton 
+                variant="default"
+                icon={create}
+                onClick={() => window.location.href = '/profile/edit'}
+              >
+                Edit Profile
+              </IonicButton>
             </div>
 
             {/* Avatar and Profile Info */}
@@ -423,9 +432,13 @@ export default function ProfilePage() {
               <h3 className="font-semibold text-foreground mb-[var(--space-2)]">Your Tour Book</h3>
               <p className="text-[var(--text-sm)] text-muted-foreground mb-[var(--space-4)]">Relive your concert memories and experiences</p>
             </div>
-            <Button asChild variant="outline">
-              <Link to="/tour">View Tour Book</Link>
-            </Button>
+            <IonicButton 
+              variant="outline"
+              icon={book}
+              onClick={() => window.location.href = '/tour'}
+            >
+              View Tour Book
+            </IonicButton>
           </div>
         </CardContent>
         </Card>

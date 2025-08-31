@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
+import { IonicButton } from "@/components/ui/ionic-button"
+import { download, close } from 'ionicons/icons'
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface BeforeInstallPromptEvent extends Event {
@@ -66,12 +68,21 @@ export default function PWAInstallPrompt() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex gap-2">
-        <Button onClick={handleInstallClick} className="flex-1">
+        <IonicButton 
+          onClick={handleInstallClick} 
+          variant="default"
+          icon={download}
+          className="flex-1"
+        >
           Install
-        </Button>
-        <Button onClick={handleDismiss} variant="outline">
+        </IonicButton>
+        <IonicButton 
+          onClick={handleDismiss} 
+          variant="outline"
+          icon={close}
+        >
           Later
-        </Button>
+        </IonicButton>
       </CardContent>
     </Card>
   )

@@ -3,9 +3,12 @@
  * Consolidates error UI patterns across the app
  */
 
-import { Button } from "@/components/ui/button"
+import { IonicButton } from "@/components/ui/ionic-button"
+import { refresh } from 'ionicons/icons'
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { AlertTriangle } from 'lucide-react'
+// import { RefreshCw } from 'lucide-react' // Commented out - using Ionic refresh icon instead
 
 interface ErrorStateProps {
   title?: string
@@ -34,10 +37,13 @@ export function ErrorState({
         </CardHeader>
         {onRetry && (
           <CardContent className="text-center">
-            <Button onClick={onRetry} variant="outline">
-              <RefreshCw className="w-4 h-4 mr-2" />
+            <IonicButton 
+              onClick={onRetry} 
+              variant="outline"
+              icon={refresh}
+            >
               {retryLabel}
-            </Button>
+            </IonicButton>
           </CardContent>
         )}
       </Card>
@@ -79,10 +85,14 @@ export function InlineError({
       <div className="space-y-2">
         <p className="text-sm text-red-600">{message}</p>
         {onRetry && (
-          <Button onClick={onRetry} variant="outline">
-            <RefreshCw className="w-3 h-3 mr-1" />
+          <IonicButton 
+            onClick={onRetry} 
+            variant="outline"
+            size="sm"
+            icon={refresh}
+          >
             Retry
-          </Button>
+          </IonicButton>
         )}
       </div>
     </div>

@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { MoreVertical } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+// import { MoreVertical } from 'lucide-react' // Commented out - using Ionic ellipsisVertical icon instead
+import { IonicButton } from '@/components/ui/ionic-button'
+import { ellipsisVertical } from 'ionicons/icons'
+// import { Button } from '@/components/ui/button' // Commented out - using IonicButton instead
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,13 +37,13 @@ export default function ReportMenu({
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
-          <Button 
+          <IonicButton 
             variant="ghost" 
+            icon={ellipsisVertical}
             className={`h-8 w-8 p-0 text-gray-500 hover:text-gray-700 ${className}`}
-            aria-label="More options"
           >
-            <MoreVertical className="h-4 w-4" />
-          </Button>
+            <span className="sr-only">More options</span>
+          </IonicButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem 

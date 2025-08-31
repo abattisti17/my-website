@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+// import { Link } from 'react-router-dom' // Commented out - using onClick navigation instead
 import { useAuth } from '../components/AuthProvider'
-import { Button } from "@/components/ui/button"
+import { IonicButton } from "@/components/ui/ionic-button"
+import { logIn, arrowBack, save, close } from 'ionicons/icons'
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { ArrowLeft, Save } from 'lucide-react'
+// import { ArrowLeft, Save } from 'lucide-react' // Commented out - using Ionic icons instead
 import { useSupabaseRecord } from '../hooks/useSupabaseQuery'
 import { useSupabaseMutation } from '../hooks/useSupabaseMutation'
 import { useForm } from '../hooks/useForm'
@@ -78,9 +81,14 @@ export default function ProfileEditPage() {
             <CardDescription>Please sign in to edit your profile.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => navigate('/auth')} className="w-full">
+            <IonicButton 
+              onClick={() => navigate('/auth')} 
+              variant="default"
+              fullWidth
+              icon={logIn}
+            >
               Sign In
-            </Button>
+            </IonicButton>
           </CardContent>
         </Card>
       </div>
@@ -103,11 +111,13 @@ export default function ProfileEditPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" asChild>
-            <Link to="/profile">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-          </Button>
+          <IonicButton 
+            variant="ghost"
+            icon={arrowBack}
+            onClick={() => window.location.href = '/profile'}
+          >
+            Back
+          </IonicButton>
           <div>
             <h1 className="text-2xl font-bold">Edit Profile</h1>
             <p className="text-muted-foreground">Update your personal information</p>
@@ -168,23 +178,25 @@ export default function ProfileEditPage() {
 
               {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button 
+                <IonicButton 
                   type="submit" 
                   disabled={form.isSubmitting}
+                  variant="default"
+                  icon={save}
                   className="flex-1"
                 >
-                  <Save className="w-4 h-4 mr-2" />
                   {form.isSubmitting ? 'Saving...' : 'Save Changes'}
-                </Button>
+                </IonicButton>
                 
-                <Button 
+                <IonicButton 
                   type="button" 
                   variant="outline" 
                   onClick={() => navigate('/profile')}
+                  icon={close}
                   className="flex-1"
                 >
                   Cancel
-                </Button>
+                </IonicButton>
               </div>
             </form>
           </CardContent>

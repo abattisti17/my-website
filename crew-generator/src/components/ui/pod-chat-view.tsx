@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthProvider'
 import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { IonicButton } from '@/components/ui/ionic-button'
+import { arrowBack, rocket, exit } from 'ionicons/icons'
+// import { Button } from '@/components/ui/button' // Commented out - using IonicButton instead
 import { IconButton } from '@/components/ui/icon-button'
 import { Badge } from '@/components/ui/badge'
 import { MessageList } from './message-list'
@@ -232,9 +234,13 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
       <div className="container mx-auto px-4 py-8 text-center">
         <h1 className="text-3xl font-bold mb-4">Pod Not Found</h1>
         <p className="text-gray-600 mb-4">The pod you're looking for doesn't exist.</p>
-        <Button asChild>
-          <Link to={`/event/${eventSlug}`}>← Back to Event</Link>
-        </Button>
+        <IonicButton 
+          variant="default"
+          icon={arrowBack}
+          onClick={() => window.location.href = `/event/${eventSlug}`}
+        >
+          Back to Event
+        </IonicButton>
       </div>
     )
   }
@@ -243,9 +249,14 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
   if (!isMember) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Button variant="outline" className="mb-6" asChild>
-          <Link to={`/event/${eventSlug}`}>← Back to Event</Link>
-        </Button>
+        <IonicButton 
+          variant="outline" 
+          className="mb-6"
+          icon={arrowBack}
+          onClick={() => window.location.href = `/event/${eventSlug}`}
+        >
+          Back to Event
+        </IonicButton>
 
         <Card>
           <CardHeader>
@@ -284,9 +295,13 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
             </div>
 
             {members.length < 5 ? (
-              <Button onClick={handleJoinPod}>
-                🚀 Join Pod
-              </Button>
+              <IonicButton 
+                onClick={handleJoinPod}
+                variant="default"
+                icon={rocket}
+              >
+                Join Pod
+              </IonicButton>
             ) : (
               <div className="text-center py-4">
                 <p className="text-foreground">Pod full (5/5 members)</p>
@@ -343,9 +358,13 @@ export const PodChatView: React.FC<PodChatViewProps> = ({
           </div>
         </div>
         
-        <Button variant="outline" onClick={handleLeavePod}>
+        <IonicButton 
+          variant="outline" 
+          onClick={handleLeavePod}
+          icon={exit}
+        >
           Leave Pod
-        </Button>
+        </IonicButton>
       </div>
 
       {/* Chat Area - Full width, no max-width constraint */}

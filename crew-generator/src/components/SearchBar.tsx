@@ -1,7 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { Search, X, Loader2 } from 'lucide-react'
+import { Search, Loader2 } from 'lucide-react'
+// import { X } from 'lucide-react' // Commented out - using Ionic close icon instead
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { IonicButton } from '@/components/ui/ionic-button'
+import { close } from 'ionicons/icons'
+// import { Button } from '@/components/ui/button' // Commented out - using IonicButton instead
 import { useDebounce } from '../hooks/useDebounce'
 
 export interface SearchBarProps {
@@ -144,15 +147,15 @@ const SearchBar = React.memo(function SearchBar({
         )}
         
         {showClearButton && query && !loading && (
-          <Button
+          <IonicButton
             type="button"
             variant="ghost"
             onClick={handleClear}
+            icon={close}
             className="search-icon-right h-6 w-6 p-0 hover:bg-muted/80 rounded-full touch-target-sm"
-            aria-label="Clear search"
           >
-            <X className="h-4 w-4" />
-          </Button>
+            <span className="sr-only">Clear search</span>
+          </IonicButton>
         )}
       </div>
 

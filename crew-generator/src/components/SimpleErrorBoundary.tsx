@@ -1,7 +1,10 @@
 import { Component, type ReactNode } from 'react'
-import { Button } from '@/components/ui/button'
+import { IonicButton } from '@/components/ui/ionic-button'
+import { refresh } from 'ionicons/icons'
+// import { Button } from '@/components/ui/button' // Commented out - using IonicButton instead
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { AlertTriangle } from 'lucide-react'
+// import { RefreshCw } from 'lucide-react' // Commented out - using Ionic refresh icon instead
 
 interface Props {
   children: ReactNode
@@ -59,20 +62,22 @@ export class SimpleErrorBoundary extends Component<Props, State> {
               )}
               
               <div className="flex gap-2">
-                <Button 
+                <IonicButton 
                   onClick={this.handleReset}
                   variant="outline"
+                  icon={refresh}
                   className="flex-1"
                 >
-                  <RefreshCw className="w-4 h-4 mr-2" />
                   Try Again
-                </Button>
-                <Button 
+                </IonicButton>
+                <IonicButton 
                   onClick={() => window.location.reload()}
+                  variant="default"
+                  icon={refresh}
                   className="flex-1"
                 >
                   Refresh Page
-                </Button>
+                </IonicButton>
               </div>
             </CardContent>
           </Card>

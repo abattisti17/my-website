@@ -1,9 +1,11 @@
 // import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Button } from '../components/ui/button'
+import { IonicButton } from '../components/ui/ionic-button'
+import { home } from 'ionicons/icons'
+// import { Button } from '../components/ui/button' // Commented out - using IonicButton instead
 import { PageLayout, PageHeader, EmptyState } from '../components/design-system'
 import { Stack } from '../components/design-system'
 import { BookOpen } from 'lucide-react'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom' // Commented out - using onClick navigation instead
 
 export default function TourPage() {
   return (
@@ -19,9 +21,13 @@ export default function TourPage() {
           title="Your Tour Book is Empty"
           description="Attend events and capture your experiences to build your personal tour book! Each concert will add memories, photos, and stories to your collection."
           action={
-            <Button asChild>
-              <Link to="/">Browse Events</Link>
-            </Button>
+            <IonicButton 
+              variant="default"
+              icon={home}
+              onClick={() => window.location.href = '/'}
+            >
+              Browse Events
+            </IonicButton>
           }
         />
       </Stack>

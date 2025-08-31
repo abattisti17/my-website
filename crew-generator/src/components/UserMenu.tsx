@@ -8,7 +8,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
+import { IonicButton } from "@/components/ui/ionic-button"
+// import { person } from 'ionicons/icons' // Commented out - not used
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 import { User, LogOut, Settings } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -41,12 +43,12 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2 touch-target">
+        <IonicButton variant="outline" className="flex items-center gap-2 touch-target">
           <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xs font-medium">
             {displayName[0]?.toUpperCase()}
           </div>
           <span className="hidden sm:inline">{displayName}</span>
-        </Button>
+        </IonicButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <div className="px-2 py-1.5 text-sm text-muted-foreground">

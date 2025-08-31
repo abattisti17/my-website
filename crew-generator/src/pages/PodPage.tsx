@@ -5,11 +5,14 @@ import { PageLayout } from '../components/design-system'
 
 // Legacy imports for fallback
 import { useEffect, useState, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+// import { Link } from 'react-router-dom' // Commented out - using IonicButton with onClick instead
 import { useAuth } from '../components/AuthProvider'
 import { supabase } from '../lib/supabase'
 import { usePodChat } from '../hooks/usePodChat'
-import { Button } from "@/components/ui/button"
+import { IonicButton } from "@/components/ui/ionic-button"
+import { arrowBack, send, rocket, exit } from 'ionicons/icons'
+// import { Button } from "@/components/ui/button" // Commented out - using IonicButton instead
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -255,9 +258,13 @@ function LegacyPodPage() {
       <div className="container mx-auto px-4 py-8 text-center">
         <h1 className="text-3xl font-bold mb-4">Pod Not Found</h1>
         <p className="text-gray-600 mb-4">The pod you're looking for doesn't exist.</p>
-        <Button asChild>
-          <Link to={`/event/${slug}`}>← Back to Event</Link>
-        </Button>
+        <IonicButton 
+          variant="default"
+          icon={arrowBack}
+          onClick={() => window.location.href = `/event/${slug}`}
+        >
+          Back to Event
+        </IonicButton>
       </div>
     )
   }
@@ -265,9 +272,14 @@ function LegacyPodPage() {
   if (!isMember) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Button variant="outline" className="mb-6" asChild>
-          <Link to={`/event/${slug}`}>← Back to Event</Link>
-        </Button>
+        <IonicButton 
+          variant="outline" 
+          className="mb-6"
+          icon={arrowBack}
+          onClick={() => window.location.href = `/event/${slug}`}
+        >
+          Back to Event
+        </IonicButton>
 
         <Card>
           <CardHeader>
@@ -306,9 +318,13 @@ function LegacyPodPage() {
             </div>
 
             {members.length < 5 ? (
-              <Button onClick={handleJoinPod}>
-                🚀 Join Pod
-              </Button>
+              <IonicButton 
+                onClick={handleJoinPod}
+                variant="default"
+                icon={rocket}
+              >
+                Join Pod
+              </IonicButton>
             ) : (
               <div className="text-center py-4">
                 <p className="text-gray-800">Pod full (5/5 members)</p>
@@ -326,9 +342,13 @@ function LegacyPodPage() {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <Button variant="outline" asChild>
-            <Link to={`/event/${slug}`}>← Back</Link>
-          </Button>
+          <IonicButton 
+            variant="outline"
+            icon={arrowBack}
+            onClick={() => window.location.href = `/event/${slug}`}
+          >
+            Back
+          </IonicButton>
           <div>
             <h1 className="text-xl font-bold">{pod.name || 'Unnamed Pod'}</h1>
             <p className="text-sm text-muted-foreground">
@@ -336,9 +356,13 @@ function LegacyPodPage() {
             </p>
           </div>
         </div>
-        <Button variant="outline" onClick={handleLeavePod}>
+        <IonicButton 
+          variant="outline" 
+          onClick={handleLeavePod}
+          icon={exit}
+        >
           Leave Pod
-        </Button>
+        </IonicButton>
       </div>
 
       {/* Chat Area */}
@@ -448,9 +472,14 @@ function LegacyPodPage() {
               aria-label="Message input"
               autoComplete="off"
             />
-            <Button type="submit" disabled={chatSending || !newMessage.trim()} aria-label={chatSending ? 'Sending message' : 'Send message'}>
-              {chatSending ? '📤' : '🚀'}
-            </Button>
+            <IonicButton 
+              type="submit" 
+              disabled={chatSending || !newMessage.trim()} 
+              variant="default"
+              icon={send}
+            >
+              {chatSending ? 'Sending...' : 'Send'}
+            </IonicButton>
           </form>
         </div>
       </Card>
@@ -473,9 +502,14 @@ function LegacyPodPage() {
               aria-label="Message input"
               autoComplete="off"
             />
-            <Button type="submit" disabled={chatSending || !newMessage.trim()} aria-label={chatSending ? 'Sending message' : 'Send message'}>
-              {chatSending ? '📤' : '🚀'}
-            </Button>
+            <IonicButton 
+              type="submit" 
+              disabled={chatSending || !newMessage.trim()} 
+              variant="default"
+              icon={send}
+            >
+              {chatSending ? 'Sending...' : 'Send'}
+            </IonicButton>
           </form>
         </div>
       </div>
