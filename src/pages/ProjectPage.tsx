@@ -1,8 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getProjectById } from '../data/projects';
-import BackButton from '../components/BackButton';
-import ResponsiveImage from '../components/ResponsiveImage';
+import { getProjectById, projects } from '../data/projects';
+import SiteFrame from '../components/SiteFrame';
 
 const ProjectPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -10,90 +9,68 @@ const ProjectPage: React.FC = () => {
 
   if (!project) {
     return (
-      <div className="page-container">
-        <div className="page-content">
-          <h1 className="page-title">Project not found</h1>
-          <p>
-            <Link to="/work" className="link-text">
-              ← Back to work
-            </Link>
-          </p>
-        </div>
-      </div>
+      <SiteFrame>
+        <section className="ab-page-head">
+          <div className="ab-wrap">
+            <h1>Project not found</h1>
+            <p><Link to="/work">See all work</Link></p>
+          </div>
+        </section>
+      </SiteFrame>
     );
   }
 
+  const facts: [string, string | undefined][] = [
+    ['Role', project.role],
+    ['The problem', project.problem],
+    ['Approach', project.approach],
+    ['Methods', project.methods],
+    ['Deliverables', project.deliverables],
+    ['Outcomes', project.outcomes],
+  ];
+  const index = projects.findIndex((p) => p.id === project.id);
+  const next = projects[(index + 1) % projects.length];
+
   return (
-    <>
-      <BackButton />
-
-      <div className="page-container">
-        <div className="page-content">
-          <ResponsiveImage 
-            src={project.image} 
-            alt={project.imageAlt} 
-            className="page-image"
-            loading="eager"
-            sizes="(max-width: 768px) 100vw, 800px"
-          />
-          <div className="page-header">
-            <h1 className="page-title">{project.title}</h1>
-            {project.content && <p>{project.content}</p>}
+    <SiteFrame>
+      <article>
+        <section className="ab-page-head">
+          <div className="ab-wrap">
+            <p className="ab-proj-context">{project.context}</p>
+            <h1>{project.title}</h1>
           </div>
-
-          {project.role && (
-            <p><b>My Role:</b> {project.role}</p>
-          )}
-
-          {project.problem && (
-            <>
-              <br />
-              <p><b>The Problem:</b> {project.problem}</p>
-            </>
-          )}
-
-          {project.approach && (
-            <>
-              <br />
-              <p><b>Approach:</b> {project.approach}</p>
-            </>
-          )}
-
-          {project.methods && (
-            <>
-              <br />
-              <p style={{whiteSpace: 'pre-line'}}><b>The Methods:</b> {project.methods}</p>
-            </>
-          )}
-
-          {project.deliverables && (
-            <>
-              <br />
-              <p style={{whiteSpace: 'pre-line'}}><b>The Deliverables:</b> {project.deliverables}</p>
-            </>
-          )}
-
-          {project.outcomes && (
-            <>
-              <br />
-              <p style={{whiteSpace: 'pre-line'}}><b>The Outcomes:</b> {project.outcomes}</p>
-            </>
-          )}
-
+        </section>
+        <div className="ab-wrap">
+          <figure className="ab-project-figure">
+            <img src={project.image} alt={project.imageAlt} />
+            {project.content && <figcaption>{project.content}</figcaption>}
+          </figure>
+          <dl className="ab-facts">
+            {facts
+              .filter(([, value]) => Boolean(value))
+              .map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>
+                    {(value as string).split(/\n{2,}/).map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </dd>
+                </div>
+              ))}
+          </dl>
           {project.externalLink && project.externalLinkText && (
-            <>
-              <br />
-              <p>
-                <a className="link-text" href={project.externalLink} target="_blank" rel="noopener noreferrer">
-                  {project.externalLinkText}
-                </a>
-              </p>
-            </>
+            <p className="ab-ext">
+              <a href={project.externalLink} target="_blank" rel="noopener noreferrer">{project.externalLinkText}</a>
+            </p>
           )}
+          <p className="ab-next">
+            Next: <Link to={`/project/${next.id}`}>{next.title}</Link>
+          </p>
         </div>
-      </div>
-    </>
+      </article>
+    </SiteFrame>
   );
 };
 
-export default ProjectPage; 
+export default ProjectPage;

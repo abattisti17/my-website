@@ -1,6 +1,7 @@
 export interface Project {
   id: string;
   title: string;
+  context: string;
   subtitle?: string;
   role?: string;
   problem?: string;
@@ -18,6 +19,7 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 'sensor',
+    context: 'Google, 2020 to 2021',
     title: 'Understanding user perceptions of ambient sensing tech',
     role: 'End-to-end research: study design, recruiting, conducting interviews, analyzing data, synthesizing data, storytelling, presentation',
     problem: 'Google is adopting a sensing technology across their hardware portfolio. Several Google product teams approached our research team to understand the value this tech can enable and their users\' perceptions of its ambient sensing capabilities.',
@@ -31,6 +33,7 @@ export const projects: Project[] = [
   },
   {
     id: 'nudge',
+    context: 'National wireless carrier',
     title: 'Nudging customers toward healthy financial behaviors',
     problem: 'A national wireless company loses $40m / year because many of its customers are late on their bills.',
     methods: 'Ethnographic interviews (w/ customers & client retail employees)\n\nSacrificial concepting\n\nCustomer archetypes\n\nBehavioral targeting (in collaboration w/ quant team)',
@@ -44,6 +47,7 @@ export const projects: Project[] = [
   },
   {
     id: 'ev',
+    context: 'Electric vehicle startup',
     title: 'Finding product-market fit for a new e-vehicle',
     problem: 'Client is building a 2-sided marketplace platform, but doesn\'t know what will get each community to engage.',
     methods: 'Ethnographic interviews\n\nSacrificial concepts\n\nCompetitive analysis\n\nLiterature review',
@@ -51,12 +55,11 @@ export const projects: Project[] = [
     outcomes: 'This project is still underway.\n\nWe\'ve completed a research phase on one side of the market and are currently conducting research with the other side.',
     image: '/ev_car-1.png',
     imageAlt: 'Electric vehicle research participant',
-    externalLink: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    externalLinkText: 'Detailed Portfolio piece coming soon :)',
     content: 'An art archivist shows us their work at a local ceramics company.'
   },
   {
     id: 'pos',
+    context: 'Point-of-sale startup',
     title: 'Developing an MVP strategy for a new Point-of-Sale device',
     problem: 'The client is launching a point-of-sale (POS) product in 6 months, and are unsure who they should sell it to and what the experience should be.',
     methods: 'Secret shopper\n\nOn-the-street interviews\n\nEthnographic interviews\n\nCompetitive analysis',

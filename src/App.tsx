@@ -179,7 +179,7 @@ const AppContent: React.FC = () => {
           - Status indicators (working vs placeholder features)
           - Organized by categories (Mini Apps, Development, UI, Database)
         */}
-        {shouldShowDebugPanel && <FeatureFlagDebugPanel />}
+        {isStaging && shouldShowDebugPanel && <FeatureFlagDebugPanel />}
         
         {/* 
           📱 APP NAVIGATION BAR
@@ -195,7 +195,7 @@ const AppContent: React.FC = () => {
           - Highlights current page with different background
           - Responsive design (adapts to different screen sizes)
         */}
-        <AppNavigation />
+        {isStaging && <AppNavigation />}
         
         {/* 
           🚪 ROUTE DEFINITIONS - All the "rooms" in your website

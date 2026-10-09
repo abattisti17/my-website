@@ -1,56 +1,51 @@
 import React from 'react';
-import BackButton from '../components/BackButton';
-import ResponsiveImage from '../components/ResponsiveImage';
+import SiteFrame, { EMAIL, LINKEDIN, DESIGN_LAB } from '../components/SiteFrame';
 
 const About: React.FC = () => {
   return (
-    <>
-      <BackButton />
-
-      <div className="page-container">
-        <div className="page-content">
-          <ResponsiveImage 
-            src="/aboutme.jpeg" 
-            alt="Alessandro Battisti" 
-            className="page-image"
-            loading="eager"
-            sizes="(max-width: 768px) 100vw, 800px"
-          />
-          <div className="page-header">
-            <h1 className="page-title">About me</h1>
-            <p>I'm a design researcher & strategist passionate about creating ethical products & services. I'm currently working at Twitter on making the Twitter community a safer place for everyone.</p>
-          </div>
-
-          <p>
-            <b>My philosophy:</b> I believe in the power of participatory behavior design to empower communities.
-            <br /><br />
-            Lenses I bring to my work:
-          </p>
-
-          <ul>
-            <li><i><a className="link-text" href="https://en.wikipedia.org/wiki/Systems_theory#Systems_thinking" target="_blank" rel="noopener noreferrer">systems thinking</a></i> as a way of understanding relationships and identifying leverage points.</li>
-            <li><i><a className="link-text" href="https://en.wikipedia.org/wiki/Design_thinking#Wicked_problems" target="_blank" rel="noopener noreferrer">design thinking</a></i> as a way to approach tackling wicked problems.</li>
-            <li><i><a className="link-text" href="https://en.wikipedia.org/wiki/Behavioural_design" target="_blank" rel="noopener noreferrer">behavior design</a></i> as a way to empower by giving them the tools to nudge themselves toward better outcomes.</li>
-          </ul>
-
-          <br />
-          <p>
-            <b>Who I've worked with</b>
-            <br />
-            I've worked with organizations of all sizes, from startups to non-profits to big corporations to agencies.
-          </p>
-
-          <ResponsiveImage 
-            className="content-image-adaptive" 
-            src="/who-ive-worked-w.png" 
-            alt="grid of logos showing companies Alessandro has worked with"
-            loading="lazy"
-            sizes="(max-width: 768px) 100vw, 600px"
-          />
+    <SiteFrame>
+      <section className="ab-page-head">
+        <div className="ab-wrap">
+          <h1>About</h1>
         </div>
-      </div>
-    </>
+      </section>
+      <section className="ab-section ab-section-flush">
+        <div className="ab-wrap ab-about">
+          <img src="/aboutme.jpeg" alt="Alessandro on the Brooklyn Bridge" className="ab-about-photo" />
+          <div className="ab-prose">
+            <p className="ab-lead">
+              I'm a design researcher. I spend my time with the people a product is for, learning how they work and
+              what gets in their way, then turning that into decisions a team can build on.
+            </p>
+            <p>
+              Today I'm a UX Researcher at Dropbox. Before that I did research at Twitter, where I worked on making the
+              platform safer, and at Google, where I led research on how people perceive ambient sensing in Google's
+              hardware. Along the way I've worked with startups, nonprofits and agencies on new products, services and
+              marketplaces.
+            </p>
+            <p>
+              On the side I run <a href={DESIGN_LAB}>Design Lab</a>, a small studio building focused software for small
+              professional firms.
+            </p>
+            <h2>How I work</h2>
+            <ul>
+              <li><strong>Systems thinking</strong> to see how people, tools and organizations affect each other.</li>
+              <li><strong>Design thinking</strong> to make progress on problems without a clean answer.</li>
+              <li><strong>Behavior design</strong> to help people do what they already want to do.</li>
+            </ul>
+            <h2>Who I've worked with</h2>
+            <p>Organizations of every size, from startups to nonprofits to large companies and agencies.</p>
+            <img src="/who-ive-worked-w.png" alt="Logos of organizations Alessandro has worked with" className="ab-logos" loading="lazy" />
+            <h2>Get in touch</h2>
+            <p>
+              <a href={`mailto:${EMAIL}`}>{EMAIL}</a> or{' '}
+              <a href={LINKEDIN} target="_blank" rel="noopener noreferrer">LinkedIn</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+    </SiteFrame>
   );
 };
 
-export default About; 
+export default About;

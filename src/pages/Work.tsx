@@ -1,60 +1,43 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import BackButton from '../components/BackButton';
-import ResponsiveImage from '../components/ResponsiveImage';
+import SiteFrame, { EMAIL } from '../components/SiteFrame';
+import { projects } from '../data/projects';
 
 const Work: React.FC = () => {
   return (
-    <>
-      <BackButton />
-
-      <div className="page-container">
-        <div className="page-content">
-          <ResponsiveImage 
-            src="/mywork.png" 
-            alt="grid of logos showing companies Alessandro has worked with" 
-            className="page-image-hero"
-            loading="eager"
-            sizes="(max-width: 768px) 100vw, 800px"
-          />
-          <div className="page-header">
-            <h1 className="page-title">Examples of work</h1>
-            <p>My work has mainly focused on early stage foundational and generative research to inform new products, services, and platforms.</p>
-          </div>
-          
-          <div className="project-links">
-            <Link to="/project/sensor" className="link-text project-link">
-              Understanding user perceptions of ambient sensing tech
-            </Link>
-            
-            <Link to="/project/nudge" className="link-text project-link">
-              Nudging customers toward healthy financial behaviors
-            </Link>
-            
-            <Link to="/project/ev" className="link-text project-link">
-              Finding product-market fit for a new e-vehicle
-            </Link>
-            
-            <Link to="/project/pos" className="link-text project-link">
-              Developing an MVP strategy for a new Point-of-Sale device
-            </Link>
-          </div>
-
-          {/* CONFIDENTIALITY START */}
-          <div className="quote">
-            <p><b>A note on confidentiality</b></p>
-            <br />
-            <ul>
-              <li>Some participant's faces have been blurred to protect their privacy.</li>
-              <li>These projects are still under NDA. So specific content has been removed and processes have been made more abstract.</li>
-            </ul>
-            <p>Questions about a specific project? Get in touch: abattisti {'{at}'} protonmail.com</p>
-          </div>
-          {/* CONFIDENTIALITY END */}
+    <SiteFrame>
+      <section className="ab-page-head">
+        <div className="ab-wrap">
+          <h1>Work</h1>
+          <p className="ab-lead">
+            Mostly early-stage, generative research: figuring out who a new product is for, what they need, and what
+            to build first.
+          </p>
         </div>
-      </div>
-    </>
+      </section>
+
+      <section className="ab-section">
+        <div className="ab-wrap">
+          <ul className="ab-work-list">
+            {projects.map((p) => (
+              <li key={p.id}>
+                <Link to={`/project/${p.id}`}>
+                  <img src={p.image} alt={p.imageAlt} loading="lazy" />
+                  <span className="ab-proj-context">{p.context}</span>
+                  <span className="ab-proj-title">{p.title}</span>
+                  <span className="ab-proj-summary">{p.problem}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="ab-note">
+            <p><strong>A note on confidentiality.</strong> Some participants' faces are blurred to protect their privacy. Several projects are under NDA, so specifics are removed and processes are described more abstractly.</p>
+            <p>Questions about a project? <a href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
+          </div>
+        </div>
+      </section>
+    </SiteFrame>
   );
 };
 
-export default Work; 
+export default Work;
