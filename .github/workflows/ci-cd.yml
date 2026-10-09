@@ -233,8 +233,16 @@ jobs:
         echo "Connecting to: ${SFTP_USERNAME}@${SFTP_HOST}"
         echo "Target path: ${SFTP_PATH}"
         
-        # Deploy main site to production
-        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/* "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH}"
+        # Deploy main site to production.
+        # The artifact unpacks to build/build/ (main site) and build/crew-generator/dist/,
+        # so upload the contents of build/build/, not build/ itself. Uploading build/*
+        # put the site in a /build/ subfolder and left the root serving an old copy.
+        if [ ! -f build/build/index.html ]; then
+          echo "❌ build/build/index.html not found; artifact layout changed"
+          find build -maxdepth 2 -name index.html
+          exit 1
+        fi
+        sshpass -p "${SFTP_PASSWORD}" scp -P 22212 -o StrictHostKeyChecking=no -o Compression=yes -r build/build/. "${SFTP_USERNAME}@${SFTP_HOST}:${SFTP_PATH%/}/"
         
         # Deploy crew generator to /crew subdirectory
         if [ -d "crew-generator/dist" ]; then
