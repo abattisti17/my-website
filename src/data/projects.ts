@@ -41,8 +41,6 @@ export const projects: Project[] = [
     outcomes: 'We launched the 3 "nudge-experiments".\n\nBuilt empathy w/in client team for late payers',
     image: '/nu_inhome.png',
     imageAlt: 'Research participant in their home during ethnographic interview',
-    externalLink: 'https://www.dropbox.com/s/l6p7sezsbapy74r/2%20-%20Late%20Payers.pdf?dl=0',
-    externalLinkText: 'Check out details in the pdf.',
     content: 'A research participant shares their experiences and strategies for building healthy financial behaviors.'
   },
   {
@@ -67,8 +65,6 @@ export const projects: Project[] = [
     outcomes: 'This product has successfully launched!',
     image: '/ps_truck.png',
     imageAlt: 'Small business owner demonstrating point of sale device',
-    externalLink: 'https://www.dropbox.com/s/ng8apfubttiimeg/1%20-%20POS%20Research%20Sprint.pdf?dl=0',
-    externalLinkText: 'Check out details in the pdf.',
     content: 'A small business owner demonstrating how they use their point of sale device.'
   }
 ];

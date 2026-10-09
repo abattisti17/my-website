@@ -26,19 +26,24 @@ const Home: React.FC = () => {
               <a href={LINKEDIN} target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </p>
           </div>
-          <img className="ab-portrait" src="/aboutme.jpeg" alt="Alessandro on the Brooklyn Bridge" />
+          <figure className="ab-taped ab-hero-photo">
+            <span className="ab-tape" aria-hidden="true" />
+            <img className="ab-portrait" src="/aboutme.jpeg" alt="Alessandro on the Brooklyn Bridge" />
+            <figcaption className="ab-sticky">Hi, I'm Alessandro</figcaption>
+          </figure>
         </div>
       </section>
 
       <section className="ab-section" aria-labelledby="fieldwork-title">
         <div className="ab-wrap">
-          <h2 id="fieldwork-title" className="ab-h2">From the field</h2>
+          <h2 id="fieldwork-title" className="ab-h2 ab-hand">From the field</h2>
           <ul className="ab-strip">
             {fieldwork.map((f) => (
               <li key={f.src}>
-                <Link to={f.to}>
+                <Link to={f.to} className="ab-taped">
+                  <span className="ab-tape" aria-hidden="true" />
                   <img src={f.src} alt="" loading="lazy" />
-                  <span>{f.caption}</span>
+                  <span className="ab-caption">{f.caption}</span>
                 </Link>
               </li>
             ))}
@@ -48,7 +53,7 @@ const Home: React.FC = () => {
 
       <section className="ab-section" aria-labelledby="work-title">
         <div className="ab-wrap">
-          <h2 id="work-title" className="ab-h2">Selected work</h2>
+          <h2 id="work-title" className="ab-h2 ab-hand">Selected work</h2>
           <ol className="ab-projects">
             {projects.map((p) => (
               <li key={p.id}>
@@ -65,7 +70,7 @@ const Home: React.FC = () => {
 
       <section className="ab-section" aria-labelledby="now-title">
         <div className="ab-wrap ab-now">
-          <h2 id="now-title" className="ab-h2">On the side</h2>
+          <h2 id="now-title" className="ab-h2 ab-hand">On the side</h2>
           <div>
             <p className="ab-now-title">Design Lab</p>
             <p>
@@ -79,7 +84,8 @@ const Home: React.FC = () => {
 
       <section className="ab-section" aria-label="What clients say">
         <div className="ab-wrap">
-          <figure className="ab-quote">
+          <figure className="ab-quote ab-taped">
+            <span className="ab-tape" aria-hidden="true" />
             <blockquote>
               <p><mark>Alessandro helped us optimize our limited funds, reduce our risk, and give our members what they need.</mark></p>
             </blockquote>
