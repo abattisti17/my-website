@@ -21,9 +21,9 @@ const SiteFrame: React.FC<SiteFrameProps> = ({ children }) => {
         <div className="ab-wrap ab-header-row">
           <Link to="/" className="ab-name">Alessandro Battisti</Link>
           <nav className="ab-nav" aria-label="Main">
-            <NavLink to="/work">Work</NavLink>
-            <NavLink to="/about">About</NavLink>
-            <a href={DESIGN_LAB}>Design Lab</a>
+            <NavLink to="/work" className="custom-cursor-work">Work</NavLink>
+            <NavLink to="/about" className="custom-cursor-about">About</NavLink>
+            <a href={DESIGN_LAB} className="custom-cursor-consulting">Design Lab</a>
           </nav>
         </div>
       </header>

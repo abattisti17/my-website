@@ -33,9 +33,8 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* Reset the old global styles inside the new pages */
-.ab, .ab * { cursor: auto; }
-.ab a, .ab button { cursor: pointer !important; }
+/* Reset the old global styles inside the new pages.
+   The custom cursors from index.css stay on: they're part of the personality. */
 .ab p, .ab ul, .ab ol, .ab li, .ab h1, .ab h2, .ab h3 {
   font-family: var(--ab-font);
   color: inherit;
@@ -43,18 +42,37 @@
   margin: 0;
   padding: 0;
 }
+/* Links: the highlighter sweeps in from the left on hover, like marking up a transcript */
 .ab a {
   display: inline;
   color: var(--ab-ink);
-  background: none;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
-  transition: none;
+  background: linear-gradient(transparent 8%, var(--ab-highlight) 8%, var(--ab-highlight) 92%, transparent 92%) no-repeat left center / 0% 100%;
+  transition: background-size 0.25s ease;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
-.ab a:hover { background: none; color: var(--ab-ink); text-decoration-thickness: 2px; }
+.ab a:hover { color: var(--ab-ink); background-size: 100% 100%; }
 .ab a:visited { color: var(--ab-ink); }
-.ab a:active { background: none !important; color: var(--ab-ink) !important; animation: none; }
+.ab a:active { background-color: transparent !important; background-image: linear-gradient(var(--ab-ink), var(--ab-ink)) !important; background-size: 100% 100% !important; color: var(--ab-highlight) !important; animation: none; }
+
+/* Block links (photos, project rows, buttons) get the sweep on their title instead */
+.ab .ab-strip a, .ab .ab-projects a, .ab .ab-work-list a, .ab .ab-button, .ab .ab-name, .ab .ab-nav a { background-image: none; }
+.ab-proj-title, .ab-strip span {
+  background: linear-gradient(transparent 8%, var(--ab-highlight) 8%, var(--ab-highlight) 92%, transparent 92%) no-repeat left center / 0% 100%;
+  transition: background-size 0.3s ease;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.ab-proj-title { display: inline; }
+.ab-projects a > .ab-proj-title, .ab-work-list a > .ab-proj-title { justify-self: start; }
+.ab a:hover .ab-proj-title, .ab a:hover span.ab-proj-title, .ab .ab-strip a:hover span { background-size: 100% 100%; text-decoration: none; color: var(--ab-ink); }
+.ab .ab-nav a { padding: 2px 4px; margin: 0 -4px; background: linear-gradient(var(--ab-highlight), var(--ab-highlight)) no-repeat left center / 0% 100%; transition: background-size 0.25s ease; }
+.ab .ab-nav a:hover, .ab .ab-nav a.active { background-size: 100% 100%; text-decoration: none; }
+.ab-strip img, .ab-work-list img { transition: filter 0.3s ease; }
+.ab .ab-strip a:hover img, .ab .ab-work-list a:hover img { filter: grayscale(0); }
 .ab a:focus-visible, .ab button:focus-visible { outline: 2px solid var(--ab-ink); outline-offset: 3px; }
 .ab ::selection { background: var(--ab-highlight); color: var(--ab-ink); }
 .ab img { display: block; max-width: 100%; height: auto; }
@@ -73,7 +91,6 @@
 .ab .ab-name { font-weight: 650; font-size: 1.0625rem; text-decoration: none; letter-spacing: -0.01em; }
 .ab-nav { display: flex; gap: 20px; font-size: 1rem; }
 .ab .ab-nav a { text-decoration: none; }
-.ab .ab-nav a:hover, .ab .ab-nav a.active { text-decoration: underline; text-decoration-thickness: 2px; }
 
 /* Type */
 .ab h1 { font-size: 2.25rem; font-weight: 600; line-height: 1.1; letter-spacing: -0.025em; }
@@ -102,8 +119,8 @@
 .ab-strip li { margin: 0; }
 .ab .ab-strip a { text-decoration: none; display: block; }
 .ab-strip img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: grayscale(1) contrast(1.05); }
-.ab-strip span { display: block; margin-top: 10px; font-size: 0.875rem; line-height: 1.4; color: var(--ab-pencil); }
-.ab .ab-strip a:hover span { color: var(--ab-ink); text-decoration: underline; }
+.ab-strip img { margin-bottom: 10px; }
+.ab-strip span { display: inline; font-size: 0.875rem; line-height: 1.4; color: var(--ab-pencil); }
 
 /* Project list */
 .ab-projects { list-style: none; border-top: 1px solid var(--ab-rule); }
@@ -113,7 +130,6 @@
 .ab-proj-context { font-size: 0.9375rem; color: var(--ab-pencil); }
 .ab-proj-title { font-size: 1.375rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
 .ab-proj-summary { color: var(--ab-pencil); font-size: 1rem; max-width: var(--ab-measure); }
-.ab .ab-projects a:hover .ab-proj-title, .ab .ab-work-list a:hover .ab-proj-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.15em; }
 
 /* On the side */
 .ab-now { display: grid; gap: 8px; }
