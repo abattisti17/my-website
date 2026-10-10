@@ -4,6 +4,10 @@
 .ab-archive a{color:#fec62e;text-decoration:underline;white-space:nowrap}
 .ab-archive a:hover{color:#fff}
 form[aria-label] [disabled]{cursor:not-allowed;opacity:.7}
+/* The original page positions its hero against the browser window. This box
+   stands in for the window, starting below the banner, so nothing is covered. */
+.fern-page{position:relative;height:100vh}
+
 /* These two sections used background photos (arms.png, ColinKarenBW.jpg) that the
    saved copy didn't include. Hidden until the images are added to images/. */
 .section-7,.section-9{display:none}
