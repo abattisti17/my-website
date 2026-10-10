@@ -9,14 +9,23 @@ export interface Project {
   methods?: string;
   deliverables?: string;
   outcomes?: string;
-  image: string;
-  imageAlt: string;
+  image?: string;
+  imageAlt?: string;
+  /** Confidential work: shown in lists, but with no project page */
+  confidential?: boolean;
   externalLink?: string;
   externalLinkText?: string;
   content?: string;
 }
 
 export const projects: Project[] = [
+  {
+    id: 'dropbox',
+    context: 'Dropbox, now',
+    title: 'Research for new AI products',
+    problem: "I'm a UX researcher at Dropbox, working on new AI products. It's early and confidential, so the details stay offline for now.",
+    confidential: true
+  },
   {
     id: 'sensor',
     context: 'Google, 2020 to 2021',

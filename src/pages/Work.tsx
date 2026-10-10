@@ -19,16 +19,25 @@ const Work: React.FC = () => {
       <section className="ab-section">
         <div className="ab-wrap">
           <ul className="ab-work-list">
-            {projects.map((p) => (
-              <li key={p.id}>
-                <Link to={`/project/${p.id}`}>
-                  <img src={p.image} alt={p.imageAlt} loading="lazy" />
+            {projects.map((p) => {
+              const body = (
+                <>
+                  {p.image ? (
+                    <img src={p.image} alt={p.imageAlt || ''} loading="lazy" />
+                  ) : (
+                    <span className="ab-work-note" aria-hidden="true">Confidential, for now</span>
+                  )}
                   <span className="ab-proj-context">{p.context}</span>
                   <span className="ab-proj-title">{p.title}</span>
                   <span className="ab-proj-summary">{p.problem}</span>
-                </Link>
-              </li>
-            ))}
+                </>
+              );
+              return (
+                <li key={p.id}>
+                  {p.confidential ? <div className="ab-work-card">{body}</div> : <Link to={`/project/${p.id}`} className="ab-work-card">{body}</Link>}
+                </li>
+              );
+            })}
           </ul>
           <div className="ab-note">
             <p><strong>A note on confidentiality.</strong> Some participants' faces are blurred to protect their privacy. Several projects are under NDA, so specifics are removed and processes are described more abstractly.</p>

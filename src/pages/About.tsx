@@ -21,7 +21,7 @@ const About: React.FC = () => {
               what gets in their way, then turning that into decisions a team can build on.
             </p>
             <p>
-              Today I'm a UX Researcher at Dropbox. Before that I did research at Twitter, where I worked on making the
+              Today I'm a UX Researcher at Dropbox, working on new AI products. Before that I did research at Twitter, where I worked on making the
               platform safer, and at Google, where I led research on how people perceive ambient sensing in Google's
               hardware. Along the way I've worked with startups, nonprofits and agencies on new products, services and
               marketplaces.

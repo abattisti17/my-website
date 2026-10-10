@@ -70,7 +70,7 @@
 .ab a:active { background-color: transparent !important; background-image: linear-gradient(var(--ab-ink), var(--ab-ink)) !important; background-size: 100% 100% !important; color: var(--ab-highlight) !important; animation: none; }
 
 /* Block links (photos, project rows, buttons) get the sweep on their title instead */
-.ab .ab-strip a, .ab .ab-projects a, .ab .ab-work-list a, .ab .ab-button, .ab .ab-name, .ab .ab-nav a { background-image: none; }
+.ab .ab-strip a, .ab .ab-proj-row, .ab .ab-work-card, .ab .ab-button, .ab .ab-name, .ab .ab-nav a { background-image: none; }
 .ab-proj-title, .ab-strip .ab-caption {
   background: linear-gradient(transparent 8%, var(--ab-highlight) 8%, var(--ab-highlight) 92%, transparent 92%) no-repeat left center / 0% 100%;
   transition: background-size 0.3s ease;
@@ -136,8 +136,6 @@
 /* Project list */
 .ab-projects { list-style: none; border-top: 1px solid var(--ab-rule); }
 .ab-projects li { margin: 0; border-bottom: 1px solid var(--ab-rule); }
-.ab .ab-projects a { display: grid; gap: 4px 32px; padding: 22px 0; text-decoration: none; }
-@media (min-width: 900px) { .ab .ab-projects a { grid-template-columns: 14rem 1fr; } .ab-projects .ab-proj-summary { grid-column: 2; } }
 .ab-proj-context { font-size: 0.9375rem; color: var(--ab-pencil); }
 .ab-proj-title { font-size: 1.375rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
 .ab-proj-summary { color: var(--ab-pencil); font-size: 1rem; max-width: var(--ab-measure); }
@@ -167,7 +165,7 @@
 .ab-work-list { list-style: none; display: grid; gap: 48px; }
 @media (min-width: 900px) { .ab-work-list { grid-template-columns: 1fr 1fr; gap: 56px 40px; } }
 .ab-work-list li { margin: 0; }
-.ab .ab-work-list a { display: grid; gap: 6px; text-decoration: none; }
+.ab .ab-work-card { display: grid; gap: 6px; text-decoration: none; background-image: none; }
 .ab-work-list img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; filter: grayscale(1); margin-bottom: 12px; }
 
 .ab-note { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--ab-rule); max-width: var(--ab-measure); font-size: 1rem; color: var(--ab-pencil); }
@@ -288,3 +286,64 @@
 @media (prefers-reduced-motion: reduce) {
   .ab-strip li a, .ab-hero-photo, .ab-about-fig, .ab-quote.ab-taped, .ab .ab-hand { transform: none !important; }
 }
+
+
+/* ==========================================================================
+   Selected work: one list, each project with a taped photo
+   ========================================================================== */
+.ab .ab-proj-row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 28px 0 24px;
+  text-decoration: none;
+  background-image: none;
+  color: var(--ab-ink);
+}
+@media (min-width: 900px) { .ab .ab-proj-row { grid-template-columns: 13rem 1fr; gap: 40px; padding: 36px 0 32px; } }
+.ab-proj-text { display: grid; gap: 4px; align-content: start; }
+.ab-proj-text .ab-proj-title { justify-self: start; }
+
+.ab-thumb {
+  background: var(--ab-paper);
+  padding: 5px 5px 7px;
+  box-shadow: 0 1px 2px rgba(22, 26, 69, 0.15), 0 8px 18px -10px rgba(22, 26, 69, 0.35);
+  transition: transform 0.25s ease;
+}
+@media (min-width: 900px) { .ab-thumb { padding: 8px 8px 12px; } }
+.ab-thumb img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: grayscale(1) contrast(1.05); transition: filter 0.3s ease; }
+.ab-thumb .ab-tape { width: 56px; height: 18px; margin-left: -28px; top: -8px; }
+@media (min-width: 900px) { .ab-thumb .ab-tape { width: 80px; height: 24px; margin-left: -40px; top: -11px; } }
+.ab-projects li:nth-child(4n+1) .ab-thumb { transform: rotate(-1.8deg); }
+.ab-projects li:nth-child(4n+2) .ab-thumb { transform: rotate(1.4deg); }
+.ab-projects li:nth-child(4n+3) .ab-thumb { transform: rotate(-0.9deg); }
+.ab-projects li:nth-child(4n+4) .ab-thumb { transform: rotate(1.9deg); }
+.ab-projects li:nth-child(even) .ab-tape { transform: rotate(3deg); background: rgba(255, 228, 92, 0.7); }
+.ab a.ab-proj-row:hover .ab-thumb { transform: rotate(0) translateY(-2px); }
+.ab a.ab-proj-row:hover .ab-thumb img { filter: grayscale(0); }
+
+/* Confidential work: a sticky note where the photo would be */
+.ab-thumb:has(.ab-thumb-note) { background: var(--ab-sticky); padding: 0; }
+.ab-thumb-note, .ab-work-note {
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 4 / 3;
+  padding: 8px;
+  font-family: var(--ab-hand);
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.05;
+  text-align: center;
+  color: var(--ab-ink);
+}
+@media (min-width: 900px) { .ab-thumb-note { font-size: 1.6rem; } }
+.ab-work-note {
+  width: 100%;
+  margin-bottom: 12px;
+  background: var(--ab-sticky);
+  font-size: 2rem;
+  transform: rotate(-1deg);
+  box-shadow: 0 8px 20px -12px rgba(22, 26, 69, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) { .ab-projects .ab-thumb { transform: none !important; } }

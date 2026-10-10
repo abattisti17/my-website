@@ -3,13 +3,6 @@ import { Link } from 'react-router-dom';
 import SiteFrame, { EMAIL, LINKEDIN, DESIGN_LAB } from '../components/SiteFrame';
 import { projects } from '../data/projects';
 
-const fieldwork = [
-  { src: '/me-postits.png', caption: 'Synthesis: sorting interview notes into patterns', to: '/work' },
-  { src: '/nu_inhome.png', caption: 'In-home interview with a wireless customer', to: '/project/nudge' },
-  { src: '/ps_truck.png', caption: 'Watching a food truck run its point of sale', to: '/project/pos' },
-  { src: '/ps_interview.png', caption: 'Interviewing small business owners', to: '/project/pos' },
-];
-
 const Home: React.FC = () => {
   return (
     <SiteFrame>
@@ -18,7 +11,7 @@ const Home: React.FC = () => {
           <div>
             <h1>I study how people actually get things done, then help design what they use.</h1>
             <p className="ab-lead">
-              Design researcher. Currently a UX Researcher at Dropbox. Before that, research at Google and Twitter,
+              Design researcher. Currently at Dropbox, working on new AI products. Before that, research at Google and Twitter,
               and independent work with startups, nonprofits and agencies.
             </p>
             <p className="ab-contact">
@@ -34,36 +27,30 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      <section className="ab-section" aria-labelledby="fieldwork-title">
-        <div className="ab-wrap">
-          <h2 id="fieldwork-title" className="ab-h2 ab-hand">From the field</h2>
-          <ul className="ab-strip">
-            {fieldwork.map((f) => (
-              <li key={f.src}>
-                <Link to={f.to} className="ab-taped">
-                  <span className="ab-tape" aria-hidden="true" />
-                  <img src={f.src} alt="" loading="lazy" />
-                  <span className="ab-caption">{f.caption}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       <section className="ab-section" aria-labelledby="work-title">
         <div className="ab-wrap">
           <h2 id="work-title" className="ab-h2 ab-hand">Selected work</h2>
           <ol className="ab-projects">
-            {projects.map((p) => (
-              <li key={p.id}>
-                <Link to={`/project/${p.id}`}>
-                  <span className="ab-proj-context">{p.context}</span>
-                  <span className="ab-proj-title">{p.title}</span>
-                  <span className="ab-proj-summary">{p.problem}</span>
-                </Link>
-              </li>
-            ))}
+            {projects.map((p) => {
+              const body = (
+                <>
+                  <span className="ab-thumb ab-taped" aria-hidden="true">
+                    <span className="ab-tape" />
+                    {p.image ? <img src={p.image} alt="" loading="lazy" /> : <span className="ab-thumb-note">Confidential, for now</span>}
+                  </span>
+                  <span className="ab-proj-text">
+                    <span className="ab-proj-context">{p.context}</span>
+                    <span className="ab-proj-title">{p.title}</span>
+                    <span className="ab-proj-summary">{p.problem}</span>
+                  </span>
+                </>
+              );
+              return (
+                <li key={p.id}>
+                  {p.confidential ? <div className="ab-proj-row">{body}</div> : <Link to={`/project/${p.id}`} className="ab-proj-row">{body}</Link>}
+                </li>
+              );
+            })}
           </ol>
         </div>
       </section>

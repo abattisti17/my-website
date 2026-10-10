@@ -28,8 +28,9 @@ const ProjectPage: React.FC = () => {
     ['Deliverables', project.deliverables],
     ['Outcomes', project.outcomes],
   ];
-  const index = projects.findIndex((p) => p.id === project.id);
-  const next = projects[(index + 1) % projects.length];
+  const linkable = projects.filter((p) => !p.confidential);
+  const index = linkable.findIndex((p) => p.id === project.id);
+  const next = linkable[(index + 1) % linkable.length];
 
   return (
     <SiteFrame>
@@ -41,10 +42,12 @@ const ProjectPage: React.FC = () => {
           </div>
         </section>
         <div className="ab-wrap">
-          <figure className="ab-project-figure">
-            <img src={project.image} alt={project.imageAlt} />
-            {project.content && <figcaption>{project.content}</figcaption>}
-          </figure>
+          {project.image && (
+            <figure className="ab-project-figure">
+              <img src={project.image} alt={project.imageAlt || ''} />
+              {project.content && <figcaption>{project.content}</figcaption>}
+            </figure>
+          )}
           <dl className="ab-facts">
             {facts
               .filter(([, value]) => Boolean(value))
