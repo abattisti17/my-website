@@ -16,8 +16,8 @@
 .ab {
   --ab-bg: #E7E8E4;     /* cool grey page */
   --ab-ink: #2430E0;    /* the only color: text, pixels, lines. 6.9:1 on bg */
-  --ab-tint: #CDD0E3;   /* portrait card and hairlines only, never text */
-  --ab-px: 2px;         /* the one pixel size: portrait, bands, icons, trail */
+  --ab-tint: #CDD0E3;   /* hairlines only, never text */
+  --ab-px: 2px;         /* the pixel size: bands, icons, trail, cursors */
   --ab-font: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
 
   position: relative;
@@ -82,8 +82,9 @@
 .ab .ab-hello { margin-top: 32px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 24px; font-size: 1rem; }
 .ab .ab-hello-mail { font-size: clamp(1.15rem, 1.9vw, 1.4rem); font-weight: 650; }
 
-/* Portrait: 200 x 250 dithered image, shown at 2px per pixel */
-.ab .ab-portrait { justify-self: center; width: 100%; max-width: 400px; background: var(--ab-tint); }
+/* Portrait: 260 x 325 dithered photo, light pixels show the page through.
+   Shown at 1.5px per pixel (3 device pixels on retina screens). */
+.ab .ab-portrait { justify-self: center; width: 100%; max-width: 390px; }
 .ab-portrait img { width: 100%; image-rendering: pixelated; }
 
 /* Divider: a 1-bit dithered band, 24 image pixels tall at 2px each */

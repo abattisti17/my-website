@@ -31,7 +31,7 @@ const Home: React.FC = () => {
             </p>
           </div>
           <figure className="ab-portrait">
-            <img src={portrait} width={200} height={250} alt="Alessandro, in blue pixels" />
+            <img src={portrait} width={260} height={325} alt="Alessandro on the Brooklyn Bridge, in blue pixels" />
           </figure>
         </div>
       </section>
