@@ -57,7 +57,7 @@ const Home: React.FC = () => {
                 <ul>
                   <li><b>Twitter</b><span>Research</span></li>
                   <li><b>Google</b><span>Research, 2020 to 2021</span></li>
-                  <li><b><a href={FERN} target="_blank" rel="noopener noreferrer">Fern</a></b><span>Research and strategy at a social impact design studio, working with nonprofits and community organizations</span></li>
+                  <li><b><a href={FERN} target="_blank" rel="noopener noreferrer">Fern</a></b><span>Co-founder of a social impact design studio, working with nonprofits and community organizations</span></li>
                 </ul>
               </dd>
             </div>
