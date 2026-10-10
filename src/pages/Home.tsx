@@ -53,7 +53,7 @@ const Home: React.FC = () => {
             </div>
           </dl>
           <p className="ab-cv-note">
-            Happy to walk through past work on a call. <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            Ask me about case studies: <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
           </p>
         </div>
       </section>
