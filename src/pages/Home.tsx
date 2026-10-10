@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import SiteFrame, { EMAIL, LINKEDIN, DESIGN_LAB } from '../components/SiteFrame';
+import SiteFrame, { EMAIL, LINKEDIN, DESIGN_LAB, FERN } from '../components/SiteFrame';
 import PixelIcon, { IconName } from '../components/PixelIcon';
 import portrait from '../img/portrait.png';
 
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
                 <ul>
                   <li><b>Twitter</b><span>Research</span></li>
                   <li><b>Google</b><span>Research, 2020 to 2021</span></li>
-                  <li><b>Independent</b><span>Research and strategy for startups, nonprofits and agencies</span></li>
+                  <li><b><a href={FERN} target="_blank" rel="noopener noreferrer">Fern</a></b><span>My consulting studio: research and strategy for startups, nonprofits and agencies</span></li>
                 </ul>
               </dd>
             </div>
