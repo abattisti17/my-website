@@ -1,0 +1,9 @@
+/* Archive banner, added 2026. Not part of the original site. */
+.ab-archive{position:relative;z-index:2000;background:#3a3b87;color:#eef4fe;font-family:Archivo,sans-serif;font-size:15px;line-height:1.45;padding:10px 20px}
+.ab-archive p{margin:0;max-width:72rem}
+.ab-archive a{color:#fec62e;text-decoration:underline;white-space:nowrap}
+.ab-archive a:hover{color:#fff}
+form[aria-label] [disabled]{cursor:not-allowed;opacity:.7}
+/* These two sections used background photos (arms.png, ColinKarenBW.jpg) that the
+   saved copy didn't include. Hidden until the images are added to images/. */
+.section-7,.section-9{display:none}

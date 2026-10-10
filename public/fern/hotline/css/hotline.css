@@ -1,0 +1,111 @@
+@font-face{font-family:'Noto Serif';font-weight:700;font-display:swap;src:url(../fonts/noto-serif-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Noto Sans JP';font-weight:500;font-display:swap;src:url(../fonts/noto-sans-jp-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Alegreya';font-weight:900;font-display:swap;src:url(../fonts/alegreya-latin-900-normal.woff2) format('woff2')}
+
+
+
+body {
+  /*background-color: #222978; muted indigo */
+  /*background-color: #000a9e; vibrant indigo */
+  /*background-color: #1A24A0;*/  
+  cursor: url(../image/cursor-reg.png), auto;
+
+
+  /*cursor:pointer;*/
+  background-color: #FBF8ED;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  margin-right: 5%;
+  margin-left: 5%;
+}
+
+h1 {
+	/*font-family: "Arial", Arial, sans-serif;*/
+	font-family: 'Noto Serif', serif;
+	font-weight: bold;
+	letter-spacing: -.03em;
+	font-size: 4em;
+	/*font-size: 40px;*/
+	color: #161A45;
+	text-align: left;
+	margin-top: 0%;
+	line-height: 1em;
+}
+
+
+p {
+	/*font-family: "Arial", Arial, sans-serif;*/
+	font-family: 'Noto Sans JP', sans-serif;
+	font-weight: bold;
+	letter-spacing: -.05em;
+	font-size: 1.5em;
+	/*font-size: 20px;*/
+	/*color: #FFAAAC; muted pink */
+	/*color: #ff5256; vibrant pink */
+	color: #161A45; 
+	text-align: right;
+	margin-top: 0%;
+	line-height: 1.2em;
+	padding-bottom: 5%;
+}
+
+h2 {
+	/*font-family: "Arial", Arial, sans-serif;*/
+	font-family: 'Noto Sans JP', sans-serif;
+	font-weight: bold;
+	letter-spacing: -.05em;
+	font-size: 1.5em;
+	/*font-size: 20px;*/
+	color: #161A45;
+	text-align: left;
+	margin-top: 0%;
+	line-height: 1.3em;
+}
+
+
+
+
+
+
+a.text:link {color:#E09056;
+		cursor: url(../image/cursor-hover.png), auto;
+}    /* unvisited link, same as regular 'a' */
+
+a.text:visited {color:#E09056;
+		cursor: url(../image/cursor-hover.png), auto;
+} /* visited link */
+
+a.text:hover {	
+	color:#FBF8ED;
+	background-color: #161A45;
+	cursor: url(../image/cursor-hover.png), auto;
+
+	}   /* mouse over link */
+
+a.text:active { 
+	color:#E09056;
+  background-color: #161A45;
+  	cursor: url(../image/cursor-hover.png), auto;
+
+}
+
+
+a.logo:link {  /* unvisited link, same as regular 'a' */
+	color:#E09056;
+	font-size: 1.5em;
+	letter-spacing: .02em;
+	font-family: 'Alegreya', serif;
+	}   
+a.logo:visited {color:#E09056;} /* visited link */
+a.logo:hover {color:#FBF8ED;
+  background-color: #161A45;}   /* mouse over link */
+a.logo:active { 
+  color:#E09056;
+  background-color: #161A45;
+}
+
+/* Archive additions, 2026. Not part of the original page. */
+.retired{color:#E09056}
+.ab-archive{margin:-5vw -5vw 5vw;padding:10px 5vw;background:#161A45;color:#FBF8ED;font-family:'Noto Sans JP',sans-serif;font-size:15px;line-height:1.45}
+.ab-archive p{margin:0;padding:0;text-align:left;color:inherit;font-size:inherit;letter-spacing:0;font-weight:500}
+.ab-archive a{color:#E09056}
