@@ -10,7 +10,7 @@ const path = require('path');
 const build = path.join(__dirname, '..', 'build');
 const html = fs.readFileSync(path.join(build, 'index.html'));
 const projectIds = ['sensor', 'nudge', 'ev', 'pos'];
-const routes = ['work', 'about', 'consulting', 'style-guide', 'notes', ...projectIds.map((id) => `project/${id}`)];
+const routes = ['work', 'about', 'consulting', 'style-guide', 'notes', 'mango', ...projectIds.map((id) => `project/${id}`)];
 
 for (const route of routes) {
   const dir = path.join(build, route);

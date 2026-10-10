@@ -1,0 +1,2 @@
+# Unknown URLs load the app, which shows Mango's 404 page.
+ErrorDocument 404 /index.html

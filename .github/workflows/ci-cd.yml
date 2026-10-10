@@ -51,6 +51,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-files
+        include-hidden-files: true
         path: |
           build/
           crew-generator/dist/
@@ -102,6 +103,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: staging-build-files
+        include-hidden-files: true
         path: |
           build/
           crew-generator/dist/

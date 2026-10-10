@@ -15,15 +15,12 @@
  */
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Import all the page components (the main "rooms" of your website)
 import Home from './pages/Home';                    // Landing page with navigation
-import Work from './pages/Work';                    // Portfolio showcase  
-import About from './pages/About';                  // Personal information
-import Consulting from './pages/Consulting';        // Services offered
-import StyleGuide from './pages/StyleGuide';        // Design system documentation
-import ProjectPage from './pages/ProjectPage';      // Individual project details
+import StyleGuide from './pages/StyleGuide';
+import NotFound from './pages/NotFound';                // Mango's 404 page
 
 // Import utility components for staging/development
 import FloatingStagingBanner from './components/FloatingStagingBanner';     // "Staging site" indicator
@@ -220,15 +217,17 @@ const AppContent: React.FC = () => {
         <Routes>
           {/* CORE WEBSITE PAGES - Always available */}
           <Route path="/" element={<Home />} />                    {/* Landing page */}
-          <Route path="/work" element={<Work />} />                {/* Portfolio */}
-          <Route path="/about" element={<About />} />              {/* About me */}
-          <Route path="/consulting" element={<Consulting />} />    {/* Services */}
+          {/* Old pages fold into the one-page home (case studies are off for now) */}
+          <Route path="/work" element={<Navigate to="/" replace />} />
+          <Route path="/about" element={<Navigate to="/" replace />} />
+          <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/style-guide" element={<StyleGuide />} />   {/* Design docs */}
-          <Route path="/project/:id" element={<ProjectPage />} />  {/* Project details */}
+          <Route path="/project/:id" element={<Navigate to="/" replace />} />
           
           {/* MINI-APP ROUTES - Controlled by feature flags */}
           <Route path="/notes" element={<NotesApp />} />                    {/* 📝 Note-taking app */}
           <Route path="/crew" element={<CrewGeneratorIframe />} />          {/* 🚀 Crew generator */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </Router>
