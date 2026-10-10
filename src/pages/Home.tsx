@@ -1,36 +1,46 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SiteFrame, { EMAIL, LINKEDIN, DESIGN_LAB } from '../components/SiteFrame';
+import PixelIcon, { IconName } from '../components/PixelIcon';
+import portrait from '../img/portrait.png';
 
 /**
- * One-page site: a little about the work, a CV, and a few personal notes.
+ * One-page site: who I am, a short CV, a few personal notes.
  * Case studies are off for now (old pages redirect here).
  */
+const NOTES: { icon: IconName; text: React.ReactNode }[] = [
+  { icon: 'pin', text: 'Greenpoint, Brooklyn.' },
+  { icon: 'shoe', text: "I run, but I'm not fast." },
+  { icon: 'cup', text: 'I spend too much time on my espresso machine.' },
+  { icon: 'cat', text: <>My cat Mango runs the <Link to="/mango">404&nbsp;page</Link>.</> },
+];
+
 const Home: React.FC = () => {
   return (
     <SiteFrame>
       <section className="ab-hero">
         <div className="ab-wrap ab-hero-grid">
           <div>
-            <h1 className="ab-name-h1">Alessandro Battisti</h1>
+            <h1 className="ab-name">Alessandro Battisti.</h1>
             <p className="ab-lead">
               Design researcher. I study how people actually get things done, then help design what they use.
             </p>
-            <p className="ab-contact">
-              <a href={`mailto:${EMAIL}`}>Email</a>
+            <p className="ab-hello">
+              <a className="ab-hello-mail" href={`mailto:${EMAIL}`}>{EMAIL}</a>
               <a href={LINKEDIN} target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </p>
           </div>
-          <figure className="ab-taped ab-hero-photo">
-            <span className="ab-tape" aria-hidden="true" />
-            <img className="ab-portrait" src="/aboutme.jpeg" alt="Alessandro on the Brooklyn Bridge" />
+          <figure className="ab-portrait">
+            <img src={portrait} width={200} height={250} alt="Alessandro, in blue pixels" />
           </figure>
         </div>
       </section>
 
+      <div className="ab-band" aria-hidden="true" />
+
       <section className="ab-section" aria-labelledby="cv-title">
         <div className="ab-wrap">
-          <h2 id="cv-title" className="ab-h2 ab-hand">Work</h2>
+          <h2 id="cv-title" className="ab-label">Work</h2>
           <dl className="ab-cv">
             <div>
               <dt>Now</dt>
@@ -52,20 +62,21 @@ const Home: React.FC = () => {
               </dd>
             </div>
           </dl>
-          <p className="ab-cv-note">
-            Ask me about case studies: <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+          <p className="ab-ask">
+            <a href={`mailto:${EMAIL}?subject=Case%20studies`}>Ask me about case studies</a>
           </p>
         </div>
       </section>
 
+      <div className="ab-band" aria-hidden="true" />
+
       <section className="ab-section" aria-labelledby="else-title">
         <div className="ab-wrap">
-          <h2 id="else-title" className="ab-h2 ab-hand">Elsewhere</h2>
+          <h2 id="else-title" className="ab-label">Elsewhere</h2>
           <ul className="ab-notes">
-            <li>Greenpoint, Brooklyn.</li>
-            <li>I run, but I'm not fast.</li>
-            <li>I spend too much time on my espresso machine.</li>
-            <li>My cat Mango runs the <Link to="/mango">404 page</Link>.</li>
+            {NOTES.map((n) => (
+              <li key={n.icon}><PixelIcon name={n.icon} /><span>{n.text}</span></li>
+            ))}
           </ul>
         </div>
       </section>
