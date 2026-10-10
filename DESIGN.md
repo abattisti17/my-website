@@ -7,6 +7,7 @@ One page, one color, one pixel size. Code: `src/personal.css` (scoped under `.ab
 - `--ab-bg #E7E8E4` cool grey page
 - `--ab-ink #2430E0` the only color: text, links, pixels. 6.9:1 on the page
 - `--ab-tint #CDD0E3` hairlines only, never text
+- `--ab-mango #E05A0C` orange, for Mango's sprite only (the Elsewhere icon and the 404). 3:1 on the page
 - `--ab-px 2px` the pixel size for everything drawn
 - Type: Bricolage Grotesque (self-hosted, `src/fonts`). Name 750, company names 650, body 400 to 450, labels 650 at 14px
 
@@ -30,7 +31,7 @@ Every graphic is 1-bit and sits on the same 2px grid:
 - Link hover: ink fills in from the left in 5 steps, text flips to the page grey
 
 ## Don't
-- Add a second color, gradients, shadows, rounded corners or cards
+- Add another color beyond Mango's orange, or use the orange for anything but Mango; no gradients, shadows, rounded corners or cards
 - Use hairlines between sections (use a band) or a pixel size other than 2px
 - Use handwriting fonts, sticky notes, tape, or anything that reads as a research wall
 - Load anything from a third party (fonts, analytics, embeds)

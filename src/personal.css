@@ -17,6 +17,7 @@
   --ab-bg: #E7E8E4;     /* cool grey page */
   --ab-ink: #2430E0;    /* the only color: text, pixels, lines. 6.9:1 on bg */
   --ab-tint: #CDD0E3;   /* hairlines only, never text */
+  --ab-mango: #E05A0C;  /* Mango's sprite only. 3:1 on bg */
   --ab-px: 2px;         /* the pixel size: bands, icons, trail, cursors */
   --ab-font: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
 
@@ -115,6 +116,7 @@
 .ab-notes { display: grid; gap: 14px; }
 .ab-notes li { display: flex; gap: 16px; align-items: center; font-size: clamp(1.15rem, 1.8vw, 1.35rem); line-height: 1.3; font-weight: 450; }
 .ab-ic { flex: none; width: 28px; height: 24px; fill: var(--ab-ink); }
+.ab-ic.ab-mango { fill: var(--ab-mango); }
 
 /* Closing email */
 .ab-end { position: relative; padding: 72px 0 64px; }
@@ -129,6 +131,6 @@
 /* Mango's 404: the cat sprite at 12px per pixel (a multiple of 2) */
 .ab-404-grid { display: grid; gap: 40px; align-items: center; }
 @media (min-width: 900px) { .ab-404-grid { grid-template-columns: auto 1fr; gap: 80px; } }
-.ab-cat { width: 168px; height: 144px; fill: var(--ab-ink); }
+.ab-cat { width: 168px; height: 144px; fill: var(--ab-mango); }
 @media (min-width: 768px) { .ab-cat { width: 336px; height: 288px; } }
 .ab .ab-404-title { font-size: clamp(2.25rem, 5vw, 4rem); margin-bottom: 24px; max-width: 12em; }

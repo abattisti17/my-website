@@ -4,7 +4,6 @@ import Trace from './Trace';
 export const EMAIL = 'abattisti@protonmail.com';
 export const LINKEDIN = 'https://www.linkedin.com/in/alessandrojbattisti/';
 export const DESIGN_LAB = 'https://designlab.fyi/';
-export const FERN = 'https://fern.website/';
 
 /**
  * Shared wrapper for the one-page site and Mango's 404 page:

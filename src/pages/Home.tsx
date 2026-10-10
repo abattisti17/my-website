@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import SiteFrame, { EMAIL, LINKEDIN, DESIGN_LAB, FERN } from '../components/SiteFrame';
+import SiteFrame, { EMAIL, LINKEDIN, DESIGN_LAB } from '../components/SiteFrame';
 import PixelIcon, { IconName } from '../components/PixelIcon';
 import portrait from '../img/portrait.png';
 
@@ -56,8 +56,8 @@ const Home: React.FC = () => {
               <dd>
                 <ul>
                   <li><b>Twitter</b><span>Research</span></li>
-                  <li><b>Google</b><span>Research, 2020 to 2021</span></li>
-                  <li><b><a href={FERN} target="_blank" rel="noopener noreferrer">Fern</a></b><span>Co-founder of a social impact design studio, working with nonprofits and community organizations</span></li>
+                  <li><b>Google</b><span>Research</span></li>
+                  <li><b>Fern</b><span>Co-founder of a social impact design studio, working with nonprofits and community organizations</span></li>
                 </ul>
               </dd>
             </div>
@@ -75,7 +75,7 @@ const Home: React.FC = () => {
           <h2 id="else-title" className="ab-label">Elsewhere</h2>
           <ul className="ab-notes">
             {NOTES.map((n) => (
-              <li key={n.icon}><PixelIcon name={n.icon} /><span>{n.text}</span></li>
+              <li key={n.icon}><PixelIcon name={n.icon} className={n.icon === 'cat' ? 'ab-ic ab-mango' : 'ab-ic'} /><span>{n.text}</span></li>
             ))}
           </ul>
         </div>
